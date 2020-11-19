@@ -1,26 +1,34 @@
-import "reflect-metadata";
-import { createConnection } from "typeorm";
-import { User } from "./entity/User";
-import * as express from 'express'
+import 'reflect-metadata';
+
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+import * as express from 'express';
+import { createConnection as connectTypeorm } from 'typeorm';
+
 import authRoute from './routes/authRoute';
-import * as cors from 'cors'
-import * as bodyParser from "body-parser";
+import expenseRoute from './routes/monerate/expenseRoute';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
 
-createConnection().then(async connection => {
+connectTypeorm().then(async connection => {
 
     const app = express()
 
     app.use(cors())
-    app.use(bodyParser.urlencoded({ extended: false })) // ?
+
+    // https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0 
+    app.use(bodyParser.urlencoded({ extended: false }))
+
+    // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
     app.use(bodyParser.json());
 
-    app.get('/', (req, res) => {
-        return res.json('nice?')
-    })
+    // PE 2/3 - might have an easier way to make this automatic, no?
+    app.get('/', (req, res) => res.json('nice?'))
     app.use('/auth', authRoute)
+    app.use('/monerate/expense', expenseRoute)
 
-    app.listen(8080, () => { myConsoleSuccess("******* Server has started, LET'S FUCKING GOOOO!!! *******  \n") })
+    app.listen(8080, () => {
+        myConsoleSuccess("******* Server has started, LET'S FUCKING GOOOO!!! *******  \n")
+    })
 }).catch(error => myConsoleError(error));
 

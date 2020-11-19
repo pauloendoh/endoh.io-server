@@ -1,8 +1,10 @@
 import { User } from '../entity/User';
+
 export class AuthUserGetDto {
     id: number
     username: string
     email: string
+    picture: string
 
     token: string
     expiresAt: Date
@@ -11,6 +13,7 @@ export class AuthUserGetDto {
         this.id = user.id
         this.username = user.username
         this.email = user.email
+        this.picture = user.picture 
         this.token = token
         this.expiresAt = expiresAt
     }

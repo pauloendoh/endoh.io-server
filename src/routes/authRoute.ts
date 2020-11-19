@@ -1,13 +1,16 @@
-import { AuthUserGetDto } from '../dtos/GetAuthUserDto';
-import { compare, genSalt, hash } from 'bcrypt'
-import { json, Request, Response, Router } from 'express'
-import { sign } from 'jsonwebtoken'
-import { DotEnvNames } from '../consts/dotenv'
-import { User } from '../entity/User'
-import UserRepository from '../repositories/UserRepository'
-import ErrorMessage from '../utils/ErrorMessage'
+import { compare, genSalt, hash } from 'bcrypt';
+import { Request, Response, Router } from 'express';
+import { sign } from 'jsonwebtoken';
 import { getCustomRepository } from 'typeorm';
+
+import { DotEnvNames } from '../consts/dotenv';
+import { AuthUserGetDto } from '../dtos/AuthUserGetDto';
+import { User } from '../entity/User';
+import UserRepository from '../repositories/UserRepository';
+import { MyErrorsResponse } from '../utils/ErrorMessage';
+import { MyAuthRequest } from '../utils/MyAuthRequest';
 import { myConsoleError } from '../utils/myConsoleError';
+import validateUser from '../utils/validateUser';
 
 const authRoute = Router()
 
@@ -15,21 +18,26 @@ authRoute.get('/', async (req, res) => {
     return res.json('xd')
 })
 
-authRoute.post('/register', async (req, res) => {
+authRoute.post('/register', async (req: MyAuthRequest, res) => {
     try {
         const sentUser = req.body as User
+        const sentUserErrors = validateUser(sentUser)
+        if(sentUserErrors.length){
+            return res.status(400).json(new MyErrorsResponse().addErrors(sentUserErrors))
+        }
+
         let userRepo = getCustomRepository(UserRepository)
 
         // Checking if email exists 
         let userExists = await userRepo.findOne({ email: sentUser.email })
         if (userExists) {
-            return res.status(400).json(new ErrorMessage('Email already in use'))
+            return res.status(400).json(new MyErrorsResponse('Email already in use', 'email'))
         }
 
         // Checking if username exists
         userExists = await userRepo.findOne({ username: sentUser.username })
         if (userExists) {
-            return res.status(400).json(new ErrorMessage('Username already in use'))
+            return res.status(400).json(new MyErrorsResponse('Username already in use', 'username'))
         }
 
         const salt = await genSalt(10)
@@ -51,28 +59,37 @@ authRoute.post('/register', async (req, res) => {
 
     } catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 
 authRoute.post('/login', async (req: Request, res: Response) => {
     try {
-        const sentData = req.body as User
+        const sentUser = req.body as User
+        sentUser.username = sentUser.email
+
+        const sentUserErrors = validateUser(sentUser)
+        if(sentUserErrors.length){
+            return res.status(400).json(new MyErrorsResponse().addErrors(sentUserErrors))
+        }
+
         let userRepo = getCustomRepository(UserRepository)
 
         // Check if username or email exists 
         let user = await userRepo.findOne({
             where: [
-                { email: sentData.email },
-                { username: sentData.email }]
+                { email: sentUser.email },
+                { username: sentUser.email }]
         })
-        if (!user)
-            return res.status(400).json(new ErrorMessage('Invalid email or username.'))
+        if (!user) {
+            return res.status(400).json(new MyErrorsResponse('Invalid email or username'))
+        }
 
         // Check if password is ok 
-        const passwordOk = await compare(sentData.password, user.password)
-        if (!passwordOk)
-            return res.status(400).json({ errors: [{ msg: 'Invalid password' }] })
+        const passwordOk = await compare(sentUser.password, user.password)
+        if (!passwordOk) {
+            return res.status(400).json(new MyErrorsResponse('Invalid password', 'password'))
+        }
 
         // Signing in and returning  user's token 
         const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
@@ -89,7 +106,7 @@ authRoute.post('/login', async (req: Request, res: Response) => {
 
     } catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 

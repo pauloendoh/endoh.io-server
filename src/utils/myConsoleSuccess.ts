@@ -6,7 +6,6 @@ export function myConsoleSuccess(text: any) {
     }
     else {
         console.log(chalk.greenBright(JSON.stringify(text)))
-
     }
     return
 }
