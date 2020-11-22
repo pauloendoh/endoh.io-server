@@ -1,7 +1,6 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { MyError } from '../utils/ErrorMessage';
+import { Expense } from './monerate/Expense';
 
-import { Expense } from './Expense';
 
 @Entity()
 export class User {
@@ -33,6 +32,4 @@ export class User {
     // Relations
     @OneToMany(type => Expense, expense => expense.user)
     expenses: Expense[]
-
-   
 }

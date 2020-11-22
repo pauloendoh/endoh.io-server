@@ -1,5 +1,6 @@
 import { User } from '../entity/User';
 
+// PE 3/3 
 export class AuthUserGetDto {
     id: number
     username: string

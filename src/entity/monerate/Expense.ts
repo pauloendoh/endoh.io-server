@@ -1,6 +1,5 @@
-import { classToPlain, Exclude } from 'class-transformer';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { User } from './User';
+import { User } from '../User';
 
 @Entity()
 export class Expense {
@@ -8,7 +7,6 @@ export class Expense {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Exclude({toPlainOnly: true})
     @ManyToOne(type => User, user => user.expenses, {onDelete: "CASCADE"})
     user: User;
 
@@ -27,16 +25,12 @@ export class Expense {
     @Column()
     rating: number;
 
-    @Column()
+    @Column("double precision", {nullable: true})
     value: number;
 
     @CreateDateColumn()
-    createdAt: Date
+    createdAt: string
 
     @UpdateDateColumn()
-    updatedAt: Date
-
-    toJSON(){
-        return classToPlain(this)
-    }
+    updatedAt: string
 }

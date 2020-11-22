@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
 
-import { Expense } from '../../entity/Expense';
+import { Expense } from '../../entity/monerate/Expense';
 import authMiddleware from '../../middlewares/authMiddleware';
 import ExpenseRepository from '../../repositories/ExpenseRepository';
 import UserRepository from '../../repositories/UserRepository';
