@@ -10,20 +10,17 @@ import UserRepository from '../repositories/UserRepository';
 import { MyErrorsResponse } from '../utils/ErrorMessage';
 import { MyAuthRequest } from '../utils/MyAuthRequest';
 import { myConsoleError } from '../utils/myConsoleError';
-import validateUser from '../utils/validateUser';
+import validateUserFields from '../utils/validateUser';
 
 const authRoute = Router()
 
-authRoute.get('/', async (req, res) => {
-    return res.json('xd')
-})
-
+// PE 2/3
 authRoute.post('/register', async (req: MyAuthRequest, res) => {
     try {
         const sentUser = req.body as User
-        const sentUserErrors = validateUser(sentUser)
-        if(sentUserErrors.length){
-            return res.status(400).json(new MyErrorsResponse().addErrors(sentUserErrors))
+        const userErrors = validateUserFields(sentUser)
+        if(userErrors.length){
+            return res.status(400).json(new MyErrorsResponse().addErrors(userErrors))
         }
 
         let userRepo = getCustomRepository(UserRepository)
@@ -40,6 +37,7 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
             return res.status(400).json(new MyErrorsResponse('Username already in use', 'username'))
         }
 
+        // bcrypt user password
         const salt = await genSalt(10)
         sentUser.password = await hash(sentUser.password, salt)
 
@@ -65,28 +63,28 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
 
 authRoute.post('/login', async (req: Request, res: Response) => {
     try {
-        const sentUser = req.body as User
-        sentUser.username = sentUser.email
+        const body = req.body as User
+        body.username = body.email // little gambiarra 
 
-        const sentUserErrors = validateUser(sentUser)
-        if(sentUserErrors.length){
-            return res.status(400).json(new MyErrorsResponse().addErrors(sentUserErrors))
+        const fieldErrors = validateUserFields(body)
+        if(fieldErrors.length){
+            return res.status(400).json(new MyErrorsResponse().addErrors(fieldErrors))
         }
 
         let userRepo = getCustomRepository(UserRepository)
 
-        // Check if username or email exists 
+        // username or email exists ?
         let user = await userRepo.findOne({
             where: [
-                { email: sentUser.email },
-                { username: sentUser.email }]
+                { email: body.email },
+                { username: body.email }]
         })
         if (!user) {
             return res.status(400).json(new MyErrorsResponse('Invalid email or username'))
         }
 
-        // Check if password is ok 
-        const passwordOk = await compare(sentUser.password, user.password)
+        // password is ok ?
+        const passwordOk = await compare(body.password, user.password)
         if (!passwordOk) {
             return res.status(400).json(new MyErrorsResponse('Invalid password', 'password'))
         }

@@ -1,5 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import Category  from './monerate/Category';
 import { Expense } from './monerate/Expense';
+import Place from './monerate/Place';
 
 
 @Entity()
@@ -32,4 +34,10 @@ export class User {
     // Relations
     @OneToMany(type => Expense, expense => expense.user)
     expenses: Expense[]
+
+    @OneToMany(type => Category, category => category.user)
+    categories: Category[]
+
+    @OneToMany(type => Place, place => place.user)
+    places: Place[]
 }
