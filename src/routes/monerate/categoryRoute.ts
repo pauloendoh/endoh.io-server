@@ -13,13 +13,25 @@ import placeRoute from './placeRoute';
 const categoryRoute = Router()
 
 categoryRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
-    const sentCategory = req.body as CategoryPostDto
+    const sentCategory = req.body as Category
     const user = req.user
     const categoryRepo = getCustomRepository(CategoryRepository)
 
     try {
+        if (sentCategory.id) {
+            const results = await categoryRepo.find({ id: sentCategory.id, user })
+            if (!results.length) {
+                return res.status(400).json(new MyErrorsResponse('User is not owner of this category.'))
+            }
+        }
 
-        await categoryRepo.saveCategoryPostDto(sentCategory, user)
+        await categoryRepo.save({
+            id: sentCategory.id,
+            user: user,
+            name: sentCategory.name,
+            bgColor: sentCategory.bgColor,
+            icon: sentCategory.icon
+        })
         const categories = await categoryRepo.getCategoriesFromUser(user)
 
         return res.json(categories)

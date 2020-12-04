@@ -36,14 +36,14 @@ export class Expense {
     updatedAt: string
 
 
-    @ManyToOne(type => Place, place => place.expenses, { nullable: true })
+    @ManyToOne(type => Place, place => place.expenses, { nullable: true, onDelete: 'SET NULL' })
     place: Place
 
     @Column({ nullable: true })
     placeId: number;
 
 
-    @ManyToOne(type => Category, category => category.expenses, { nullable: true })
+    @ManyToOne(type => Category, category => category.expenses, { nullable: true, onDelete: 'SET NULL' })
     category: Category
 
     @Column({ nullable: true })

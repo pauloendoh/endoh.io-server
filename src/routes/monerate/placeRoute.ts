@@ -1,6 +1,7 @@
 
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
+import PlacePostDto from '../../dtos/monerate/PlacePostDto';
 import Place from '../../entity/monerate/Place';
 import authMiddleware from '../../middlewares/authMiddleware';
 import PlaceRepository from '../../repositories/PlaceRepository';
@@ -18,7 +19,21 @@ placeRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
 
     try {
 
-        await placeRepo.save({ ...sentPlace, userId: user.id });
+        if(sentPlace.id){
+            const results = await placeRepo.find({id: sentPlace.id, user})
+            if(!results.length){
+                return res.status(400).json(new MyErrorsResponse('User is not owner of this place.'))
+            }
+        }
+
+        await placeRepo.save({
+            id: sentPlace.id,
+            user: user,
+            name: sentPlace.name,
+            bgColor: sentPlace.bgColor,
+            icon: sentPlace.icon
+        })
+        
         const places = await placeRepo.getPlacesFromUser(user)
         return res.json(places)
     } catch (err) {

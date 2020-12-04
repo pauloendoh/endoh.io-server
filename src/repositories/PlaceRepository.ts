@@ -11,13 +11,13 @@ export default class PlaceRepository extends Repository<Place>{
     }
 
     // why did i created this for, anyway?
-    async savePlacePostDto(place: PlacePostDto, user: User): Promise<Place>{
-        return this.save({
-            user: user, 
-            userId: user.id, 
-            name: place.name, 
-            bgColor: place.bgColor, 
-            icon: place.icon
-        })
-    }
+    // async savePlacePostDto(place: PlacePostDto, user: User): Promise<Place>{
+    //     return this.save({
+    //         user: user, 
+    //         userId: user.id, 
+    //         name: place.name, 
+    //         bgColor: place.bgColor, 
+    //         icon: place.icon
+    //     })
+    // }
 }
