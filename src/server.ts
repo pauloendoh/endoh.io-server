@@ -6,8 +6,9 @@ import 'reflect-metadata';
 import { createConnection as connectTypeorm } from 'typeorm';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
-
-console.log('process.env.NODE_ENV: ', process.env.NODE_ENV)
+const ormconfig = require('../ormconfig')
+console.log(`process.env.NODE_ENV: '${process.env.NODE_ENV.trim()}'` , )
+console.log('ormconfig: ', ormconfig)
 connectTypeorm().then(async connection => {
     const app = express()
     app.use(cors())

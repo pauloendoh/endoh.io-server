@@ -2,17 +2,17 @@ import { DotEnvNames } from './src/consts/dotenv';
 module.exports =
 {
    "type": "postgres",
-   "host": process.env.NODE_ENV === 'production' ?
+   "host": process.env.NODE_ENV.trim() === 'production' ?
       process.env[DotEnvNames.DB_HOST] : 'localhost',
-   "port": process.env.NODE_ENV === 'production' ?
+   "port": process.env.NODE_ENV.trim() === 'production' ?
       process.env[DotEnvNames.DB_PORT] : 5432,
-   "username": process.env.NODE_ENV === 'production' ?
+   "username": process.env.NODE_ENV.trim() === 'production' ?
       process.env[DotEnvNames.DB_USERNAME] : 'postgres',
-   "password": process.env.NODE_ENV === 'production' ?
+   "password": process.env.NODE_ENV.trim() === 'production' ?
       process.env[DotEnvNames.DB_PASSWORD] : 'password',
    "database": "endoh.io",
 
-   "synchronize": process.env.NODE_ENV === 'production' ?
+   "synchronize": process.env.NODE_ENV.trim() === 'production' ?
       false : true,
 
    "logging": false,
