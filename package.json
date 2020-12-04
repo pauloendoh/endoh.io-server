@@ -38,8 +38,7 @@
     "start": "ts-node ./src/server.ts",
     "watch": "node --inspect=5757 -r ts-node/register ./src/server.ts",
     "dev": "nodemon",
-    "build": "tsc",
-    "prod": "ts-node ./src/server.ts"
+    "build": "tsc"
   },
   "nodemonConfig": {
     "ignore": [
