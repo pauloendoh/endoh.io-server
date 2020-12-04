@@ -12,8 +12,7 @@ module.exports =
       process.env[DotEnvNames.DB_PASSWORD] : 'password',
    "database": "endoh.io",
 
-   "synchronize": process.env.NODE_ENV.trim() === 'production' ?
-      false : true,
+   "synchronize": true,
 
    "logging": false,
    "entities": [

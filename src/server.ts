@@ -7,8 +7,10 @@ import { createConnection as connectTypeorm } from 'typeorm';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
 const ormconfig = require('../ormconfig')
-console.log(`process.env.NODE_ENV: '${process.env.NODE_ENV.trim()}'` , )
-console.log('ormconfig: ', ormconfig)
+console.log(`process.env.NODE_ENV: '${process.env.NODE_ENV.trim()}'`,)
+console.log('ormconfig:', ormconfig)
+
+console.log('process.env.PORT:', process.env.PORT)
 connectTypeorm().then(async connection => {
     const app = express()
     app.use(cors())
