@@ -4,14 +4,14 @@ import * as express from 'express';
 import * as fs from 'fs';
 import 'reflect-metadata';
 import { createConnection  } from 'typeorm';
+import ormconfig from '../ormconfig';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
-const ormconfig = require('../ormconfig')
 console.log(`process.env.NODE_ENV: '${process.env.NODE_ENV.trim()}'`,)
 console.log('ormconfig:', ormconfig)
 
 console.log('process.env.PORT:', process.env.PORT)
-createConnection({...ormconfig}).then(async connection => {
+createConnection(ormconfig).then(async connection => {
     const app = express()
     app.use(cors())
 
