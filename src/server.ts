@@ -38,7 +38,7 @@ connectTypeorm().then(async connection => {
         }
     })
 
-    const port = process.env.PORT || 8080
+    const port = process.env.PORT || 3000
     console.log(`Trying to run on port ${port}`)
 
     app.listen(port, () => {
