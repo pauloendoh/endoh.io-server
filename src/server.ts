@@ -3,19 +3,22 @@ import * as cors from 'cors';
 import * as express from 'express';
 import * as fs from 'fs';
 import 'reflect-metadata';
-import { createConnection  } from 'typeorm';
+import { createConnection } from 'typeorm';
 import ormconfig from '../ormconfig';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
-console.log(`process.env.NODE_ENV: '${process.env.NODE_ENV.trim()}'`,)
+console.log(`process.env.NODE_ENV: '${process.env.NODE_ENV?.trim()}'`,)
 console.log('ormconfig:', ormconfig)
 
 console.log('process.env.PORT:', process.env.PORT)
-const app = express()
-app.use(cors())
-app.get('/', (req, res) => res.json('nice?'))
 
 createConnection(ormconfig).then(async connection => {
+
+    const app = express()
+    app.use(cors())
+    app.get('/', (req, res) => res.json('nice?'))
+
+
 
     // https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0 
     app.use(bodyParser.urlencoded({ extended: false }))
@@ -43,13 +46,14 @@ createConnection(ormconfig).then(async connection => {
         }
     })
 
-   
+    const port = process.env.PORT || 3000
+    console.log(`Trying to run on port ${port}`)
+
+    app.listen(port, () => {
+        myConsoleSuccess(
+            `*** Server running at port ${port} , LET'S FUCKING GOOOO!!! ***\n`)
+    })
+
+
 }).catch(error => myConsoleError(error));
 
-const port = process.env.PORT || 3000
-console.log(`Trying to run on port ${port}`)
-
-app.listen(port, () => {
-    myConsoleSuccess(
-        `*** Server running at port ${port} , LET'S FUCKING GOOOO!!! ***\n`)
-})
