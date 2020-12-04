@@ -27,6 +27,7 @@
     "@types/passport-google-oauth20": "^2.0.4",
     "chalk": "^4.1.0",
     "cookie-session": "^1.4.0",
+    "cors": "^2.8.5",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^7.3.0",

@@ -38,7 +38,7 @@ connectTypeorm().then(async connection => {
         }
     })
 
-    app.listen(8080, () => {
+    app.listen(process.env.PORT || 8080, () => {
         myConsoleSuccess("******* Server has started, LET'S FUCKING GOOOO!!! *******  \n")
     })
 }).catch(error => myConsoleError(error));
