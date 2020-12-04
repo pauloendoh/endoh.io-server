@@ -15,7 +15,7 @@ export class Expense {
     @Column()
     userId: number
 
-  
+
 
     @Column()
     description: string;
@@ -35,14 +35,18 @@ export class Expense {
     @UpdateDateColumn()
     updatedAt: string
 
-    // Other relations
-    @ManyToMany(type => Category)
-    @JoinTable({name: 'expenseCategory'})
-    categories: Category[]
 
-    @ManyToOne(type => Place, place => place.expenses, {nullable: true})
+    @ManyToOne(type => Place, place => place.expenses, { nullable: true })
     place: Place
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     placeId: number;
+
+
+    @ManyToOne(type => Category, category => category.expenses, { nullable: true })
+    category: Category
+
+    @Column({ nullable: true })
+    categoryId: number;
+
 }

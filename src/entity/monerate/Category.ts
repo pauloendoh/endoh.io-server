@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from '../User';
 import { Expense } from './Expense';
 
@@ -28,5 +28,9 @@ export default class Category {
 
     @UpdateDateColumn()
     updatedAt: string
+
+     // Relations
+     @OneToMany(type => Expense, expense => expense.category, {onDelete: 'CASCADE'})
+     expenses: Expense[]
 
 }

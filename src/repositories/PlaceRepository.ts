@@ -10,6 +10,7 @@ export default class PlaceRepository extends Repository<Place>{
         return this.find({userId: user.id})
     }
 
+    // why did i created this for, anyway?
     async savePlacePostDto(place: PlacePostDto, user: User): Promise<Place>{
         return this.save({
             user: user, 

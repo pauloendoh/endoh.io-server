@@ -9,7 +9,7 @@ export default class ExpenseRepository extends Repository<Expense>{
         return this.createQueryBuilder("decision")
             .where({ user })
             .leftJoinAndSelect('decision.place', 'place')
-            .leftJoinAndSelect('decision.categories', 'category')
+            .leftJoinAndSelect('decision.category', 'category')
             .orderBy("decision.createdAt", "DESC")
             .getMany()
     }
@@ -19,7 +19,7 @@ export default class ExpenseRepository extends Repository<Expense>{
         const savedExpense = await this.save(expense)
         return await this.findOne({
             where: { id: savedExpense.id },
-            relations: ['categories', 'place']
+            relations: ['category', 'place']
         })
     }
 }
