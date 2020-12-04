@@ -36,7 +36,8 @@
   "scripts": {
     "start": "node --inspect=5757 -r ts-node/register ./src/server.ts",
     "dev": "nodemon",
-    "build": "tsc"
+    "build": "tsc", 
+    "prod": "ts-node ./src/server.ts"
   },
   "nodemonConfig": {
     "ignore": [
