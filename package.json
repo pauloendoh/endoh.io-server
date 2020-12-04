@@ -35,7 +35,7 @@
     "typeorm": "0.2.28"
   },
   "scripts": {
-    "start": "ts-node ./src/server.ts",
+    "start": "node /build/src/server.js",
     "watch": "node --inspect=5757 -r ts-node/register ./src/server.ts",
     "dev": "nodemon",
     "build": "tsc"
