@@ -1,6 +1,6 @@
 {
   "name": "back",
-  "version": "0.0.1",
+  "version": "10.15.3",
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
