@@ -1,18 +1,11 @@
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
+import * as fs from 'fs';
 import 'reflect-metadata';
 import { createConnection as connectTypeorm } from 'typeorm';
-import authRoute from './routes/authRoute';
-import categoryRoute from './routes/monerate/categoryRoute';
-import expenseRoute from './routes/monerate/expenseRoute';
-import placeRoute from './routes/monerate/placeRoute';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
-import * as fs from 'fs'
-
-
-
 
 connectTypeorm().then(async connection => {
     const app = express()
