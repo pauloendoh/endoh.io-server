@@ -7,6 +7,7 @@ import { createConnection as connectTypeorm } from 'typeorm';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
 
+console.log('process.env: ', process.env)
 connectTypeorm().then(async connection => {
     const app = express()
     app.use(cors())
