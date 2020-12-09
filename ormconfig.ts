@@ -17,7 +17,7 @@ const ormconfig: ConnectionOptions =
    entities: [
       "src/entity/**/*.ts"
    ],
-   synchronize: true,
+   synchronize: false,
    logging: false,
 
    migrations: [
@@ -31,6 +31,8 @@ const ormconfig: ConnectionOptions =
       "migrationsDir": "src/migration",
       "subscribersDir": "src/subscriber"
    },
+   
+   
 }
 
-export default ormconfig
+module.exports = ormconfig

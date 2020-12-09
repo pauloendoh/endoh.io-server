@@ -4,7 +4,9 @@ import * as express from 'express';
 import * as fs from 'fs';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
-import ormconfig from '../ormconfig';
+
+const ormconfig = require('../ormconfig')
+
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
 console.log(`process.env.NODE_ENV: '${process.env.NODE_ENV?.trim()}'`,)
