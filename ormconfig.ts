@@ -31,8 +31,6 @@ const ormconfig: ConnectionOptions =
       "migrationsDir": "src/migration",
       "subscribersDir": "src/subscriber"
    },
-   
-   
 }
 
 module.exports = ormconfig

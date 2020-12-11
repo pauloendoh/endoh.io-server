@@ -30,6 +30,18 @@ export class Resource {
     @Column()
     dueDate: string;
 
+    @Column({default: 0})
+    rating: number
+
+    @Column({default: false})
+    isCompleted: boolean
+
+    @Column({default: ""})
+    completedAt: string
+
+    @Column({nullable: true})
+    positionAtTag: number
+
     @CreateDateColumn()
     createdAt: string
 
