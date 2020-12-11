@@ -36,7 +36,7 @@
     "typescript": "^4.0.5"
   },
   "scripts": {
-    "start": "NODE_ENV=production ts-node node_modules/typeorm/cli.js migration:run ts-node src/server.ts",
+    "start": "ts-node node_modules/typeorm/cli.js migration:run && NODE_ENV=production ts-node src/server.ts",
     "watch": "node --inspect=5757 -r ts-node/register ./src/server.ts",
     "dev": "nodemon",
     "build": "tsc", 
