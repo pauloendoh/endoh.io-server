@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from '../User';
 import { Resource } from './Resource';
 
@@ -24,7 +24,6 @@ export class Tag {
     @UpdateDateColumn()
     updatedAt: string
 
-    @ManyToMany(type => Resource, resource => resource.tags)
-    @JoinTable()
+    @OneToMany(type => Resource, resource => resource.tag)
     resources: Resource[]
 }

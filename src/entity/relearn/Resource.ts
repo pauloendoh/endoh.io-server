@@ -30,11 +30,8 @@ export class Resource {
     @Column()
     dueDate: string;
 
-    @Column({default: 0})
+    @Column({nullable: true, default: 0})
     rating: number
-
-    @Column({default: false})
-    isCompleted: boolean
 
     @Column({default: ""})
     completedAt: string
@@ -48,7 +45,10 @@ export class Resource {
     @UpdateDateColumn()
     updatedAt: string
 
-    @ManyToMany(type => Tag, tag => tag.resources)
-    tags: Tag[]
+    @ManyToOne(type => Tag, tag => tag.resources)
+    tag: Tag
+
+    @Column({nullable: true})
+    tagId: number
 
 }

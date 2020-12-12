@@ -8,7 +8,7 @@ export default class ResourceRepository extends Repository<Resource>{
     async getAllResourcesFromUser(user: User): Promise<Resource[]> {
         return this.createQueryBuilder("resource")
             .where({ user })
-            .leftJoinAndSelect('resource.tags', 'tags')
+            .leftJoinAndSelect('resource.tag', 'tag')
             .orderBy("resource.createdAt", "DESC")
             .getMany()
     }
