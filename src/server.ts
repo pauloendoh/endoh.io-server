@@ -4,7 +4,7 @@ import * as express from 'express';
 import * as fs from 'fs';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
-
+import fetch from 'node-fetch'
 const ormconfig = require('../ormconfig')
 
 import { myConsoleError } from './utils/myConsoleError';
@@ -48,6 +48,15 @@ createConnection(ormconfig).then(async connection => {
     app.listen(port, () => {
         myConsoleSuccess(
             `*** Server running at port ${port} , LET'S FUCKING GOOOO!!! ***\n`)
+
+        // maybe separate in different module?
+        myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/')
+        setInterval(() => {
+            fetch('https://endohio-server.herokuapp.com/')
+                .then(res => res.json())
+                .then(json => myConsoleSuccess('GET OK https://endohio-server.herokuapp.com/'))
+        }, 60 * 1000 * 15) // every 15 min 
+
     })
 
 

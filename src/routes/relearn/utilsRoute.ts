@@ -8,13 +8,18 @@ import { MyAuthRequest } from '../../utils/MyAuthRequest';
 import { myConsoleError } from '../../utils/myConsoleError';
 import fetch from 'node-fetch'
 import { LinkPreviewDto } from '../../dtos/relearn/LinkPreviewDto';
+import { isValidUrl } from '../../utils/isValidUrl';
 
 const utilsRoute = Router()
 
 utilsRoute.get('/link-preview',
     authMiddleware,
     async (req: MyAuthRequest, res) => {
-        const url = req.query['url']
+        const url = req.query['url'] as string
+
+        if(!isValidUrl(url)){
+            return res.status(400).json(new MyErrorsResponse('URL is not valid', 'url'))
+        }
 
         // TODO: checar se url é link válido
         try {

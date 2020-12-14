@@ -18,7 +18,7 @@ const ormconfig: ConnectionOptions =
       "src/entity/**/*.ts"
    ],
    synchronize: false,
-   logging: false,
+   logging: true,
 
    migrations: [
       "src/migration/**/*.ts"

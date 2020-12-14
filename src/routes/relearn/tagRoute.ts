@@ -16,11 +16,19 @@ tagRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
     const user = req.user
 
     try {
+
+        // checking ownership
         if (sentTag.id) {
             const isOwner = await tagRepo.find({ id: sentTag.id, user })
             if (!isOwner) {
                 return res.status(400).json(new MyErrorsResponse(`User doesn't own this tag.`))
             }
+        }
+
+        // checking if tag name already exists 
+        const nameExists = await tagRepo.findOne({name: sentTag.name, user: req.user})
+        if(nameExists){
+            return res.status(400).json(new MyErrorsResponse('Tag name must be unique.'))
         }
 
         sentTag.user = req.user

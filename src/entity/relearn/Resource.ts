@@ -37,7 +37,7 @@ export class Resource {
     completedAt: string
 
     @Column({nullable: true})
-    positionAtTag: number
+    position: number
 
     @CreateDateColumn()
     createdAt: string
