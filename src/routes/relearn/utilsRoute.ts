@@ -9,6 +9,8 @@ import { myConsoleError } from '../../utils/myConsoleError';
 import fetch from 'node-fetch'
 import { LinkPreviewDto } from '../../dtos/relearn/LinkPreviewDto';
 import { isValidUrl } from '../../utils/isValidUrl';
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 const utilsRoute = Router()
 
@@ -21,9 +23,8 @@ utilsRoute.get('/link-preview',
             return res.status(400).json(new MyErrorsResponse('URL is not valid', 'url'))
         }
 
-        // TODO: checar se url é link válido
         try {
-            fetch('http://api.linkpreview.net/?key=f51ee6760236cefe8c54b58a9e1a64c7&q=' + url)
+            fetch('http://api.linkpreview.net/?key='+ process.env.LINK_PREVIEW_KEY +'&q=' + url)
                 .then(res => res.json())
                 .then(json => {
                     const linkPreview = json as LinkPreviewDto
