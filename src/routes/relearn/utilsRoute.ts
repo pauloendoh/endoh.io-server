@@ -1,15 +1,12 @@
-import { query, Router } from 'express';
-import { getCustomRepository } from 'typeorm';
-import { Tag } from '../../entity/relearn/Tag';
+import * as dotenv from 'dotenv';
+import { Router } from 'express';
+import fetch from 'node-fetch';
+import { LinkPreviewDto } from '../../dtos/relearn/LinkPreviewDto';
 import authMiddleware from '../../middlewares/authMiddleware';
-import TagRepository from '../../repositories/relearn/TagRepository';
-import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
+import { MyErrorsResponse } from '../../utils/ErrorMessage';
+import { isValidUrl } from '../../utils/isValidUrl';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
 import { myConsoleError } from '../../utils/myConsoleError';
-import fetch from 'node-fetch'
-import { LinkPreviewDto } from '../../dtos/relearn/LinkPreviewDto';
-import { isValidUrl } from '../../utils/isValidUrl';
-import * as dotenv from 'dotenv'
 dotenv.config()
 
 const utilsRoute = Router()

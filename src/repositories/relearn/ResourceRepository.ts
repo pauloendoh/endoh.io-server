@@ -35,10 +35,10 @@ export default class ResourceRepository extends Repository<Resource>{
                 .getOne()
         }
 
-        if (lastResource?.position > 0) {
+        if (lastResource?.position >= 0) {
             return lastResource.position + 1
         }
-        return 1
+        return 0
     }
 
     // reduce by 1 

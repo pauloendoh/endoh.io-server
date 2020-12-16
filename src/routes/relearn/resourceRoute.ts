@@ -18,7 +18,7 @@ resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
     try {
         // If updating
         if (sentResource.id) {
-            const previousResource = await resourceRepo.findOne({ id: sentResource.id, user }, {relations: ['tag']})
+            const previousResource = await resourceRepo.findOne({ id: sentResource.id, user }, { relations: ['tag'] })
 
             // Check ownership
             if (!previousResource) {
@@ -44,8 +44,8 @@ resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
 
             if (
                 ((previousResource.tag === null && sentResource.tag !== null) // adding tag
-                || (previousResource.tag !== null && sentResource.tag === null) // removing tag
-                || (previousResource.tag.id != sentResource.tag.id)) // changing tag
+                    || (previousResource.tag !== null && sentResource.tag === null) // removing tag
+                    || (previousResource.tag.id != sentResource.tag.id)) // changing tag
                 && previousResource.position) {
                 await resourceRepo
                     .reducePosition(previousResource.tag, user, previousResource.position + 1)
@@ -87,25 +87,25 @@ resourceRoute.get('/', authMiddleware, async (req: MyAuthRequest, res) => {
     }
 })
 
-// resourceRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => {
-//     const expenseRepo = getCustomRepository(ExpenseRepository)
-//     const { user } = req
-//     const expenseId = parseFloat(req.params.id)
+resourceRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => {
+    const resourceRepo = getCustomRepository(ResourceRepository)
+    const { user } = req
+    const resourceId = parseFloat(req.params.id)
 
-//     try {
-//         const result = await expenseRepo.delete({ id: expenseId, user })
-//         if (result.affected) {
-//             return res.status(200).json(`Expense id=${expenseId} deleted.`)
-//         }
-//         else {
-//             return res.status(400).json(new MyErrorsResponse('Expense id not found, or user is not owner.'))
-//         }
-//     }
-//     catch (err) {
-//         myConsoleError(err.message)
-//         return res.status(400).json(new MyErrorsResponse(err.message))
-//     }
+    try {
+        const result = await resourceRepo.delete({ id: resourceId, user })
+        if (result.affected) {
+            return res.status(200).json(`Expense id=${resourceId} deleted.`)
+        }
+        else {
+            return res.status(400).json(new MyErrorsResponse('Resource id not found, or user is not owner.'))
+        }
+    }
+    catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
 
-// })
+})
 
 export default resourceRoute

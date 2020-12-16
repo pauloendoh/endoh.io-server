@@ -45,7 +45,7 @@ export class Resource {
     @UpdateDateColumn()
     updatedAt: string
 
-    @ManyToOne(type => Tag, tag => tag.resources)
+    @ManyToOne(type => Tag, tag => tag.resources, {onDelete: 'CASCADE'})
     tag: Tag
 
     @Column({nullable: true})

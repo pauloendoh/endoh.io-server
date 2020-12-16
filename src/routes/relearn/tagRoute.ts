@@ -59,25 +59,25 @@ tagRoute.get('/', authMiddleware, async (req: MyAuthRequest, res) => {
     }
 })
 
-// resourceRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => {
-//     const expenseRepo = getCustomRepository(ExpenseRepository)
-//     const { user } = req
-//     const expenseId = parseFloat(req.params.id)
+tagRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => {
+    const tagRepo = getCustomRepository(TagRepository)
+    const { user } = req
+    const tagId = parseFloat(req.params.id)
 
-//     try {
-//         const result = await expenseRepo.delete({ id: expenseId, user })
-//         if (result.affected) {
-//             return res.status(200).json(`Expense id=${expenseId} deleted.`)
-//         }
-//         else {
-//             return res.status(400).json(new MyErrorsResponse('Expense id not found, or user is not owner.'))
-//         }
-//     }
-//     catch (err) {
-//         myConsoleError(err.message)
-//         return res.status(400).json(new MyErrorsResponse(err.message))
-//     }
+    try {
+        const result = await tagRepo.delete({ id: tagId, user })
+        if (result.affected) {
+            return res.status(200).json(`Expense id=${tagId} deleted.`)
+        }
+        else {
+            return res.status(400).json(new MyErrorsResponse('Tag id not found, or user is not owner.'))
+        }
+    }
+    catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
 
-// })
+})
 
 export default tagRoute
