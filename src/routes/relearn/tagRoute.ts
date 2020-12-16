@@ -1,7 +1,10 @@
+
 import { Router } from 'express';
-import { getCustomRepository } from 'typeorm';
+import { EntityManager, getCustomRepository, getManager } from 'typeorm';
+import { Resource } from '../../entity/relearn/Resource';
 import { Tag } from '../../entity/relearn/Tag';
 import authMiddleware from '../../middlewares/authMiddleware';
+import ResourceRepository from '../../repositories/relearn/ResourceRepository';
 import TagRepository from '../../repositories/relearn/TagRepository';
 import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
@@ -11,7 +14,7 @@ import { myConsoleError } from '../../utils/myConsoleError';
 const tagRoute = Router()
 
 tagRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
-    const sentTag = req.body as Tag 
+    const sentTag = req.body as Tag
     const tagRepo = getCustomRepository(TagRepository)
     const user = req.user
 
@@ -26,8 +29,8 @@ tagRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
         }
 
         // checking if tag name already exists 
-        const nameExists = await tagRepo.findOne({name: sentTag.name, user: req.user})
-        if(nameExists){
+        const nameExists = await tagRepo.findOne({ name: sentTag.name, user: req.user })
+        if (nameExists) {
             return res.status(400).json(new MyErrorsResponse('Tag name must be unique.'))
         }
 
@@ -79,5 +82,7 @@ tagRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => {
     }
 
 })
+
+
 
 export default tagRoute

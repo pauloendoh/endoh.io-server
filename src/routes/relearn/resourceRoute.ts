@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCustomRepository } from 'typeorm';
+import { getCustomRepository, getManager, In } from 'typeorm';
 import { Resource } from '../../entity/relearn/Resource';
 import authMiddleware from '../../middlewares/authMiddleware';
 import ResourceRepository from '../../repositories/relearn/ResourceRepository';
@@ -106,6 +106,37 @@ resourceRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => 
         return res.status(400).json(new MyErrorsResponse(err.message))
     }
 
+})
+
+
+resourceRoute.post('/resources', authMiddleware, async (req: MyAuthRequest, res) => {
+    const sentResources = req.body as Resource[]
+    const user = req.user
+    const resourceRepo = getCustomRepository(ResourceRepository)
+
+    try {
+        // verifying if resources are from the auth user 
+
+
+        const verifiedResources = await resourceRepo
+            .find({
+                where: {
+                    id: In(sentResources.map(r => r.id)),
+                    userId: user.id
+                }
+            })
+
+
+        if (verifiedResources.length !== sentResources.length) {
+            return res.status(400).json(new MyErrorsResponse("User does not own all sent resources."))
+        }
+
+        await resourceRepo.save(sentResources)
+        return res.status(200).json("Saved")
+    } catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new ErrorMessage(err.message))
+    }
 })
 
 export default resourceRoute
