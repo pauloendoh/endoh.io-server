@@ -12,7 +12,7 @@ export default class ResourceRepository extends Repository<Resource>{
             .createQueryBuilder("resource")
             .where({ user })
             .leftJoinAndSelect('resource.tag', 'tag')
-            .orderBy("resource.createdAt", "DESC")
+            .orderBy("resource.position", "ASC")
             .getMany()
     }
 
