@@ -45,7 +45,7 @@ resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
             if (
                 ((previousResource.tag === null && sentResource.tag !== null) // adding tag
                     || (previousResource.tag !== null && sentResource.tag === null) // removing tag
-                    || (previousResource.tag.id != sentResource.tag.id)) // changing tag
+                    || (previousResource.tag?.id != sentResource.tag?.id)) // changing tag
                 && previousResource.position) {
                 await resourceRepo
                     .reducePosition(previousResource.tag, user, previousResource.position + 1)
@@ -68,7 +68,7 @@ resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
         return res.status(200).json(resources)
     } catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 
