@@ -1,8 +1,8 @@
 
 import { Router } from 'express';
 import { EntityManager, getCustomRepository, getManager } from 'typeorm';
-import { Resource } from '../../entity/relearn/Resource';
-import { Tag } from '../../entity/relearn/Tag';
+import { Resource } from '../../entities/relearn/Resource';
+import { Tag } from '../../entities/relearn/Tag';
 import authMiddleware from '../../middlewares/authMiddleware';
 import ResourceRepository from '../../repositories/relearn/ResourceRepository';
 import TagRepository from '../../repositories/relearn/TagRepository';

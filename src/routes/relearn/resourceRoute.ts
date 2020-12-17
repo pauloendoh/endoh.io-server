@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getCustomRepository, getManager, In } from 'typeorm';
-import { Resource } from '../../entity/relearn/Resource';
+import { Resource } from '../../entities/relearn/Resource';
 import authMiddleware from '../../middlewares/authMiddleware';
 import ResourceRepository from '../../repositories/relearn/ResourceRepository';
 import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';

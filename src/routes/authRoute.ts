@@ -3,9 +3,9 @@ import { Request, Response, Router } from 'express';
 import { sign } from 'jsonwebtoken';
 import { getCustomRepository } from 'typeorm';
 
-import { DotEnvNames } from '../consts/dotenv';
-import { AuthUserGetDto } from '../dtos/AuthUserGetDto';
-import { User } from '../entity/User';
+import { DotEnvKeys } from '../enums/DotEnvKeys';
+import { AuthUserGetDto } from '../interfaces/dtos/AuthUserGetDto';
+import { User } from '../entities/User';
 import UserRepository from '../repositories/UserRepository';
 import { MyErrorsResponse } from '../utils/ErrorMessage';
 import { MyAuthRequest } from '../utils/MyAuthRequest';
@@ -19,7 +19,7 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
     try {
         const sentUser = req.body as User
         const userErrors = validateUserFields(sentUser)
-        if(userErrors.length){
+        if (userErrors.length) {
             return res.status(400).json(new MyErrorsResponse().addErrors(userErrors))
         }
 
@@ -47,7 +47,7 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
         const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
 
         sign({ userId: savedUser.id },
-            process.env[DotEnvNames.JWT_SECRET],
+            process.env[DotEnvKeys.JWT_SECRET],
             { expiresIn: FIVE_DAYS_IN_SECONDS },
             (err, token) => {
                 if (err)
@@ -67,7 +67,7 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         body.username = body.email // little gambiarra 
 
         const fieldErrors = validateUserFields(body)
-        if(fieldErrors.length){
+        if (fieldErrors.length) {
             return res.status(400).json(new MyErrorsResponse().addErrors(fieldErrors))
         }
 
@@ -94,7 +94,7 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
 
         sign({ userId: user.id },
-            process.env[DotEnvNames.JWT_SECRET],
+            process.env[DotEnvKeys.JWT_SECRET],
             { expiresIn: FIVE_DAYS_IN_SECONDS },
             (err, token) => {
                 if (err)

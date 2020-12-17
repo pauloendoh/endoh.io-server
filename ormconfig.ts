@@ -1,24 +1,25 @@
 import { ConnectionOptions } from 'typeorm';
-import { DotEnvNames } from './src/consts/dotenv';
+import { DotEnvKeys } from './src/enums/DotEnvKeys';
 require('dotenv').config()
 
 const ormconfig: ConnectionOptions =
 {
    type: "postgres",
    host: process.env.NODE_ENV?.trim() === 'production' ?
-      process.env[DotEnvNames.DB_HOST] : 'localhost',
+      process.env[DotEnvKeys.DB_HOST] : 'localhost',
    port: process.env.NODE_ENV?.trim() === 'production' ?
-      Number(process.env[DotEnvNames.DB_PORT]) : 5432,
+      Number(process.env[DotEnvKeys.DB_PORT]) : 5432,
    username: process.env.NODE_ENV?.trim() === 'production' ?
-      process.env[DotEnvNames.DB_USERNAME] : 'postgres',
+      process.env[DotEnvKeys.DB_USERNAME] : 'postgres',
    password: process.env.NODE_ENV?.trim() === 'production' ?
-      process.env[DotEnvNames.DB_PASSWORD] : 'password',
+      process.env[DotEnvKeys.DB_PASSWORD] : 'password',
    database: "endoh.io",
    entities: [
-      "src/entity/**/*.ts"
+      "src/entities/**/*.ts"
    ],
    synchronize: false,
-   logging: true,
+   logging: process.env.NODE_ENV?.trim() === 'production' ?
+      false : true,
 
    migrations: [
       "src/migration/**/*.ts"
@@ -27,7 +28,7 @@ const ormconfig: ConnectionOptions =
       "src/subscriber/**/*.ts"
    ],
    cli: {
-      "entitiesDir": "src/entity",
+      "entitiesDir": "src/entities",
       "migrationsDir": "src/migration",
       "subscribersDir": "src/subscriber"
    },

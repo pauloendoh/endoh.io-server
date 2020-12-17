@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Expense } from '../entity/monerate/Expense';
-import { User } from '../entity/User';
+import { Expense } from '../../entities/monerate/Expense';
+import { User } from '../../entities/User';
 
 @EntityRepository(Expense)
 export default class ExpenseRepository extends Repository<Expense>{

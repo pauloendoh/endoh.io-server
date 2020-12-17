@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
-import { Expense } from '../../entity/monerate/Expense';
+import { Expense } from '../../entities/monerate/Expense';
 import authMiddleware from '../../middlewares/authMiddleware';
-import ExpenseRepository from '../../repositories/ExpenseRepository';
+import ExpenseRepository from '../../repositories/monerate/ExpenseRepository';
 import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { myConsoleError } from '../../utils/myConsoleError';
 import { MyAuthRequest } from './../../utils/MyAuthRequest';

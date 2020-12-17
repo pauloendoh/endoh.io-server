@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import { Router } from 'express';
 import fetch from 'node-fetch';
-import { LinkPreviewDto } from '../../dtos/relearn/LinkPreviewDto';
+import { LinkPreviewDto } from '../../interfaces/dtos/relearn/LinkPreviewDto';
 import authMiddleware from '../../middlewares/authMiddleware';
 import { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { isValidUrl } from '../../utils/isValidUrl';
@@ -16,12 +16,12 @@ utilsRoute.get('/link-preview',
     async (req: MyAuthRequest, res) => {
         const url = req.query['url'] as string
 
-        if(!isValidUrl(url)){
+        if (!isValidUrl(url)) {
             return res.status(400).json(new MyErrorsResponse('URL is not valid', 'url'))
         }
 
         try {
-            fetch('http://api.linkpreview.net/?key='+ process.env.LINK_PREVIEW_KEY +'&q=' + url)
+            fetch('http://api.linkpreview.net/?key=' + process.env.LINK_PREVIEW_KEY + '&q=' + url)
                 .then(res => res.json())
                 .then(json => {
                     const linkPreview = json as LinkPreviewDto

@@ -4,7 +4,7 @@ import { getCustomRepository } from 'typeorm';
 import UserRepository from '../repositories/UserRepository';
 import { MyErrorsResponse } from '../utils/ErrorMessage';
 import { MyAuthRequest } from '../utils/MyAuthRequest';
-import { DotEnvNames } from './../consts/dotenv';
+import { DotEnvKeys } from '../enums/DotEnvKeys';
 
 // PE 2/3 
 export default function authMiddleware(req: MyAuthRequest, res: Response, next: NextFunction) {
@@ -17,7 +17,7 @@ export default function authMiddleware(req: MyAuthRequest, res: Response, next: 
     try {
         validateJwt(
             authToken,
-            process.env[DotEnvNames.JWT_SECRET],
+            process.env[DotEnvKeys.JWT_SECRET],
             async (error, decodedObj) => {
                 if (error) {
                     return res.status(401).json({ msg: 'Token is not valid' });

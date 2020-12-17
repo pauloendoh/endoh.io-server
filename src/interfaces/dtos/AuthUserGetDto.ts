@@ -1,4 +1,4 @@
-import { User } from '../entity/User';
+import { User } from '../../entities/User';
 
 // PE 3/3 
 export class AuthUserGetDto {
@@ -14,7 +14,7 @@ export class AuthUserGetDto {
         this.id = user.id
         this.username = user.username
         this.email = user.email
-        this.picture = user.picture 
+        this.picture = user.picture
         this.token = token
         this.expiresAt = expiresAt
     }

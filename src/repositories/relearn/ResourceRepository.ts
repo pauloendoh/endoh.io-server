@@ -1,7 +1,7 @@
 import { EntityRepository, getManager, Repository } from 'typeorm';
-import { Resource } from '../../entity/relearn/Resource';
-import { Tag } from '../../entity/relearn/Tag';
-import { User } from '../../entity/User';
+import { Resource } from '../../entities/relearn/Resource';
+import { Tag } from '../../entities/relearn/Tag';
+import { User } from '../../entities/User';
 
 @EntityRepository(Resource)
 export default class ResourceRepository extends Repository<Resource>{

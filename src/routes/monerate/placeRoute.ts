@@ -1,10 +1,10 @@
 
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
-import PlacePostDto from '../../dtos/monerate/PlacePostDto';
-import Place from '../../entity/monerate/Place';
+import PlacePostDto from '../../interfaces/dtos/monerate/PlacePostDto';
+import Place from '../../entities/monerate/Place';
 import authMiddleware from '../../middlewares/authMiddleware';
-import PlaceRepository from '../../repositories/PlaceRepository';
+import PlaceRepository from '../../repositories/monerate/PlaceRepository';
 import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
 import { myConsoleError } from '../../utils/myConsoleError';
@@ -19,9 +19,9 @@ placeRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
 
     try {
 
-        if(sentPlace.id){
-            const results = await placeRepo.find({id: sentPlace.id, user})
-            if(!results.length){
+        if (sentPlace.id) {
+            const results = await placeRepo.find({ id: sentPlace.id, user })
+            if (!results.length) {
                 return res.status(400).json(new MyErrorsResponse('User is not owner of this place.'))
             }
         }
@@ -33,7 +33,7 @@ placeRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
             bgColor: sentPlace.bgColor,
             icon: sentPlace.icon
         })
-        
+
         const places = await placeRepo.getPlacesFromUser(user)
         return res.json(places)
     } catch (err) {

@@ -1,9 +1,9 @@
-import CategoryPostDto from '../../dtos/monerate/Category/CategoryPostDto';
+import CategoryPostDto from '../../interfaces/dtos/monerate/Category/CategoryPostDto';
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
-import Category from '../../entity/monerate/Category';
+import Category from '../../entities/monerate/Category';
 import authMiddleware from '../../middlewares/authMiddleware';
-import CategoryRepository from '../../repositories/CategoryRepository';
+import CategoryRepository from '../../repositories/monerate/CategoryRepository';
 import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
 import { myConsoleError } from '../../utils/myConsoleError';

@@ -1,13 +1,13 @@
 import { EntityRepository, Repository } from 'typeorm';
-import PlacePostDto from '../dtos/monerate/PlacePostDto';
-import Place from '../entity/monerate/Place';
-import { User } from '../entity/User';
+import PlacePostDto from '../../interfaces/dtos/monerate/PlacePostDto';
+import Place from '../../entities/monerate/Place';
+import { User } from '../../entities/User';
 
 @EntityRepository(Place)
 export default class PlaceRepository extends Repository<Place>{
-    
-    async getPlacesFromUser(user: User): Promise<Place[]>{
-        return this.find({userId: user.id})
+
+    async getPlacesFromUser(user: User): Promise<Place[]> {
+        return this.find({ userId: user.id })
     }
 
     // why did i created this for, anyway?
@@ -18,6 +18,6 @@ export default class PlaceRepository extends Repository<Place>{
     //         name: place.name, 
     //         bgColor: place.bgColor, 
     //         icon: place.icon
-    //     })
+    //     })'
     // }
 }

@@ -23,7 +23,7 @@ export class Expense {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     rating: number;
 
     @Column("double precision", { nullable: true })

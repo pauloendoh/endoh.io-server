@@ -30,13 +30,13 @@ export class Resource {
     @Column()
     dueDate: string;
 
-    @Column({nullable: true, default: 0})
+    @Column({ nullable: true })
     rating: number
 
-    @Column({default: ""})
+    @Column({ default: "" })
     completedAt: string
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     position: number
 
     @CreateDateColumn()
@@ -45,10 +45,10 @@ export class Resource {
     @UpdateDateColumn()
     updatedAt: string
 
-    @ManyToOne(type => Tag, tag => tag.resources, {onDelete: 'CASCADE'})
+    @ManyToOne(type => Tag, tag => tag.resources, { onDelete: 'CASCADE' })
     tag: Tag
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     tagId: number
 
 }
