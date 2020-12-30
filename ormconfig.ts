@@ -22,14 +22,14 @@ const ormconfig: ConnectionOptions =
       false : true,
 
    migrations: [
-      "src/migration/**/*.ts"
+      "src/migrations/**/*.ts"
    ],
    subscribers: [
       "src/subscriber/**/*.ts"
    ],
    cli: {
       "entitiesDir": "src/entities",
-      "migrationsDir": "src/migration",
+      "migrationsDir": "src/migrations",
       "subscribersDir": "src/subscriber"
    },
 }
