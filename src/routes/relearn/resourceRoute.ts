@@ -26,7 +26,7 @@ resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
             }
 
             // If adding a rating
-            if (previousResource.rating === null && sentResource.rating > 0) {
+            if ((previousResource.rating === null || previousResource.rating === 0) && sentResource.rating > 0) {
                 await resourceRepo
                     .reducePosition(sentResource.tag, user, sentResource.position + 1)
 

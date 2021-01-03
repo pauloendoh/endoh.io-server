@@ -11,6 +11,9 @@ import { MyErrorsResponse } from '../utils/ErrorMessage';
 import { MyAuthRequest } from '../utils/MyAuthRequest';
 import { myConsoleError } from '../utils/myConsoleError';
 import validateUserFields from '../utils/validateUser';
+import * as passport from 'passport'
+require('../utils/passport-setup')
+require('dotenv').config()
 
 const authRoute = Router()
 
@@ -107,5 +110,104 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
+
+// PASSPORT  https://gist.githubusercontent.com/leannezhang/a24dd50f3eca44322d7ef3e4c365b9f0/raw/d6bfdab0e1366d56bd01a70db33d6f42b75ea88a/auth-routes.js
+
+// // when login is successful, retrieve user info
+// authRoute.get("/google/login/success", (req, res) => {
+//     if (req.user) {
+//         res.json({
+//             success: true,
+//             message: "user has successfully authenticated",
+//             user: req.user,
+//             cookies: req.cookies
+//         });
+//     }
+// });
+
+// // when login failed, send failed msg
+// authRoute.get("/google/login/failed", (req, res) => {
+//     res.status(401).json({
+//         success: false,
+//         message: "user failed to authenticate."
+//     });
+// });
+
+// // When logout, redirect to client
+// authRoute.get("/google/logout", (req, res) => {
+//     req.logout();
+//     res.redirect(process.env.CLIENT_BASE_URL);
+// });
+
+// // auth with google
+// authRoute.get("/google", passport.authenticate('google', {scope: ['profile', 'email']}));
+
+// // redirect to home page after successfully login via twitter
+// authRoute.get(
+//     "/google/redirect",
+//     passport.authenticate("google", {
+//         successRedirect: process.env.CLIENT_BASE_URL,
+//         failureRedirect: "/auth/google/login/failed"
+//     })
+// );
+
+authRoute.get('/google/failed', (req, res) => res.send('You Failed to log in!'))
+
+// Auth middleware that checks if the user is logged in
+const isLoggedIn = (req, res, next) => {
+    if (req.user) {
+        next();
+    } else {
+        res.sendStatus(401);
+    }
+}
+
+// In this route you can see that if the user is logged in u can access his info in: req.user
+authRoute.get('/google/good', isLoggedIn, (req, res) => {
+
+    return res.send(`Welcome mr ${req.user}!`)
+})
+
+// Auth Routes
+authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+authRoute.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
+    function (req, res) {
+        // Successful authentication, redirect home.
+        res.redirect(process.env.CLIENT_BASE_URL);
+    }
+);
+
+const addAllowCredentialsResponseHeaders = (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', process.env.CLIENT_BASE_URL);
+    res.header('Access-Control-Allow-Credentials', `true`);
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+}
+
+// 
+authRoute.get('/google/login', [isLoggedIn, addAllowCredentialsResponseHeaders], async (req: Request, res: Response) => {
+    try {
+        const user = req.user as User
+
+        // Signing in and returning  user's token 
+        const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
+        const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
+
+        sign({ userId: user.id },
+            process.env[DotEnvKeys.JWT_SECRET],
+            { expiresIn: FIVE_DAYS_IN_SECONDS },
+            (err, token) => {
+                if (err)
+                    throw err
+                return res.json(new AuthUserGetDto(user, token, expireDate))
+            })
+
+    } catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+})
+
 
 export default authRoute

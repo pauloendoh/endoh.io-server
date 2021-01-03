@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import Category  from './monerate/Category';
+import Category from './monerate/Category';
 import { Expense } from './monerate/Expense';
 import Place from './monerate/Place';
 
@@ -9,6 +9,9 @@ export class User {
 
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column({ unique: true, nullable: true })
+    googleId: string;
 
     @Column({ unique: true })
     username: string;

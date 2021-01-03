@@ -8,6 +8,12 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
+import cookieSession = require("cookie-session");
+import { PASSPORT_KEYS } from './consts/PASSPORT_KEYS';
+import cookieParser = require("cookie-parser"); // parse cookie header
+import passport = require("passport")
+require("./utils/passport-setup")
+require(`dotenv`).config()
 
 // It must use 'require' to work properly. 
 const ormconfig = require('../ormconfig')
@@ -19,6 +25,8 @@ createConnection(ormconfig).then(async connection => {
     const app = express()
     app.use(cors())
 
+
+
     // For testing 
     app.get('/', (req, res) => res.json('nice?'))
 
@@ -27,6 +35,22 @@ createConnection(ormconfig).then(async connection => {
 
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
     app.use(bodyParser.json());
+
+    // passport https://gist.githubusercontent.com/leannezhang/8069d56a779f2b86da40dfd17c9e3efe/raw/d896c190174c8494e34592c9b1000fc058172d1d/index.js
+    app.use(cookieSession({
+        name: "endoh_google_session",
+        keys: [PASSPORT_KEYS.COOKIE_KEY],
+        httpOnly: false,
+        maxAge: 15 * 60 * 1000 // 15 min
+    })
+    )
+    app.use(cookieParser())
+    // initialize passport
+    app.use(passport.initialize());
+
+
+    // deserialize cookie from the browser and adds to req.user 
+    app.use(passport.session());
 
     // Automatically connect with /routes folder and subfolders
     fs.readdirSync(`${__dirname}/routes`).forEach(async (fileOrFolderName) => {
