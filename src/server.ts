@@ -41,6 +41,7 @@ createConnection(ormconfig).then(async connection => {
         name: "endoh_google_session",
         keys: [PASSPORT_KEYS.COOKIE_KEY],
         httpOnly: false,
+        domain: process.env.CLIENT_DOMAIN,
         maxAge: 15 * 60 * 1000 // 15 min
     })
     )
