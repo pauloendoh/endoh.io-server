@@ -194,6 +194,7 @@ authRoute.get('/google/login', [isLoggedIn, addAllowCredentialsResponseHeaders],
         const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
         const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
 
+        req.logout()
         sign({ userId: user.id },
             process.env[DotEnvKeys.JWT_SECRET],
             { expiresIn: FIVE_DAYS_IN_SECONDS },

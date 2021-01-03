@@ -24,7 +24,7 @@ createConnection(ormconfig).then(async connection => {
 
     const app = express()
     app.use(cors())
-
+    app.use('/auth/google/login', cors({credentials: true, origin: process.env.CLIENT_BASE_URL }))
 
 
     // For testing 
