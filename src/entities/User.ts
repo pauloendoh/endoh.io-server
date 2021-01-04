@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Up
 import Category from './monerate/Category';
 import { Expense } from './monerate/Expense';
 import Place from './monerate/Place';
+import { OAuthToken } from './OAuthToken';
 
 
 @Entity()
@@ -43,4 +44,7 @@ export class User {
 
     @OneToMany(type => Place, place => place.user)
     places: Place[]
+
+    @OneToMany(type => OAuthToken, oauthToken => oauthToken.user)
+    oauthTokens: OAuthToken[]
 }

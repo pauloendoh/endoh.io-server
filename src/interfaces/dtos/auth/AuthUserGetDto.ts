@@ -1,4 +1,4 @@
-import { User } from '../../entities/User';
+import { User } from '../../../entities/User';
 
 // PE 3/3 
 export class AuthUserGetDto {

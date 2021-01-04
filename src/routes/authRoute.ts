@@ -1,10 +1,10 @@
 import { compare, genSalt, hash } from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import { sign } from 'jsonwebtoken';
-import { getCustomRepository } from 'typeorm';
+import { getCustomRepository, getRepository, LessThan, MoreThan } from 'typeorm';
 
 import { DotEnvKeys } from '../enums/DotEnvKeys';
-import { AuthUserGetDto } from '../interfaces/dtos/AuthUserGetDto';
+import { AuthUserGetDto } from '../interfaces/dtos/auth/AuthUserGetDto';
 import { User } from '../entities/User';
 import UserRepository from '../repositories/UserRepository';
 import { MyErrorsResponse } from '../utils/ErrorMessage';
@@ -12,10 +12,15 @@ import { MyAuthRequest } from '../utils/MyAuthRequest';
 import { myConsoleError } from '../utils/myConsoleError';
 import validateUserFields from '../utils/validateUser';
 import * as passport from 'passport'
+import { OAuthToken } from '../entities/OAuthToken';
+import { randomBytes } from 'crypto';
+import { addMinutes } from '../utils/time/addMinutes';
+import { OAuthTokenPostDto } from '../interfaces/dtos/auth/OAuthTokenPostDto';
 require('../utils/passport-setup')
 require('dotenv').config()
 
 const authRoute = Router()
+
 
 // PE 2/3
 authRoute.post('/register', async (req: MyAuthRequest, res) => {
@@ -133,12 +138,24 @@ authRoute.get('/google/good', isLoggedIn, (req, res) => {
 authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 authRoute.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
-    function (req, res) {
-
+    async function (req, res) {
         // Successful authentication, redirect home.
-        console.log('/google/callback - SUCCESSFUL AUTHENTICATION')
-        console.log('User: ', req.user)
-        res.redirect(process.env.CLIENT_BASE_URL);
+        const oauthRepo = getRepository(OAuthToken)
+
+        try {
+            const user = req.user as User
+            const oauthToken = await oauthRepo.save({
+                userId: user.id,
+                token: randomBytes(64).toString('hex'),
+                expiresAt: addMinutes(new Date(), 15).toISOString()
+            })
+
+            res.redirect(process.env.CLIENT_BASE_URL + "?oauthToken=" + oauthToken.token + "&userId=" + oauthToken.userId);
+        } catch (err) {
+            myConsoleError(err.message)
+            return res.status(400).json(new MyErrorsResponse(err.message))
+        }
+
     }
 );
 
@@ -150,9 +167,25 @@ const addAllowCredentialsResponseHeaders = (req, res, next) => {
 }
 
 // 
-authRoute.get('/google/login', [isLoggedIn, addAllowCredentialsResponseHeaders], async (req: Request, res: Response) => {
+authRoute.post('/google/login', async (req: Request, res: Response) => {
     try {
-        const user = req.user as User
+        const { userId, token } = req.body as OAuthTokenPostDto
+
+
+
+        const oauthRepo = getRepository(OAuthToken)
+        const oauthToken = await oauthRepo.findOne({
+            userId,
+            token,
+            expiresAt: MoreThan(new Date().toISOString())
+        })
+
+        if (!oauthToken) {
+            return res.status(400).json(new MyErrorsResponse("No OAuthToken found"))
+        }
+
+        const userRepo = getCustomRepository(UserRepository)
+        const user = await userRepo.findOne({id: userId})
 
         // Signing in and returning  user's token 
         const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
