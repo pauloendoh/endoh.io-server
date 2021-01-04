@@ -111,45 +111,6 @@ authRoute.post('/login', async (req: Request, res: Response) => {
     }
 })
 
-// PASSPORT  https://gist.githubusercontent.com/leannezhang/a24dd50f3eca44322d7ef3e4c365b9f0/raw/d6bfdab0e1366d56bd01a70db33d6f42b75ea88a/auth-routes.js
-
-// // when login is successful, retrieve user info
-// authRoute.get("/google/login/success", (req, res) => {
-//     if (req.user) {
-//         res.json({
-//             success: true,
-//             message: "user has successfully authenticated",
-//             user: req.user,
-//             cookies: req.cookies
-//         });
-//     }
-// });
-
-// // when login failed, send failed msg
-// authRoute.get("/google/login/failed", (req, res) => {
-//     res.status(401).json({
-//         success: false,
-//         message: "user failed to authenticate."
-//     });
-// });
-
-// // When logout, redirect to client
-// authRoute.get("/google/logout", (req, res) => {
-//     req.logout();
-//     res.redirect(process.env.CLIENT_BASE_URL);
-// });
-
-// // auth with google
-// authRoute.get("/google", passport.authenticate('google', {scope: ['profile', 'email']}));
-
-// // redirect to home page after successfully login via twitter
-// authRoute.get(
-//     "/google/redirect",
-//     passport.authenticate("google", {
-//         successRedirect: process.env.CLIENT_BASE_URL,
-//         failureRedirect: "/auth/google/login/failed"
-//     })
-// );
 
 authRoute.get('/google/failed', (req, res) => res.send('You Failed to log in!'))
 
@@ -173,9 +134,10 @@ authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'e
 
 authRoute.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
     function (req, res) {
-        
+
         // Successful authentication, redirect home.
-        
+        console.log('/google/callback - SUCCESSFUL AUTHENTICATION')
+        console.log('User: ', req.user)
         res.redirect(process.env.CLIENT_BASE_URL);
     }
 );
