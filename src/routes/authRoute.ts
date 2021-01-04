@@ -173,7 +173,9 @@ authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'e
 
 authRoute.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
     function (req, res) {
+        
         // Successful authentication, redirect home.
+        
         res.redirect(process.env.CLIENT_BASE_URL);
     }
 );
