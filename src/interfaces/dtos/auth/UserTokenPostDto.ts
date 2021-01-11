@@ -1,4 +1,4 @@
-export interface OAuthTokenPostDto {
+export interface UserTokenPostDto {
     userId: number, 
     token: string
 }

@@ -6,16 +6,19 @@ import { User } from './User';
 
 
 @Entity()
-export class OAuthToken {
+export class UserToken {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => User, user => user.oauthTokens, { onDelete: "CASCADE" })
+    @ManyToOne(type => User, user => user.tokens, { onDelete: "CASCADE" })
     user: User;
 
     @Column()
     userId: number
+
+    @Column()
+    type: string
 
     @Column()
     token: string;
@@ -30,3 +33,4 @@ export class OAuthToken {
     updatedAt: Date
 
 }
+

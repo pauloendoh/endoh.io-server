@@ -1,6 +1,7 @@
 import { getCustomRepository } from 'typeorm';
 import UserRepository from '../repositories/UserRepository';
 import { compare, genSalt, hash } from 'bcrypt';
+import { randomBytes } from 'crypto';
 
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -57,12 +58,13 @@ passport.use(new GoogleStrategy({
 
       const username = await userRepo.getAvailableUsername(email)
       const salt = await genSalt(10)
+      const randomString = randomBytes(64).toString('hex')
 
       const newUser = await userRepo.save({
         googleId: profile.id,
         username,
         email,
-        password: await hash(profile.id, salt)
+        password: await hash(randomString, salt)
       })
 
 

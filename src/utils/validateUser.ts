@@ -1,6 +1,7 @@
 import { User } from '../entities/User'
 import { MyError } from './ErrorMessage'
 
+// PE 2/3 - maybe validateUserFields ?; also, MyError is a little confusing;
 const validateUser = (user: User): MyError[] => {
     let errors: MyError[] = []
     if (!user.email.length) {

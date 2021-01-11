@@ -12,6 +12,7 @@ import cookieSession = require("cookie-session");
 import { PASSPORT_KEYS } from './consts/PASSPORT_KEYS';
 import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport")
+import { sendPasswordResetEmail } from './utils/email/sendPasswordResetEmail';
 require("./utils/passport-setup")
 require(`dotenv`).config()
 
@@ -71,6 +72,8 @@ createConnection(ormconfig).then(async connection => {
     })
 
     const port = process.env.PORT || 3000
+
+    
 
     app.listen(port, () => {
 
