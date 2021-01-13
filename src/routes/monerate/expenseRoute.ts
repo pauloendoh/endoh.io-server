@@ -3,7 +3,7 @@ import { getCustomRepository } from 'typeorm';
 import { Expense } from '../../entities/monerate/Expense';
 import authMiddleware from '../../middlewares/authMiddleware';
 import ExpenseRepository from '../../repositories/monerate/ExpenseRepository';
-import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
+import { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { myConsoleError } from '../../utils/myConsoleError';
 import { MyAuthRequest } from './../../utils/MyAuthRequest';
 
@@ -30,7 +30,7 @@ expenseRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
         return res.status(200).json(savedExpense)
     } catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 

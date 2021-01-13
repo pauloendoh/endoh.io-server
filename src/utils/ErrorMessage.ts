@@ -1,14 +1,3 @@
-import { Request } from 'express';
-
-// PE 1/3 - Kinda confusing, no? What's the difference between MyError and ErrorMessage ? 
-// What does the front expect?
-export default class ErrorMessage {
-
-    constructor(public message: string) {
-
-    }
-}
-
 export class MyErrorsResponse {
     private errors: MyError[]
 
@@ -23,7 +12,7 @@ export class MyErrorsResponse {
         this.errors.push({ message, field })
     }
 
-    addErrors(errors: MyError[]){
+    addErrors(errors: MyError[]) {
         this.errors = this.errors.concat(errors)
         return this
     }

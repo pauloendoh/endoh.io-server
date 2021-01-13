@@ -18,8 +18,8 @@ const ormconfig: ConnectionOptions =
       "src/entities/**/*.ts"
    ],
    synchronize: false,
-   logging: process.env.NODE_ENV?.trim() === 'production' ?
-      false : true,
+   logging:
+      false,
 
    migrations: [
       "src/migrations/**/*.ts"

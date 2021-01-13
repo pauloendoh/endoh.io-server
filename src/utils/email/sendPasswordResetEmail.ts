@@ -5,6 +5,7 @@ import { getRepository } from 'typeorm';
 import { USER_TOKEN_TYPES } from '../../consts/USER_TOKEN_TYPES';
 import { UserToken } from '../../entities/OAuthToken';
 import { User } from '../../entities/User';
+import { myConsoleSuccess } from '../myConsoleSuccess';
 import { addMinutes } from '../time/addMinutes';
 
 const nodemailer = require("nodemailer");
@@ -53,12 +54,8 @@ export async function sendPasswordResetEmail(user: User) {
         `,
     });
 
-    console.log("Message sent: %s", sentEmailInfo.messageId);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+    myConsoleSuccess("Message sent: " + sentEmailInfo.messageId)
 
-    // Preview only available when sending through an Ethereal account
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(sentEmailInfo));
-    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 }
 
 

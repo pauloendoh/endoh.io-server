@@ -1,13 +1,11 @@
-import CategoryPostDto from '../../interfaces/dtos/monerate/Category/CategoryPostDto';
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
 import Category from '../../entities/monerate/Category';
 import authMiddleware from '../../middlewares/authMiddleware';
 import CategoryRepository from '../../repositories/monerate/CategoryRepository';
-import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
+import { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
 import { myConsoleError } from '../../utils/myConsoleError';
-import placeRoute from './placeRoute';
 
 
 const categoryRoute = Router()
@@ -37,7 +35,7 @@ categoryRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
         return res.json(categories)
     } catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 
@@ -52,7 +50,7 @@ categoryRoute.get('/', authMiddleware, async (req: MyAuthRequest, res) => {
     }
     catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 

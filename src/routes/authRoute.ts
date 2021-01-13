@@ -74,10 +74,11 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
     }
 })
 
+// PE 2/3 - do some small easy improvements 
 authRoute.post('/login', async (req: Request, res: Response) => {
     try {
         const body = req.body as User
-        body.username = body.email // Since we just use email, we don't want to validate empty username 
+        body.username = body.email // We just use email here, but we don't want to validate empty username 
 
         const fieldErrors = validateUserFields(body)
         if (fieldErrors.length) {
@@ -121,35 +122,19 @@ authRoute.post('/login', async (req: Request, res: Response) => {
     }
 })
 
-
-authRoute.get('/google/failed', (req, res) => res.send('You Failed to log in!'))
-
-// Auth middleware that checks if the user is logged in
-const isLoggedIn = (req, res, next) => {
-    if (req.user) {
-        next();
-    } else {
-        res.sendStatus(401);
-    }
-}
-
-// In this route you can see that if the user is logged in u can access his info in: req.user
-authRoute.get('/google/good', isLoggedIn, (req, res) => {
-
-    return res.send(`Welcome mr ${req.user}!`)
-})
-
-// Auth Routes
+// PE 3/3
+// Redirects to google auth page 
 authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-authRoute.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
+// PE 2/3 
+// After successful authentication at google page...
+authRoute.get('/google/callback', passport.authenticate('google'),
     async function (req, res) {
-        // Successful authentication, redirect home.
-        const oauthRepo = getRepository(UserToken)
-
+        
+        const tokenRepo = getRepository(UserToken)
         try {
             const user = req.user as User
-            const oauthToken = await oauthRepo.save({
+            const oauthToken = await tokenRepo.save({
                 userId: user.id,
                 type: USER_TOKEN_TYPES.googleOauth,
                 token: randomBytes(64).toString('hex'),
@@ -161,33 +146,31 @@ authRoute.get('/google/callback', passport.authenticate('google', { failureRedir
             myConsoleError(err.message)
             return res.status(400).json(new MyErrorsResponse(err.message))
         }
-
     }
 );
 
-
-// 
+// PE 2/3 
+// The front-end uses the token and userId in the URL to finish the login 
 authRoute.post('/google/login', async (req: Request, res: Response) => {
     try {
         const { userId, token } = req.body as UserTokenPostDto
-
-
-
         const oauthRepo = getRepository(UserToken)
-        const oauthToken = await oauthRepo.findOne({
+
+        const tokenExists = await oauthRepo.findOne({
             userId,
             token,
             expiresAt: MoreThan(new Date().toISOString())
         })
 
-        if (!oauthToken) {
+        if (!tokenExists) {
             return res.status(400).json(new MyErrorsResponse("No OAuthToken found"))
         }
 
+        // Same process as POST /auth/login
         const userRepo = getCustomRepository(UserRepository)
+
         const user = await userRepo.findOne({ id: userId })
 
-        // Signing in and returning  user's token 
         const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
         const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
 
@@ -211,7 +194,6 @@ authRoute.post('/google/login', async (req: Request, res: Response) => {
 
 
 // --------- password reset 
-
 authRoute.post('/password-reset', async (req: MyAuthRequest, res) => {
     try {
         const { password, token, userId } = req.body as PasswordResetPostDto

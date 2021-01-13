@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { getCustomRepository, getManager, In } from 'typeorm';
+import { getCustomRepository, In } from 'typeorm';
 import { Resource } from '../../entities/relearn/Resource';
 import authMiddleware from '../../middlewares/authMiddleware';
 import ResourceRepository from '../../repositories/relearn/ResourceRepository';
-import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
+import { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
 import { myConsoleError } from '../../utils/myConsoleError';
 
@@ -135,7 +135,7 @@ resourceRoute.post('/resources', authMiddleware, async (req: MyAuthRequest, res)
         return res.status(200).json("Saved")
     } catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 

@@ -1,14 +1,11 @@
-
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
-import PlacePostDto from '../../interfaces/dtos/monerate/PlacePostDto';
 import Place from '../../entities/monerate/Place';
 import authMiddleware from '../../middlewares/authMiddleware';
 import PlaceRepository from '../../repositories/monerate/PlaceRepository';
-import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
+import { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
 import { myConsoleError } from '../../utils/myConsoleError';
-
 
 const placeRoute = Router()
 
@@ -38,7 +35,7 @@ placeRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
         return res.json(places)
     } catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 
@@ -53,7 +50,7 @@ placeRoute.get('/', authMiddleware, async (req: MyAuthRequest, res) => {
     }
     catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 

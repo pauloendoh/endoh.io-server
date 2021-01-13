@@ -1,12 +1,10 @@
 
 import { Router } from 'express';
-import { EntityManager, getCustomRepository, getManager } from 'typeorm';
-import { Resource } from '../../entities/relearn/Resource';
+import { getCustomRepository } from 'typeorm';
 import { Tag } from '../../entities/relearn/Tag';
 import authMiddleware from '../../middlewares/authMiddleware';
-import ResourceRepository from '../../repositories/relearn/ResourceRepository';
 import TagRepository from '../../repositories/relearn/TagRepository';
-import ErrorMessage, { MyErrorsResponse } from '../../utils/ErrorMessage';
+import { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
 import { myConsoleError } from '../../utils/myConsoleError';
 
@@ -43,7 +41,7 @@ tagRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
 
     } catch (err) {
         myConsoleError(err.message)
-        return res.status(400).json(new ErrorMessage(err.message))
+        return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
 
