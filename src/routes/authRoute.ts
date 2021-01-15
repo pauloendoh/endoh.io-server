@@ -306,4 +306,40 @@ authRoute.put('/username', authMiddleware, async (req: MyAuthRequest, res) => {
 })
 
 
+// ========= TEMPORARY USER 
+// PE 2/3 - do some small easy improvements 
+authRoute.get('/temp-user', async (req: Request, res: Response) => {
+    try {
+        
+        const userRepo = getCustomRepository(UserRepository)
+
+        const username = await userRepo.getAvailableTempUsername()
+        const expireDate = new Date(new Date().setDate(new Date().getDate() + 1))
+
+        const user = await userRepo.save({
+            username: username, 
+            email: username + '@' + username + '.com',
+            password: username, 
+            expiresAt: expireDate.toISOString(), 
+        })
+
+        // Signing in and returning  user's token 
+        const ONE_DAY_IN_SECONDS = 3600 * 24 
+
+        sign({ userId: user.id },
+            process.env[DotEnvKeys.JWT_SECRET],
+            { expiresIn: ONE_DAY_IN_SECONDS },
+            (err, token) => {
+                if (err)
+                    throw err
+                return res.json(new AuthUserGetDto(user, token, expireDate))
+            })
+
+    } catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+})
+
+
 export default authRoute

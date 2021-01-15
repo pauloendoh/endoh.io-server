@@ -19,7 +19,7 @@ const ormconfig: ConnectionOptions =
    ],
    synchronize: false,
    logging:
-      false,
+      true,
 
    migrations: [
       "src/migrations/**/*.ts"

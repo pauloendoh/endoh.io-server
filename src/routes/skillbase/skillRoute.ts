@@ -25,15 +25,26 @@ skillRoute.get('/', authMiddleware, async (req: MyAuthRequest, res) => {
 })
 
 skillRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
+    const sentSkill = req.body as Skill
     const { user } = req
 
     try {
-        const newSkill = skillRepo.create()
-        newSkill.userId = user.id
 
-        await skillRepo.save(newSkill)
+        // checking ownership
+        if (sentSkill.id) {
+            const isOwner = await skillRepo.find({ id: sentSkill.id, user })
+            if (!isOwner) {
+                return res.status(400).json(new MyErrorsResponse(`Now owner.`))
+            }
+        }
 
-        return res.status(200).json(newSkill)
+        sentSkill.userId = req.user.id
+
+        await skillRepo.save(sentSkill)
+
+        const allSkills = await skillRepo.getAllFromUser(user.id)
+        return res.status(200).json(allSkills)
+
     } catch (err) {
         myConsoleError(err.message)
         return res.status(400).json(new MyErrorsResponse(err.message))
@@ -73,7 +84,7 @@ skillRoute.delete('/', authMiddleware, async (req: MyAuthRequest, res) => {
     try {
         await skillRepo.deleteIdsFromUser(ids, user.id)
         const skills = await skillRepo.getAllFromUser(user.id)
-        
+
         return res.status(200).json(skills)
 
     } catch (err) {

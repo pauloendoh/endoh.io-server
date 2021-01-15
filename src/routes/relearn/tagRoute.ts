@@ -68,7 +68,7 @@ tagRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => {
     try {
         const result = await tagRepo.delete({ id: tagId, user })
         if (result.affected) {
-            return res.status(200).json(`Expense id=${tagId} deleted.`)
+            return res.status(200).json(`Tag id=${tagId} deleted.`)
         }
         else {
             return res.status(400).json(new MyErrorsResponse('Tag id not found, or user is not owner.'))
@@ -78,7 +78,6 @@ tagRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => {
         myConsoleError(err.message)
         return res.status(400).json(new MyErrorsResponse(err.message))
     }
-
 })
 
 

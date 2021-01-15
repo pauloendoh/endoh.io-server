@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Tag } from '../relearn/Tag';
 import { User } from '../User';
 
 
@@ -8,12 +9,10 @@ export class Skill {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => User, user => user.expenses, { onDelete: "CASCADE" })
+    @ManyToOne(type => User, user => user.skills, { onDelete: "CASCADE" })
     user: User;
-
     @Column()
     userId: number
-
 
     @ManyToMany(type => Skill, skill => skill.childDependencies)
     @JoinTable({
@@ -31,6 +30,11 @@ export class Skill {
 
     @ManyToMany(type => Skill, skill => skill.dependencies)
     childDependencies: Skill[]
+
+    @ManyToOne(type => Tag, tag => tag.skills, { onDelete: "CASCADE" })
+    tag: Tag
+    @Column({nullable: true})
+    tagId: number
 
     // END OF RELATIONS
 
@@ -53,5 +57,4 @@ export class Skill {
     updatedAt: string
 
 
-    // TODO: tag, tagId
 }

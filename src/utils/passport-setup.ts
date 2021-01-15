@@ -56,7 +56,7 @@ passport.use(new GoogleStrategy({
         return done(null, userWithEmail)
       }
 
-      const username = await userRepo.getAvailableUsername(email)
+      const username = await userRepo.getAvailableUsernameByEmail(email)
       const salt = await genSalt(10)
       const randomString = randomBytes(64).toString('hex')
 

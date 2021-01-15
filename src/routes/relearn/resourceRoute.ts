@@ -10,6 +10,7 @@ import { myConsoleError } from '../../utils/myConsoleError';
 
 const resourceRoute = Router()
 
+// PE 1/3 
 resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
     const sentResource = req.body as Resource
     const resourceRepo = getCustomRepository(ResourceRepository)
@@ -72,6 +73,8 @@ resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
     }
 })
 
+
+//  PE 2/3 
 resourceRoute.get('/', authMiddleware, async (req: MyAuthRequest, res) => {
     const resourceRepo = getCustomRepository(ResourceRepository)
 
@@ -87,6 +90,7 @@ resourceRoute.get('/', authMiddleware, async (req: MyAuthRequest, res) => {
     }
 })
 
+// PE 2/3 
 resourceRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => {
     const resourceRepo = getCustomRepository(ResourceRepository)
     const { user } = req
@@ -108,7 +112,7 @@ resourceRoute.delete('/:id', authMiddleware, async (req: MyAuthRequest, res) => 
 
 })
 
-
+// PE 2/3 
 resourceRoute.post('/resources', authMiddleware, async (req: MyAuthRequest, res) => {
     const sentResources = req.body as Resource[]
     const user = req.user

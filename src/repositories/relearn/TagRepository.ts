@@ -1,5 +1,4 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Resource } from '../../entities/relearn/Resource';
 import { Tag } from '../../entities/relearn/Tag';
 import { User } from '../../entities/User';
 

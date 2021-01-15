@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import fetch from 'node-fetch';
 // Why did I import this for?
 import 'reflect-metadata';
-import { createConnection } from 'typeorm';
+import { createConnection, getCustomRepository } from 'typeorm';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
 import cookieSession = require("cookie-session");
@@ -13,6 +13,7 @@ import { PASSPORT_KEYS } from './consts/PASSPORT_KEYS';
 import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport")
 import { sendPasswordResetEmail } from './utils/email/sendPasswordResetEmail';
+import UserRepository from './repositories/UserRepository';
 require("./utils/passport-setup")
 require(`dotenv`).config()
 
@@ -25,7 +26,7 @@ createConnection(ormconfig).then(async connection => {
 
     const app = express()
     app.use(cors())
-    app.use('/auth/google/login', cors({credentials: true, origin: process.env.CLIENT_BASE_URL }))
+    app.use('/auth/google/login', cors({ credentials: true, origin: process.env.CLIENT_BASE_URL }))
 
 
     // For testing 
@@ -41,7 +42,7 @@ createConnection(ormconfig).then(async connection => {
     app.use(cookieSession({
         name: "endoh_google_session",
         keys: [PASSPORT_KEYS.COOKIE_KEY],
-  
+
         maxAge: 15 * 60 * 1000 // 15 min
     })
     )
@@ -72,19 +73,29 @@ createConnection(ormconfig).then(async connection => {
     })
 
     const port = process.env.PORT || 3000
-
-    
-
     app.listen(port, () => {
 
         myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/')
 
+
         // Ping every15 min to avoid Heroku's server sleep 
         // Maybe split into different file?
-        setInterval(() => {
+        setInterval(async () => {
             fetch('https://endohio-server.herokuapp.com/')
                 .then(res => res.json())
                 .then(json => myConsoleSuccess('GET OK https://endohio-server.herokuapp.com/'))
+
+            try {
+                const userRepo = getCustomRepository(UserRepository)
+
+                const deleted = await userRepo.deleteExpiredTempUsers()
+                myConsoleSuccess("Deleting expired temp users")
+
+            }
+            catch (e) {
+                myConsoleError(e.message)
+            }
+
         }, 60 * 1000 * 15)
     })
 

@@ -3,6 +3,8 @@ import Category from './monerate/Category';
 import { Expense } from './monerate/Expense';
 import Place from './monerate/Place';
 import { UserToken } from './OAuthToken';
+import { Tag } from './relearn/Tag';
+import { Skill } from './skillbase/Skill';
 
 
 @Entity()
@@ -35,6 +37,9 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date
 
+    @Column({ type: 'timestamptz', nullable: true })
+    expiresAt: string
+
     // Relations
     @OneToMany(type => Expense, expense => expense.user)
     expenses: Expense[]
@@ -47,4 +52,14 @@ export class User {
 
     @OneToMany(type => UserToken, oauthToken => oauthToken.user)
     tokens: UserToken[]
+
+    @OneToMany(type => Tag, tag => tag.user)
+    tags: Tag[]
+
+    // Skillbase
+    @OneToMany(type => Skill, skill => skill.user)
+    skills: Skill[]
+
+
+
 }
