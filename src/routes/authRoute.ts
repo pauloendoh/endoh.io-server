@@ -1,4 +1,3 @@
-import { UsernamePutDto } from '../interfaces/dtos/auth/UsernamePutDto';
 import { compare, genSalt, hash } from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { Request, Response, Router } from 'express';
@@ -13,6 +12,7 @@ import { AuthChangePasswordPostDto } from '../interfaces/dtos/auth/AuthChangePas
 import { AuthUserGetDto } from '../interfaces/dtos/auth/AuthUserGetDto';
 import { PasswordResetPostDto } from '../interfaces/dtos/auth/PasswordResetPostDto';
 import { UserDeleteDto } from '../interfaces/dtos/auth/UserDeleteDto';
+import { UsernamePutDto } from '../interfaces/dtos/auth/UsernamePutDto';
 import { UserTokenPostDto } from '../interfaces/dtos/auth/UserTokenPostDto';
 import authMiddleware from '../middlewares/authMiddleware';
 import UserRepository from '../repositories/UserRepository';
@@ -30,13 +30,15 @@ const authRoute = Router()
 // PE 2/3
 authRoute.post('/register', async (req: MyAuthRequest, res) => {
     try {
-        const sentUser = req.body as User
+        const userRepo = getCustomRepository(UserRepository)
+
+
+        const sentUser = userRepo.create({ ...req.body as User })
         const userErrors = validateUserFields(sentUser)
         if (userErrors.length) {
             return res.status(400).json(new MyErrorsResponse().addErrors(userErrors))
         }
 
-        let userRepo = getCustomRepository(UserRepository)
 
         // Checking if email exists 
         let userExists = await userRepo.findOne({ email: sentUser.email })
@@ -54,7 +56,10 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
         const salt = await genSalt(10)
         sentUser.password = await hash(sentUser.password, salt)
 
-        const savedUser = await userRepo.save(sentUser)
+        const savedUser = await getRepository(User).save(sentUser)
+        //  = await userRepo.save(sentUser)
+
+
 
         const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
         const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
@@ -130,7 +135,7 @@ authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'e
 // After successful authentication at google page...
 authRoute.get('/google/callback', passport.authenticate('google'),
     async function (req, res) {
-        
+
         const tokenRepo = getRepository(UserToken)
         try {
             const user = req.user as User
@@ -310,21 +315,21 @@ authRoute.put('/username', authMiddleware, async (req: MyAuthRequest, res) => {
 // PE 2/3 - do some small easy improvements 
 authRoute.get('/temp-user', async (req: Request, res: Response) => {
     try {
-        
+
         const userRepo = getCustomRepository(UserRepository)
 
         const username = await userRepo.getAvailableTempUsername()
         const expireDate = new Date(new Date().setDate(new Date().getDate() + 1))
 
         const user = await userRepo.save({
-            username: username, 
+            username: username,
             email: username + '@' + username + '.com',
-            password: username, 
-            expiresAt: expireDate.toISOString(), 
+            password: username,
+            expiresAt: expireDate.toISOString(),
         })
 
         // Signing in and returning  user's token 
-        const ONE_DAY_IN_SECONDS = 3600 * 24 
+        const ONE_DAY_IN_SECONDS = 3600 * 24
 
         sign({ userId: user.id },
             process.env[DotEnvKeys.JWT_SECRET],

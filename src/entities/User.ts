@@ -1,10 +1,11 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { AfterInsert, BeforeInsert, Column, CreateDateColumn, Entity, getRepository, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import Category from './monerate/Category';
 import { Expense } from './monerate/Expense';
 import Place from './monerate/Place';
 import { UserToken } from './OAuthToken';
 import { Tag } from './relearn/Tag';
 import { Skill } from './skillbase/Skill';
+import { UserPreference } from './UserPreference';
 
 
 @Entity()
@@ -40,7 +41,10 @@ export class User {
     @Column({ type: 'timestamptz', nullable: true })
     expiresAt: string
 
-    // Relations
+    // Relations ----------------------------------------------------------------
+    @OneToOne(type => UserPreference, preference => preference.user)
+    preference: UserPreference
+
     @OneToMany(type => Expense, expense => expense.user)
     expenses: Expense[]
 
@@ -60,6 +64,5 @@ export class User {
     @OneToMany(type => Skill, skill => skill.user)
     skills: Skill[]
 
-
-
+    
 }

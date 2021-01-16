@@ -27,6 +27,12 @@ export class Tag {
     @Column()
     name: string;
 
+    @Column({nullable:true})
+    position: number;
+
+    @Column({default: "#424242"})
+    color: string;
+
     @CreateDateColumn()
     createdAt: string
 
