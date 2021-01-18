@@ -14,6 +14,7 @@ import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport")
 import { sendPasswordResetEmail } from './utils/email/sendPasswordResetEmail';
 import UserRepository from './repositories/UserRepository';
+import { createPreferencesForAll } from './utils/user/createPreferencesForAll';
 require("./utils/passport-setup")
 require(`dotenv`).config()
 
@@ -73,10 +74,11 @@ createConnection(ormconfig).then(async connection => {
     })
 
     const port = process.env.PORT || 3000
-    app.listen(port, () => {
+    app.listen(port, async () => {
 
         myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/')
 
+        await createPreferencesForAll()
 
         // Ping every15 min to avoid Heroku's server sleep 
         // Maybe split into different file?

@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { getCustomRepository } from 'typeorm';
+import { getCustomRepository, getRepository } from 'typeorm';
 import { IdsDto } from '../../dtos/IdsDto';
 import { Skill } from '../../entities/skillbase/Skill';
+import { SkillProgress } from '../../entities/skillbase/SkillProgress';
 import authMiddleware from '../../middlewares/authMiddleware';
 import SkillRepository from '../../repositories/skillbase/SkillRepository';
 import { MyErrorsResponse } from '../../utils/ErrorMessage';
@@ -32,9 +33,22 @@ skillRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
 
         // checking ownership
         if (sentSkill.id) {
-            const isOwner = await skillRepo.find({ id: sentSkill.id, user })
-            if (!isOwner) {
+            const found = await skillRepo.findOne({ id: sentSkill.id, user })
+            if (!found) {
                 return res.status(400).json(new MyErrorsResponse(`Now owner.`))
+            }
+
+            // criar progress 
+            if (found.currentLevel > 0 &&
+                (found.currentLevel < sentSkill.currentLevel)) {
+
+                const newProgress = new SkillProgress()
+                newProgress.userId = user.id
+                newProgress.skillId = sentSkill.id
+                newProgress.oldLevel = found.currentLevel
+                newProgress.newLevel = sentSkill.currentLevel
+
+                await getRepository(SkillProgress).save(newProgress)
             }
         }
 
@@ -92,5 +106,6 @@ skillRoute.delete('/', authMiddleware, async (req: MyAuthRequest, res) => {
         return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
+
 
 export default skillRoute

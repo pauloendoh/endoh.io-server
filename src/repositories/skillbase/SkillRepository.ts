@@ -7,7 +7,9 @@ export default class SkillRepository extends Repository<Skill>{
         return this.createQueryBuilder("skill")
             .where({ userId: userId })
             .leftJoinAndSelect('skill.dependencies', 'dependencies')
-            .orderBy("skill.createdAt", "ASC")
+            .orderBy("skill.currentLevel", "DESC")
+            .addOrderBy("skill.goalLevel", "DESC")
+            .addOrderBy("skill.isPriority", "DESC")
             .getMany()
     }
 

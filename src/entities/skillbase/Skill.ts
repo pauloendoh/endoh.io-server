@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Tag } from '../relearn/Tag';
 import { User } from '../User';
+import { SkillProgress } from './SkillProgress';
 
 
 @Entity()
@@ -14,6 +15,9 @@ export class Skill {
     @Column()
     userId: number
 
+    @OneToMany(type => SkillProgress, progress => progress.skill)
+    progresses: SkillProgress[];
+    
     @ManyToMany(type => Skill, skill => skill.childDependencies)
     @JoinTable({
         name: "skill_dependency",

@@ -7,6 +7,7 @@ import { getCustomRepository, getRepository, MoreThan } from 'typeorm';
 import { USER_TOKEN_TYPES } from '../consts/USER_TOKEN_TYPES';
 import { UserToken } from '../entities/OAuthToken';
 import { User } from '../entities/User';
+import { UserPreference } from '../entities/UserPreference';
 import { DotEnvKeys } from '../enums/DotEnvKeys';
 import { AuthChangePasswordPostDto } from '../interfaces/dtos/auth/AuthChangePasswordPostDto';
 import { AuthUserGetDto } from '../interfaces/dtos/auth/AuthUserGetDto';
@@ -56,7 +57,8 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
         const salt = await genSalt(10)
         sentUser.password = await hash(sentUser.password, salt)
 
-        const savedUser = await getRepository(User).save(sentUser)
+        const savedUser = await getCustomRepository(UserRepository)
+            .saveAndGetRelations(sentUser)
         //  = await userRepo.save(sentUser)
 
 
@@ -345,6 +347,41 @@ authRoute.get('/temp-user', async (req: Request, res: Response) => {
         return res.status(400).json(new MyErrorsResponse(err.message))
     }
 })
+
+// talvez adicionar uma rota /user-preference ao invés de /auth/user-preference ?  
+authRoute.get('/user-preference', authMiddleware, async (req: MyAuthRequest, res) => {
+    try {
+        const { user } = req
+
+
+        const preferenceRepo = getRepository(UserPreference)
+        const found = await preferenceRepo.findOne({ user: user })
+
+        return res.status(200).json(found)
+
+    } catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+})
+
+authRoute.post('/user-preference', authMiddleware, async (req: MyAuthRequest, res) => {
+    try {
+        const { user } = req
+        const preference = req.body as UserPreference
+        preference.user = user
+
+        const preferenceRepo = getRepository(UserPreference)
+        const saved = await preferenceRepo.save(preference)
+
+        return res.status(200).json(saved)
+
+    } catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+})
+
 
 
 export default authRoute

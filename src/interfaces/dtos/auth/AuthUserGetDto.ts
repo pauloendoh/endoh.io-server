@@ -1,3 +1,4 @@
+import { UserPreference } from './../../../entities/UserPreference';
 import { User } from '../../../entities/User';
 
 // PE 3/3 
@@ -7,6 +8,7 @@ export class AuthUserGetDto {
     email: string
     picture: string
 
+    preference: UserPreference
     token: string
     expiresAt: Date
 
@@ -15,6 +17,8 @@ export class AuthUserGetDto {
         this.username = user.username
         this.email = user.email
         this.picture = user.picture
+        this.preference = user.preference
+
         this.token = token
         this.expiresAt = expiresAt
     }

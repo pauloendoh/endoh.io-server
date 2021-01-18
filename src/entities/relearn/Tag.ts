@@ -30,7 +30,7 @@ export class Tag {
     @Column({nullable:true})
     position: number;
 
-    @Column({default: "#424242"})
+    @Column({default: "#ffffff"})
     color: string;
 
     @CreateDateColumn()

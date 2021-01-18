@@ -5,6 +5,7 @@ import Place from './monerate/Place';
 import { UserToken } from './OAuthToken';
 import { Tag } from './relearn/Tag';
 import { Skill } from './skillbase/Skill';
+import { SkillProgress } from './skillbase/SkillProgress';
 import { UserPreference } from './UserPreference';
 
 
@@ -42,7 +43,7 @@ export class User {
     expiresAt: string
 
     // Relations ----------------------------------------------------------------
-    @OneToOne(type => UserPreference, preference => preference.user)
+    @OneToOne(type => UserPreference, preference => preference.user, { eager: true })
     preference: UserPreference
 
     @OneToMany(type => Expense, expense => expense.user)
@@ -64,5 +65,6 @@ export class User {
     @OneToMany(type => Skill, skill => skill.user)
     skills: Skill[]
 
-    
+      @OneToMany(type => SkillProgress, progress => progress.user)
+    skillProgresses: SkillProgress[]
 }

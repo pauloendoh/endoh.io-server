@@ -57,10 +57,15 @@ export default class UserRepository extends Repository<User>{
 
     // wow, this seems dangerous haha :D 
     async deleteExpiredTempUsers(): Promise<DeleteResult> {
-        
+
         return this.createQueryBuilder("user")
             .delete()
             .where('"expiresAt" < NOW()')
             .execute()
+    }
+
+    saveAndGetRelations = async (user: User) => {
+        const savedUser = await this.save(user)
+        return this.findOne({ where: { id: savedUser.id }, relations: ['preference'] })
     }
 }

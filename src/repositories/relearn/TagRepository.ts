@@ -11,7 +11,7 @@ export default class TagRepository extends Repository<Tag>{
             .createQueryBuilder("tag")
             .where({ user })
             .leftJoinAndSelect('tag.resources', 'resources')
-            .orderBy("tag.updatedAt", "DESC")
+            .orderBy("tag.createdAt", "ASC")
             .getMany()
     }
 
