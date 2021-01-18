@@ -1,4 +1,5 @@
 import { getCustomRepository, getRepository, In, Not } from 'typeorm'
+import { User } from '../../entities/User'
 import { UserPreference } from '../../entities/UserPreference'
 import UserRepository from '../../repositories/UserRepository'
 import { myConsoleError } from '../myConsoleError'
@@ -13,9 +14,15 @@ export const createPreferencesForAll = async () => {
             { relations: ['user'] }
         )
         const userIds = preferences.map(p => p.user.id)
-        
-        const usersNoPreference = await userRepo
-            .find({ id: Not(In([...userIds])) })
+
+        let usersNoPreference:  User[]
+
+        if (userIds.length) {
+            usersNoPreference = await userRepo
+                .find({ id: Not(In([...userIds])) })
+        }
+
+        else usersNoPreference = await userRepo.find()
 
         for (const user of usersNoPreference) {
             await preferenceRepo.save({
