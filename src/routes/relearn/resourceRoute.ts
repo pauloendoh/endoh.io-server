@@ -10,7 +10,7 @@ import { myConsoleError } from '../../utils/myConsoleError';
 
 const resourceRoute = Router()
 
-// PE 1/3 
+// PE 1/3 - it's getting way too slow 
 resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
     const sentResource = req.body as Resource
     const resourceRepo = getCustomRepository(ResourceRepository)
