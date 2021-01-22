@@ -10,7 +10,7 @@ export default class SkillRepository extends Repository<Skill>{
             .orderBy("skill.isPriority", "DESC")
             .addOrderBy("skill.goalLevel", "DESC")
             .addOrderBy("skill.currentLevel", "DESC")
-            .getMany()
+            .getMany() 
     }
 
     async deleteIdsFromUser(ids: number[], userId: number) {
