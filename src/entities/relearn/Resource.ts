@@ -39,6 +39,13 @@ export class Resource {
     @Column({ nullable: true })
     position: number
 
+    
+    @Column({ default: "" })
+    publicReview: string
+
+    @Column({ default: "" })
+    privateNote: string
+
     @CreateDateColumn()
     createdAt: string
 

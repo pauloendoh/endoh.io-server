@@ -16,6 +16,18 @@ export default class ResourceRepository extends Repository<Resource>{
             .getMany()
     }
 
+      // PE 2/3 
+      async getRatedResourcesFromUser(user: User): Promise<Resource[]> {
+        return this
+            .createQueryBuilder("resource")
+            .where({ user })
+            .andWhere("resource.rating > 0")
+            .leftJoinAndSelect('resource.tag', 'tag')
+            .orderBy("resource.completedAt", "DESC")
+            .getMany()
+    }
+
+
     async getLastPosition(tag: Tag, user: User): Promise<number> {
         let lastResource: Resource
         if (tag) {
@@ -54,6 +66,25 @@ export default class ResourceRepository extends Repository<Resource>{
             await getManager().query(`
                 UPDATE "resource" 
                    SET "position" = "position" - 1 
+                 WHERE "tagId" IS NULL 
+                   AND "userId" = $1 
+                   AND "position" >= $2`, [user.id, startingPosition])
+        }
+    }
+
+    // reduce by 1 
+    async increasePositionByOne(tagId: number, user: User, startingPosition: Number): Promise<void> {
+        if (tagId) {
+            await getManager().query(`
+                UPDATE "resource" 
+                   SET "position" = "position" + 1 
+                 WHERE "tagId" = $1 
+                   AND "position" >= $2`, [tagId, startingPosition])
+        }
+        else {
+            await getManager().query(`
+                UPDATE "resource" 
+                   SET "position" = "position" + 1 
                  WHERE "tagId" IS NULL 
                    AND "userId" = $1 
                    AND "position" >= $2`, [user.id, startingPosition])

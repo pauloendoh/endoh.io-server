@@ -53,6 +53,13 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
             return res.status(400).json(new MyErrorsResponse('Username already in use', 'username'))
         }
 
+        // Checking if username is valid
+        const regex = new RegExp(/^[a-zA-Z0-9]+$/)
+        if (!regex.test(sentUser.username)) {
+            return res.status(400).json(new MyErrorsResponse('Invalid characters for username. Only use letters and numbers.'))
+        }
+
+
         // bcrypt user password
         const salt = await genSalt(10)
         sentUser.password = await hash(sentUser.password, salt)
@@ -300,6 +307,12 @@ authRoute.put('/username', authMiddleware, async (req: MyAuthRequest, res) => {
 
         if (usernameExists) {
             return res.status(400).json(new MyErrorsResponse("Username already in use."))
+        }
+
+        // Checking if username is valid
+        const regex = new RegExp(/^[a-zA-Z0-9]+$/)
+        if (!regex.test(newUsername)) {
+            return res.status(400).json(new MyErrorsResponse('Invalid characters for username. Only use letters and numbers.'))
         }
 
         user.username = newUsername

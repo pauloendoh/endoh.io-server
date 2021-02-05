@@ -35,7 +35,7 @@ export class Skill {
     @ManyToMany(type => Skill, skill => skill.dependencies)
     childDependencies: Skill[]
 
-    @ManyToOne(type => Tag, tag => tag.skills, { onDelete: "CASCADE" })
+    @ManyToOne(type => Tag, tag => tag.skills, { onDelete: "SET NULL" })
     tag: Tag
     @Column({nullable: true})
     tagId: number

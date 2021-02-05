@@ -27,6 +27,9 @@ export class SkillProgress {
     @Column({ nullable: true })
     newLevel: number;
 
+    @Column({nullable: true})
+    goalLevel: number;
+
     @CreateDateColumn()
     createdAt: string
 

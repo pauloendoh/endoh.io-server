@@ -143,4 +143,41 @@ resourceRoute.post('/resources', authMiddleware, async (req: MyAuthRequest, res)
     }
 })
 
+// PE 2/3 
+resourceRoute.post('/duplicate/:id', authMiddleware, async (req: MyAuthRequest, res) => {
+    const resourceRepo = getCustomRepository(ResourceRepository)
+    const { user } = req
+    const resourceId = parseFloat(req.params.id)
+
+    try {
+        const resource = await resourceRepo.findOne({
+            where: { id: resourceId, user }
+        })
+        if (resource) {
+            if (resource.completedAt.length > 0) {
+                return res.status(400).json(new MyErrorsResponse("Can't duplicate completed resources."))
+            }
+
+            // empurra todos após o :id
+            await resourceRepo.increasePositionByOne(resource.tagId, user, resource.position + 1)
+
+            // insere uma cópia na próxima posição
+            await resourceRepo.save({ ...resource, id: null, position: resource.position + 1, createdAt: undefined, updatedAt: undefined })
+
+            // retorna todos os resources
+            const resources = await resourceRepo.getAllResourcesFromUser(user)
+            return res.status(200).json(resources)
+
+        }
+        else {
+            return res.status(400).json(new MyErrorsResponse('Resource id not found, or user is not owner.'))
+        }
+    }
+    catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+
+})
+
 export default resourceRoute

@@ -47,6 +47,7 @@ skillRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
                 newProgress.skillId = sentSkill.id
                 newProgress.oldLevel = found.currentLevel
                 newProgress.newLevel = sentSkill.currentLevel
+                newProgress.goalLevel = sentSkill.goalLevel
 
                 await getRepository(SkillProgress).save(newProgress)
             }

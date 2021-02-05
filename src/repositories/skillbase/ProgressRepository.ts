@@ -7,6 +7,7 @@ export default class ProgressRepository extends Repository<SkillProgress>{
         return this.createQueryBuilder("progress")
             .where({ userId: userId })
             .leftJoinAndSelect('progress.skill', 'skill')
+            .orderBy("progress.createdAt", "DESC")
             .getMany()
     }
 }
