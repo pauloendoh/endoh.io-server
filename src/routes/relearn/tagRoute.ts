@@ -17,6 +17,8 @@ tagRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
     const user = req.user
 
     try {
+        // trimming tag.name
+        sentTag.name = sentTag.name.trim()
 
         // checking ownership
         if (sentTag.id) {

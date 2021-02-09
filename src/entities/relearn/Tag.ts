@@ -33,6 +33,9 @@ export class Tag {
     @Column({default: "#ffffff"})
     color: string;
 
+    @Column({default: false})
+    isPrivate: boolean
+
     @CreateDateColumn()
     createdAt: string
 
