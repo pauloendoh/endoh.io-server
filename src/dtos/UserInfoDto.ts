@@ -10,10 +10,13 @@ export interface UserInfoDto {
     privateLists: Tag[],
 }
 
-export const newUserInfo: UserInfoDto = {
-    profile: null,
-    resources: [],
+export const newUserInfo = (): UserInfoDto => (
+    {
+        profile: null,
+        resources: [],
 
-    publicLists: [],
-    privateLists: [],
-}
+        publicLists: [],
+        privateLists: [],
+    }
+
+)

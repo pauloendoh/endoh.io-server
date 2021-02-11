@@ -21,7 +21,7 @@ const resourceRepo = getCustomRepository(ResourceRepository)
 userRoute.get('/:username/all', authMiddleware, async (req: MyAuthRequest, res) => {
     const username = req.params['username']
 
-    const userInfo: UserInfoDto = newUserInfo
+    const userInfo: UserInfoDto = newUserInfo()
 
     try {
         // username exists?
