@@ -1,4 +1,4 @@
-import { UserPreference } from './../../../entities/UserPreference';
+import { UserPreference } from '../../../entities/UserPreference';
 import { User } from '../../../entities/User';
 
 // PE 3/3 

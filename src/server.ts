@@ -15,6 +15,7 @@ import passport = require("passport")
 import { sendPasswordResetEmail } from './utils/email/sendPasswordResetEmail';
 import UserRepository from './repositories/UserRepository';
 import { createPreferencesForAll } from './utils/user/createPreferencesForAll';
+import { createProfileForUsers } from './utils/user/createProfileForAll';
 require("./utils/passport-setup")
 require(`dotenv`).config()
 
@@ -79,6 +80,7 @@ createConnection(ormconfig).then(async connection => {
         myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/')
 
         await createPreferencesForAll()
+        await createProfileForUsers()
 
         // Ping every15 min to avoid Heroku's server sleep 
         // Maybe split into different file?

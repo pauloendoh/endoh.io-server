@@ -16,15 +16,29 @@ export default class ResourceRepository extends Repository<Resource>{
             .getMany()
     }
 
-      // PE 2/3 
-      async getRatedResourcesFromUser(user: User): Promise<Resource[]> {
-        return this
-            .createQueryBuilder("resource")
-            .where({ user })
-            .andWhere("resource.rating > 0")
-            .leftJoinAndSelect('resource.tag', 'tag')
-            .orderBy("resource.completedAt", "DESC")
-            .getMany()
+    // PE 2/3 
+    async getRatedResourcesFromUser(user: User, allResources: boolean): Promise<Resource[]> {
+
+        if (allResources) {
+            return this
+                .createQueryBuilder("resource")
+                .leftJoinAndSelect('resource.tag', 'tag')
+                .where({ user })
+                .andWhere("resource.rating > 0")
+                .orderBy("resource.completedAt", "DESC")
+                .getMany()
+        }
+        else {
+            return this
+                .createQueryBuilder("resource")
+                .leftJoinAndSelect('resource.tag', 'tag')
+                .where({ user })
+                .andWhere("resource.rating > 0")
+                .andWhere("tag.\"isPrivate\" is false") // get only the public resources (from public tags, that is)
+                .orderBy("resource.completedAt", "DESC")
+                .getMany()
+        }
+
     }
 
 

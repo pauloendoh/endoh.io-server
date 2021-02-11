@@ -1,4 +1,5 @@
 import { AfterInsert, BeforeInsert, Column, CreateDateColumn, Entity, getRepository, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Profile } from './feed/Profile';
 import Category from './monerate/Category';
 import { Expense } from './monerate/Expense';
 import Place from './monerate/Place';
@@ -45,6 +46,9 @@ export class User {
     // Relations ----------------------------------------------------------------
     @OneToOne(type => UserPreference, preference => preference.user, { eager: true })
     preference: UserPreference
+
+    @OneToOne(type => Profile, profile => profile.user)
+    profile: Profile
 
     @OneToMany(type => Expense, expense => expense.user)
     expenses: Expense[]
