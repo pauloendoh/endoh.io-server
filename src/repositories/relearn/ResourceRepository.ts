@@ -25,6 +25,7 @@ export default class ResourceRepository extends Repository<Resource>{
                 .leftJoinAndSelect('resource.tag', 'tag')
                 .where({ user })
                 .andWhere("resource.rating > 0")
+                .andWhere("resource.\"tagId\" is not null")
                 .orderBy("resource.completedAt", "DESC")
                 .getMany()
         }
@@ -34,6 +35,7 @@ export default class ResourceRepository extends Repository<Resource>{
                 .leftJoinAndSelect('resource.tag', 'tag')
                 .where({ user })
                 .andWhere("resource.rating > 0")
+                .andWhere("resource.\"tagId\" is not null")
                 .andWhere("tag.\"isPrivate\" is false") // get only the public resources (from public tags, that is)
                 .orderBy("resource.completedAt", "DESC")
                 .getMany()

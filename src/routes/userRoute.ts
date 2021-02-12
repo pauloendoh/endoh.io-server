@@ -36,7 +36,7 @@ userRoute.get('/:username/all', authMiddleware, async (req: MyAuthRequest, res) 
         // public lists
         userInfo.publicLists = await getRepository(Tag).find({ userId: user.id, isPrivate: false })
 
-        // private lists
+        // private tags
         if (user.id === req.user.id) {
             userInfo.privateLists = await getRepository(Tag).find({ userId: user.id, isPrivate: true })
         }
