@@ -49,15 +49,14 @@ utilsRoute.post('/passwordResetEmail',
                 return res.sendStatus(400).json(new MyErrorsResponse("This is not an email lol"))
             }
 
-            const registeredUser = await userRepo.findOne({email})
-            if(!registeredUser){
+            const registeredUser = await userRepo.findOne({ email })
+            if (!registeredUser) {
                 return res.sendStatus(200)
             }
 
             // sending email 
             sendPasswordResetEmail(registeredUser)
             return res.sendStatus(200)
-
         }
         catch (err) {
             myConsoleError(err.message)

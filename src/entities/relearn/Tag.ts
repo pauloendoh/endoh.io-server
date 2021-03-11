@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { FollowingTag } from '../feed/FollowingTag';
 import { Skill } from '../skillbase/Skill';
 import { User } from '../User';
 import { Resource } from './Resource';
@@ -22,18 +23,21 @@ export class Tag {
     @OneToMany(type => Skill, skill => skill.tag)
     skills: Skill[]
 
+    @OneToMany(type => FollowingTag, tagFollower => tagFollower.tag)
+    tagFollowers: FollowingTag[]
+
     // --- end of relations
 
     @Column()
     name: string;
 
-    @Column({nullable:true})
+    @Column({ nullable: true })
     position: number;
 
-    @Column({default: "#ffffff"})
+    @Column({ default: "#ffffff" })
     color: string;
 
-    @Column({default: false})
+    @Column({ default: false })
     isPrivate: boolean
 
     @CreateDateColumn()
@@ -42,6 +46,6 @@ export class Tag {
     @UpdateDateColumn()
     updatedAt: string
 
-    
-    
+
+
 }
