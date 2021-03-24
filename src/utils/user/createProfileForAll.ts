@@ -16,7 +16,7 @@ export const createProfileForUsers = async () => {
         )
         const userIds = preferences.map(p => p.user.id)
 
-        let usersNoProfiles:  User[]
+        let usersNoProfiles: User[]
 
         if (userIds.length) {
             usersNoProfiles = await userRepo
@@ -27,7 +27,8 @@ export const createProfileForUsers = async () => {
 
         for (const user of usersNoProfiles) {
             await profile.save({
-                user: user
+                userId: user.id,
+                fullName: user.username
             })
         }
 
@@ -35,4 +36,4 @@ export const createProfileForUsers = async () => {
     } catch (e) {
         myConsoleError(e.message)
     }
-}  
+}

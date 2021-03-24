@@ -4,7 +4,8 @@ export interface FollowerDto {
     follower: {
         userId: number,
         username: string,
-        fullName: string
+        fullName: string,
+        pictureUrl: string,
     },
     tags: Tag[]
 }

@@ -2,6 +2,8 @@ import { ConnectionOptions } from 'typeorm';
 import { DotEnvKeys } from './src/enums/DotEnvKeys';
 require('dotenv').config()
 
+// não adianta deixar dentro de /config/ ? 
+
 const ormconfig: ConnectionOptions =
 {
    type: "postgres",

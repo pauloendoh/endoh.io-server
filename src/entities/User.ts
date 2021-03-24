@@ -1,5 +1,6 @@
 import { AfterInsert, BeforeInsert, Column, CreateDateColumn, Entity, getRepository, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { FollowingTag } from './feed/FollowingTag';
+import { Notification } from './feed/Notification';
 import { Profile } from './feed/Profile';
 import { UserSuggestion } from './feed/UserSuggestion';
 import Category from './monerate/Category';
@@ -33,8 +34,7 @@ export class User {
   @Column({ default: false })
   isAdmin: boolean
 
-  @Column({ default: '' })
-  picture: string
+
 
   @CreateDateColumn()
   createdAt: Date
@@ -87,4 +87,10 @@ export class User {
 
   @OneToMany(type => UserSuggestion, userSuggestion => userSuggestion.suggestedUser)
   suggestedBy: UserSuggestion[]
+
+  @OneToMany(type => Notification, notification => notification.user)
+  notifications: Notification[]
+
+  @OneToMany(type => Notification, notification => notification.follower)
+  followingNotifications: Notification[]
 }

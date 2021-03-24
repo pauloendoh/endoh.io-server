@@ -106,4 +106,15 @@ export default class ResourceRepository extends Repository<Resource>{
                    AND "position" >= $2`, [user.id, startingPosition])
         }
     }
+
+    // PE 2/3 
+    async getResourcesByText(user: User, text: string): Promise<Resource[]> {
+        return this
+            .createQueryBuilder("resource")
+            .where({ user })
+            .andWhere("resource.title ilike :text or resource.url like :text", { text: `%${text}%` })
+            .leftJoinAndSelect('resource.tag', 'tag')
+            .orderBy("resource.position", "ASC")
+            .getMany()
+    }
 }

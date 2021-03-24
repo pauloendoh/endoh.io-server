@@ -1,10 +1,10 @@
-import { Tag } from '../../entities/relearn/Tag';
 
 export interface UserSuggestionDto {
     id: number,
-    suggestedUserId: string,
+    suggestedUserId: number,
     description: string,
     username: string,
-    fullName: string
+    fullName: string,
+    pictureUrl: string,
 }
 

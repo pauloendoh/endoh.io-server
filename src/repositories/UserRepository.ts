@@ -1,4 +1,5 @@
 import { DeleteResult, EntityRepository, Repository } from 'typeorm';
+import { UserProfileDto } from '../dtos/feed/UserProfileDto';
 import { User } from '../entities/User';
 
 @EntityRepository(User)
@@ -67,5 +68,20 @@ export default class UserRepository extends Repository<User>{
     saveAndGetRelations = async (user: User) => {
         const savedUser = await this.save(user)
         return this.findOne({ where: { id: savedUser.id }, relations: ['preference'] })
+    }
+
+    async getUsersByText(text: string): Promise<UserProfileDto[]> {
+        return this.query(`
+    select use."id" 		as "userId",
+		   use."email",
+		   pro."fullName",
+		   use."username",
+		   pro."bio",
+		   pro."pictureUrl"
+	  from "user" use
+inner join profile pro on pro."userId" = use."id"
+     where use."username" ilike '%${text}%'
+	    or use."email"	  ilike '%${text}%'
+		or pro."fullName" ilike '%${text}%'`)
     }
 }

@@ -6,7 +6,6 @@ export class AuthUserGetDto {
     id: number
     username: string
     email: string
-    picture: string
 
     preference: UserPreference
     token: string
@@ -16,7 +15,6 @@ export class AuthUserGetDto {
         this.id = user.id
         this.username = user.username
         this.email = user.email
-        this.picture = user.picture
         this.preference = user.preference
 
         this.token = token

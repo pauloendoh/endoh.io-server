@@ -1,9 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { FollowerDto } from '../../dtos/feed/FollowerDto';
-import { FollowingUserDto } from '../../dtos/feed/FollowingUserDto';
-import { MostFollowedUser } from '../../dtos/feed/MostFollowedUser';
 import { UserSuggestionDto } from '../../dtos/feed/UserSuggestionDto';
-import { FollowingTag } from '../../entities/feed/FollowingTag';
 import { UserSuggestion } from '../../entities/feed/UserSuggestion';
 import { User } from '../../entities/User';
 
@@ -16,7 +12,8 @@ export default class UserSuggestionRepository extends Repository<UserSuggestion>
           		   sug."suggestedUserId",
           		   sug."description", 
           		   usu."username",
-          		   pro."fullName"
+          		   pro."fullName",
+          		   pro."pictureUrl"
         	  from "user_suggestion" 	sug 
       inner join "user" 				    usu on usu.id = sug."suggestedUserId"
       inner join "profile"			    pro on pro."userId" = usu."id"

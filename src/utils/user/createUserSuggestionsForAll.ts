@@ -1,16 +1,13 @@
-import { FollowingUserDto } from '../../dtos/feed/FollowingUserDto';
-import { getConnection, getCustomRepository, getRepository, In, Not } from 'typeorm'
-import { Profile } from '../../entities/feed/Profile'
-import { UserSuggestion } from '../../entities/feed/UserSuggestion'
-import { User } from '../../entities/User'
-import { UserPreference } from '../../entities/UserPreference'
-import FollowingTagRepository from '../../repositories/feed/FollowingTagRepository'
-import UserRepository from '../../repositories/UserRepository'
-import { myConsoleError } from '../myConsoleError'
-import { myConsoleSuccess } from '../myConsoleSuccess'
+import { getConnection, getCustomRepository, getRepository } from 'typeorm';
+import { UserSuggestion } from '../../entities/feed/UserSuggestion';
+import { User } from '../../entities/User';
+import FollowingTagRepository from '../../repositories/feed/FollowingTagRepository';
+import { myConsoleError } from '../myConsoleError';
+import { myConsoleSuccess } from '../myConsoleSuccess';
 
 export const createUserSuggestionsForAll = async () => {
     try {
+        myConsoleSuccess("running createUserSuggestionsForAll()")
         const followingTagRepo = getCustomRepository(FollowingTagRepository)
 
         // for each user
@@ -52,10 +49,12 @@ export const createUserSuggestionsForAll = async () => {
                 })
             }
         }
+        myConsoleSuccess("success createUserSuggestionsForAll()")
 
 
 
     } catch (e) {
-        myConsoleError(e.message)
+        myConsoleError("error createUserSuggestionsForAll(): " + e.message)
+
     }
-}  
+}

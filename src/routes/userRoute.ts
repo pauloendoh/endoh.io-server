@@ -13,9 +13,18 @@ import UserRepository from '../repositories/UserRepository';
 import { MyErrorsResponse } from '../utils/ErrorMessage';
 import { MyAuthRequest } from '../utils/MyAuthRequest';
 import { myConsoleError } from '../utils/myConsoleError';
+import { S3 } from 'aws-sdk'
+import NotificationRepository from '../repositories/feed/NotificationRepository';
 
+const aws = require('aws-sdk')
+
+
+const multerConfig = require('../config/multer')
+const multer = require('multer')
 
 const userRoute = Router()
+
+
 
 const userRepo = getCustomRepository(UserRepository)
 const resourceRepo = getCustomRepository(ResourceRepository)
@@ -30,6 +39,9 @@ userRoute.get('/:username/all', authMiddleware, async (req: MyAuthRequest, res) 
     try {
         // username exists?
         const user = await userRepo.findOne({ username })
+        if (!user) {
+            return res.status(404).json(new MyErrorsResponse("User not found", "username"))
+        }
 
         // get all resources (if req.user === user); otherwise, just get from public lists
         userInfo.resources = await resourceRepo.getRatedResourcesFromUser(user, user.id === req.user.id)
@@ -82,8 +94,16 @@ userRoute.put('/profile', authMiddleware, async (req: MyAuthRequest, res) => {
     const username = req.params['username']
     const profile: Profile = req.body
 
+    // picture will be saved one request later (also, we don't want empty picture strings)
+    delete profile['pictureName']
+    delete profile['pictureUrl']
+
     try {
-        const savedProfile = await getRepository(Profile).save(profile)
+        const profileRepo = getRepository(Profile)
+        await profileRepo.save(profile)
+
+        // do this so we can retrieve the profile picture altogether
+        const savedProfile = await profileRepo.findOne({ userId: req.user.id })
         return res.json(savedProfile)
     }
     catch (err) {
@@ -104,8 +124,10 @@ userRoute.post('/:username/followingTags', authMiddleware, async (req: MyAuthReq
 
         // saving all following tags 
         // PE 1/3 - separar isso em um FollowingTagRepository
+        const tagsToNotify: FollowTagDto[] = []
         for (const tag of tags) {
             if (tag.isFollowing) {
+                tagsToNotify.push(tag)
                 const found = await repo.findOne({
                     follower: req.user,
                     followingUser: user,
@@ -130,6 +152,13 @@ userRoute.post('/:username/followingTags', authMiddleware, async (req: MyAuthReq
             }
         }
 
+        // notify user 
+        if (tagsToNotify.length > 0) {
+            const notification = await getCustomRepository(NotificationRepository)
+                .createFollowingNotification(req.user, user, tagsToNotify)
+        }
+
+
         const userFollowingTags = await repo.find({ where: { follower: req.user } })
         return res.json(userFollowingTags)
     }
@@ -149,6 +178,37 @@ userRoute.get('/:username/followingTags', authMiddleware, async (req: MyAuthRequ
 
         const followingTags = await followingTagsRepo.find({ where: { follower: user } })
         return res.json(followingTags)
+    }
+    catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+})
+
+//  PE 2/3 >
+userRoute.post('/picture', multer(multerConfig).single('file'), authMiddleware, async (req: MyAuthRequest, res) => {
+
+    const { key, location } = req.file as any
+
+    const profileRepo = getRepository(Profile)
+
+
+    try {
+        const profile = await profileRepo.findOne({ where: { userId: req.user.id } })
+
+        // deletando a imagem anterior do usuário
+        const s3 = new S3()
+        const deletePromise = s3.deleteObject({
+            Bucket: 'endoh',
+            Key: profile.pictureName
+        }).promise()
+
+        // continuando..
+        profile.pictureName = key;
+        profile.pictureUrl = location
+
+        const savedProfile = await profileRepo.save(profile)
+        return res.status(200).json(savedProfile.pictureUrl)
     }
     catch (err) {
         myConsoleError(err.message)

@@ -11,34 +11,40 @@ export default class FollowingTagRepository extends Repository<FollowingTag>{
 
   async getFollowingUsers(follower: User): Promise<FollowingUserDto[]> {
     return this.query(`
-        SELECT json_build_object('userId', FUS.id, 
-                                 'username', FUS.username, 
-                                 'fullName', PRO."fullName") AS "followingUser", 
-	 	       (SELECT JSON_AGG(B) FROM "following_tag" A 
+        SELECT json_build_object('userId', FUS.id,
+                                 'username', FUS.username,
+                                 'fullName', PRO."fullName",
+								 'pictureUrl', PRO."pictureUrl") AS "followingUser",
+	 	       (SELECT JSON_AGG(B) FROM "following_tag" A
 		                     INNER JOIN "tag"		    B ON B.id = A."tagId"
-		                          WHERE A."followingUserId" = FUS.id 
+		                          WHERE A."followingUserId" = FUS.id
                                     AND A."followerId" = $1)  AS "tags"
     	  FROM "following_tag" 	FTG
     INNER JOIN "user"			FUS ON FUS.id = FTG."followingUserId"
     INNER JOIN "profile"		PRO	ON PRO."userId" = FUS."id"
          WHERE FTG."followerId" = $1
-      GROUP BY FUS.id, PRO."fullName"`, [follower.id])
+      GROUP BY FUS.id,
+	  		   PRO."fullName",
+			   PRO."pictureUrl"`, [follower.id])
   }
 
   async getFollowers(user: User): Promise<FollowerDto[]> {
     return this.query(`
-        SELECT json_build_object('userId', FUS.id, 
-                                 'username', FUS.username, 
-                                 'fullName', PRO."fullName") AS "follower", 
-	 	       (SELECT JSON_AGG(B) FROM "following_tag" A 
+        SELECT json_build_object('userId', FUS.id,
+                                 'username', FUS.username,
+                                 'fullName', PRO."fullName",
+								 'pictureUrl', PRO."pictureUrl") AS "follower",
+	 	       (SELECT JSON_AGG(B) FROM "following_tag" A
 		                     INNER JOIN "tag"		    B ON B.id = A."tagId"
-		                          WHERE A."followerId" = FUS.id 
+		                          WHERE A."followerId" = FUS.id
                                     AND A."followingUserId" = $1)  AS "tags"
     	  FROM "following_tag" 	FTG
     INNER JOIN "user"			FUS ON FUS.id = FTG."followerId"
     INNER JOIN "profile"		PRO	ON PRO."userId" = FUS."id"
          WHERE FTG."followingUserId" = $1
-      GROUP BY FUS.id, PRO."fullName"`, [user.id])
+      GROUP BY FUS.id,
+	  		   PRO."fullName",
+			   PRO."pictureUrl"`, [user.id])
   }
 
   async getMostFollowedUsersByUsersYouFollow(you: User, returnUpTo: number = 40): Promise<MostFollowedUser[]> {
@@ -71,12 +77,10 @@ export default class FollowingTagRepository extends Repository<FollowingTag>{
                  where "id" = "followingUserId") as user, 
                count("followingUserId") 
           from "following_tag" 
-         where "followerId" not in (select id  -- Todos os usuários que o usuário segue
-	   						                      from "user" 
-	   						                     where "id" in (select "followingUserId" 
-                                                      from "following_tag" 
-                                                     where "followerId" = $1))
-           and "id" != $1
+         where "followerId" not in (select "followingUserId"
+                                      from "following_tag"
+                                     where "followerId" = $1)
+		       and "followerId" != $1
       group by "followingUserId" 
 			order by count("followingUserId") desc
 				 limit $2
@@ -93,10 +97,12 @@ export default class FollowingTagRepository extends Repository<FollowingTag>{
   		     reso."dueDate",
   		     reso."rating",
   		     reso."completedAt",
-  		     (select json_build_object('id', "user".id, 
-                                     'username', "user".username)
-  	          from "user" 
-             where "id" = "followingUserId") as "user",
+  		     (select json_build_object('id', usu.id,
+                                     'username', usu.username,
+									                   'pictureUrl', pro."pictureUrl")
+              from "user" 		usu
+		    inner join "profile"	pro on pro."userId" = usu."id"
+             where usu."id" = "followingUserId") as "user",
            (select json_build_object('id', "tag"."id", 
                                      'name', "tag"."name",
                                      'color', "tag"."color")

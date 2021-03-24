@@ -22,6 +22,12 @@ export class Profile {
     bio: string
 
     @Column({ default: '' })
+    pictureUrl: string
+
+    @Column({ default: '' })
+    pictureName: string
+
+    @Column({ default: '' })
     website: string
 
     @CreateDateColumn()

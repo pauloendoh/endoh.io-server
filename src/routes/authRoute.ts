@@ -70,12 +70,12 @@ authRoute.post('/register', async (req: MyAuthRequest, res) => {
 
 
 
-        const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
-        const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
+        const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
+        const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
 
         sign({ userId: savedUser.id },
             process.env[DotEnvKeys.JWT_SECRET],
-            { expiresIn: FIVE_DAYS_IN_SECONDS },
+            { expiresIn: ONE_YEAR_IN_SECONDS },
             (err, token) => {
                 if (err)
                     throw err
@@ -118,12 +118,12 @@ authRoute.post('/login', async (req: Request, res: Response) => {
         }
 
         // Signing in and returning  user's token 
-        const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
-        const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
+        const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
+        const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
 
         sign({ userId: user.id },
             process.env[DotEnvKeys.JWT_SECRET],
-            { expiresIn: FIVE_DAYS_IN_SECONDS },
+            { expiresIn: ONE_YEAR_IN_SECONDS },
             (err, token) => {
                 if (err)
                     throw err
@@ -185,15 +185,15 @@ authRoute.post('/google/login', async (req: Request, res: Response) => {
 
         const user = await userRepo.findOne({ id: userId })
 
-        const expireDate = new Date(new Date().setDate(new Date().getDate() + 5))
-        const FIVE_DAYS_IN_SECONDS = 3600 * 24 * 5
+        const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
+        const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
 
         req.logout()
         await oauthRepo.delete({ userId: user.id, type: USER_TOKEN_TYPES.googleOauth })
 
         sign({ userId: user.id },
             process.env[DotEnvKeys.JWT_SECRET],
-            { expiresIn: FIVE_DAYS_IN_SECONDS },
+            { expiresIn: ONE_YEAR_IN_SECONDS },
             (err, token) => {
                 if (err)
                     throw err

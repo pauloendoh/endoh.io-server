@@ -3,6 +3,7 @@ export interface FeedResourceDto {
     user: {
         id: number,
         username: string,
+        pictureUrl: string
     },
     tag: {
         id: number,
