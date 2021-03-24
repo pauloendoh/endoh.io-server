@@ -25,17 +25,17 @@ const ormconfig: ConnectionOptions =
       true,
 
    migrations: [
-      __dirname + "src/migrations/**/*.ts",
-      __dirname + "src/migrations/**/*.js",
+      __dirname + "/src/migrations/**/*.ts",
+      __dirname + "/src/migrations/**/*.js",
    ],
    subscribers: [
-      __dirname + "src/subscriber/**/*.ts",
-      __dirname + "src/subscriber/**/*.js",
+      __dirname + "/src/subscriber/**/*.ts",
+      __dirname + "/src/subscriber/**/*.js",
    ],
    cli: {
-      "entitiesDir": __dirname + "src/entities",
-      "migrationsDir": __dirname + "src/migrations",
-      "subscribersDir": __dirname + "src/subscriber"
+      "entitiesDir": "src/entities",
+      "migrationsDir": "src/migrations",
+      "subscribersDir": "src/subscriber"
    },
 }
 
