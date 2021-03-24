@@ -6,13 +6,13 @@ require('dotenv').config()
 const ormconfig = {
    type: "postgres",
    host: process.env.NODE_ENV === 'production' ?
-      process.env[DotEnvKeys.DB_HOST] : 'localhost',
+      process.env.DB_HOST : 'localhost',
    port: process.env.NODE_ENV === 'production' ?
-      Number(process.env[DotEnvKeys.DB_PORT]) : 5432,
+      Number(process.env.DB_PORT) : 5432,
    username: process.env.NODE_ENV === 'production' ?
-      process.env[DotEnvKeys.DB_USERNAME] : 'postgres',
+      process.env.DB_USERNAME : 'postgres',
    password: process.env.NODE_ENV === 'production' ?
-      process.env[DotEnvKeys.DB_PASSWORD] : 'password',
+      process.env.DB_PASSWORD : 'password',
    database: "endoh.io",
    entities: [
       __dirname + "/src/entities/**/*.ts",
