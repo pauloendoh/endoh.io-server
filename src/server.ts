@@ -1,4 +1,3 @@
-import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import * as fs from 'fs';
@@ -6,17 +5,15 @@ import fetch from 'node-fetch';
 // Why did I import this for?
 import 'reflect-metadata';
 import { createConnection, getCustomRepository } from 'typeorm';
+import { PASSPORT_KEYS } from './consts/PASSPORT_KEYS';
+import UserRepository from './repositories/UserRepository';
 import { myConsoleError } from './utils/myConsoleError';
 import { myConsoleSuccess } from './utils/myConsoleSuccess';
+import { createPreferencesForAll } from './utils/user/createPreferencesForAll';
 import cookieSession = require("cookie-session");
-import { PASSPORT_KEYS } from './consts/PASSPORT_KEYS';
 import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport")
-import { sendPasswordResetEmail } from './utils/email/sendPasswordResetEmail';
-import UserRepository from './repositories/UserRepository';
-import { createPreferencesForAll } from './utils/user/createPreferencesForAll';
-import { createProfileForUsers } from './utils/user/createProfileForAll';
-import { createUserSuggestionsForAll } from './utils/user/createUserSuggestionsForAll';
+import { memoryUsage } from 'process';
 require("./utils/passport-setup")
 require(`dotenv`).config()
 
@@ -25,8 +22,9 @@ const ormconfig = require('../ormconfig')
 
 
 // PE 2/3 
+myConsoleSuccess("Connecting with ormconfig")
 createConnection(ormconfig).then(async connection => {
-
+    myConsoleSuccess("Connected!")
     const app = express()
     app.use(cors())
     app.use('/auth/google/login', cors({ credentials: true, origin: process.env.CLIENT_BASE_URL }))
@@ -58,8 +56,10 @@ createConnection(ormconfig).then(async connection => {
     app.use(passport.session());
 
     // Automatically connect with /routes folder and subfolders
+    console.log("Memory usage: " + ((memoryUsage().rss / 1024) / 1024) + "MB")
+    myConsoleSuccess("Setting up routes")
     fs.readdirSync(`${__dirname}/routes`).forEach(async (fileOrFolderName) => {
-        if (fileOrFolderName.endsWith('.ts')) {
+        if (fileOrFolderName.endsWith('.ts') || fileOrFolderName.endsWith('.js')) {
             const routeName = fileOrFolderName.split('Route')[0]
             const module = await import(`${__dirname}/routes/${fileOrFolderName}`)
             app.use(`/${routeName}`, module.default)

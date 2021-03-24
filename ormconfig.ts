@@ -17,22 +17,25 @@ const ormconfig: ConnectionOptions =
       process.env[DotEnvKeys.DB_PASSWORD] : 'password',
    database: "endoh.io",
    entities: [
-      "src/entities/**/*.ts"
+      __dirname + "/src/entities/**/*.ts",
+      __dirname + "/src/entities/**/*.js",
    ],
    synchronize: false,
    logging:
       true,
 
    migrations: [
-      "src/migrations/**/*.ts"
+      __dirname + "src/migrations/**/*.ts",
+      __dirname + "src/migrations/**/*.js",
    ],
    subscribers: [
-      "src/subscriber/**/*.ts"
+      __dirname + "src/subscriber/**/*.ts",
+      __dirname + "src/subscriber/**/*.js",
    ],
    cli: {
-      "entitiesDir": "src/entities",
-      "migrationsDir": "src/migrations",
-      "subscribersDir": "src/subscriber"
+      "entitiesDir": __dirname + "src/entities",
+      "migrationsDir": __dirname + "src/migrations",
+      "subscribersDir": __dirname + "src/subscriber"
    },
 }
 
