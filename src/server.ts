@@ -76,7 +76,10 @@ createConnection(ormconfig).then(async connection => {
     })
 
     const port = process.env.PORT || 3000
+    myConsoleSuccess("Trying to access port " + port)
+
     app.listen(port, async () => {
+        myConsoleSuccess("Listening to port " + port)
 
         myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/')
 

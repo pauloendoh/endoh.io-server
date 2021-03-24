@@ -33,9 +33,13 @@ const ormconfig: ConnectionOptions =
       __dirname + "/src/subscriber/**/*.js",
    ],
    cli: {
-      "entitiesDir": "src/entities",
-      "migrationsDir": "src/migrations",
-      "subscribersDir": "src/subscriber"
+      "entitiesDir":
+         process.env.NODE_ENV?.trim() === 'production' ? "build/src/entities" : "src/entities",
+      "migrationsDir":
+         process.env.NODE_ENV?.trim() === 'production' ? "build/src/migrations" : "src/migrations",
+      "subscribersDir":
+         process.env.NODE_ENV?.trim() === 'production' ? "build/src/subscriber" : "src/subscriber",
+
    },
 }
 

@@ -7,4 +7,7 @@ export class Test {
 
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column({ default: '' })
+    name: string
 }
