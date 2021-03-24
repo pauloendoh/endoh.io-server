@@ -81,13 +81,13 @@ createConnection(ormconfig).then(async connection => {
         myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/')
 
         createPreferencesForAll()
-        createProfileForUsers()
+        // createProfileForUsers()
 
-        createUserSuggestionsForAll()
-        // renovar sugestões de usuários a cada 1h
-        setInterval(async () => {
-            createUserSuggestionsForAll()
-        }, 60 * 1000 * 60)
+        // createUserSuggestionsForAll()
+        // // renovar sugestões de usuários a cada 1h
+        // setInterval(async () => {
+        //     createUserSuggestionsForAll()
+        // }, 60 * 1000 * 60)
 
         // Ping every15 min to avoid Heroku's server sleep 
         // Maybe split into different file?
