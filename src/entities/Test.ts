@@ -10,4 +10,7 @@ export class Test {
 
     @Column({ default: '' })
     name: string
+
+    @Column({ default: '' })
+    color: string
 }
