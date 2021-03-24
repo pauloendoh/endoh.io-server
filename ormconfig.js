@@ -52,9 +52,8 @@ if (process.env.NODE_ENV === 'production') {
       synchronize: false,
       logging:
          true,
-
       migrations: [
-         __dirname + "/src/migrations/**/*.js",
+         "build/src/migrations/**/*.js",
       ],
       subscribers: [
          __dirname + "/src/subscriber/**/*.js",

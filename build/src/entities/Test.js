@@ -22,6 +22,10 @@ var Test = /** @class */ (function () {
         typeorm_1.Column({ default: '' }),
         __metadata("design:type", String)
     ], Test.prototype, "name", void 0);
+    __decorate([
+        typeorm_1.Column({ default: '' }),
+        __metadata("design:type", String)
+    ], Test.prototype, "color", void 0);
     Test = __decorate([
         typeorm_1.Entity()
     ], Test);
