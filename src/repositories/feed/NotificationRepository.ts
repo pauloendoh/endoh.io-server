@@ -4,7 +4,9 @@ import { NotificationDto } from '../../dtos/utils/NotificationDto';
 import { Notification } from '../../entities/feed/Notification';
 import { Profile } from '../../entities/feed/Profile';
 import { User } from '../../entities/User';
+import ResourceRepository from '../relearn/ResourceRepository';
 import TagRepository from '../relearn/TagRepository';
+import UserRepository from '../UserRepository';
 
 @EntityRepository(Notification)
 export default class NotificationRepository extends Repository<Notification>{
@@ -33,10 +35,8 @@ export default class NotificationRepository extends Repository<Notification>{
       index++
     }
 
-
     // remove any previous notification of this type from the follower 
     this.delete({ type: "follow", userId: followedUser.id, followerId: follower.id })
-
     return this.save({
       type: "follow",
       userId: followedUser.id,
@@ -44,6 +44,31 @@ export default class NotificationRepository extends Repository<Notification>{
       followerId: follower.id,
     })
   }
+
+
+  async createSavedResourceNotification(saverId: number, resourceId: number): Promise<Notification> {
+    try {
+      const resourceRepo = getCustomRepository(ResourceRepository)
+      const userRepo = getCustomRepository(UserRepository)
+
+      const resource = await resourceRepo.findOne({ id: resourceId })
+      const owner = await userRepo.findOne({ id: resource.userId })
+
+      const saver = await userRepo.findOne({ id: saverId })
+
+      return this.save({
+        type: "userSavedYourResource",
+        userId: owner.id,
+        message: `${saver.username} saved your resource: ${resource.title}`,
+        followerId: saverId,
+      })
+
+    } catch (err) {
+
+    }
+
+  }
+
 
 
   async getNotifications(userId: number): Promise<NotificationDto[]> {

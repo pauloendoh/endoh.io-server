@@ -3,6 +3,7 @@ import { Profile } from '../entities/feed/Profile';
 import { User } from '../entities/User';
 import { UserPreference } from '../entities/UserPreference';
 import { myConsoleError } from '../utils/myConsoleError';
+import createUserSuggestionsForUser from '../utils/user/createUserSuggestionsForAll/createUserSuggestionsForUser/createUserSuggestionsForUser';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<User> {
@@ -26,10 +27,14 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
 
             await event.manager.getRepository(UserPreference).save(preference)
 
-
-            // TODO: create default profile
             const profile = new Profile()
             profile.user = event.entity
+
+            // I added this timeout because the event.entity (user).id was not commited yet :/
+            setTimeout(async () => {
+                await createUserSuggestionsForUser(event.entity)
+            }, 1000)
+
 
             await event.manager.getRepository(Profile).save(profile)
         } catch (e) {

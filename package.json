@@ -57,7 +57,7 @@
     "dev": "nodemon",
     "build": "tsc",
     "makeMigrations": "ts-node node_modules/typeorm/cli.js migration:generate -n Migration",
-    "migrate": "ts-node node_modules/typeorm/cli.js migration:run",
+    "migrate": "ts-node node_modules/typeorm/cli.js migration:run && tsc",
     "revertMigration": "ts-node node_modules/typeorm/cli.js migration:revert"
   },
   "nodemonConfig": {

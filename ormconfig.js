@@ -5,7 +5,7 @@ require('dotenv').config()
 // Roda durante o typeorm migration:run
 
 
-// if desenv
+// if dev mode
 let ormconfig = {
    type: "postgres",
    host: 'localhost',
@@ -30,21 +30,16 @@ let ormconfig = {
       "entitiesDir": "src/entities",
       "migrationsDir": "src/migrations",
       "subscribersDir": "src/subscriber",
-
    },
 }
 
 if (process.env.NODE_ENV === 'production') {
    ormconfig = {
       type: "postgres",
-      host:
-         process.env.DB_HOST,
-      port:
-         Number(process.env.DB_PORT),
-      username:
-         process.env.DB_USERNAME,
-      password:
-         process.env.DB_PASSWORD,
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
       database: "endoh.io",
       entities: [
          __dirname + "/src/entities/**/*.js",

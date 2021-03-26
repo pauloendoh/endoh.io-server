@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import { getCustomRepository, In } from 'typeorm';
+import { ResourcePostDto } from '../../dtos/relearn/ResourcePostDto';
 import { Resource } from '../../entities/relearn/Resource';
 import authMiddleware from '../../middlewares/authMiddleware';
+import NotificationRepository from '../../repositories/feed/NotificationRepository';
 import ResourceRepository from '../../repositories/relearn/ResourceRepository';
 import { MyErrorsResponse } from '../../utils/ErrorMessage';
 import { MyAuthRequest } from '../../utils/MyAuthRequest';
@@ -12,11 +14,18 @@ const resourceRoute = Router()
 
 // PE 1/3 - it's getting way too slow 
 resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
-    const sentResource = req.body as Resource
+    const sentResource = req.body as ResourcePostDto
     const resourceRepo = getCustomRepository(ResourceRepository)
     const user = req.user
 
     try {
+        // If user saved from another user 
+        if (sentResource.fromResourceId) {
+            getCustomRepository(NotificationRepository)
+                .createSavedResourceNotification(user.id, sentResource.fromResourceId)
+        }
+
+
         // If updating
         if (sentResource.id) {
             const previousResource = await resourceRepo.findOne({ id: sentResource.id, user }, { relations: ['tag'] })
@@ -59,8 +68,6 @@ resourceRoute.post('/', authMiddleware, async (req: MyAuthRequest, res) => {
         else {
             // if adding resource, check tag's last resource's position
             sentResource.position = await resourceRepo.getLastPosition(sentResource.tag, user)
-
-            sentResource.user = user
             sentResource.userId = user.id
         }
 

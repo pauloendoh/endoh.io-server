@@ -14,6 +14,8 @@ import cookieSession = require("cookie-session");
 import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport")
 import { memoryUsage } from 'process';
+import { createProfileForUsers } from './utils/user/createProfileForAll';
+import { createUserSuggestionsForAll } from './utils/user/createUserSuggestionsForAll/createUserSuggestionsForAll';
 require("./utils/passport-setup")
 require(`dotenv`).config()
 
@@ -84,13 +86,13 @@ createConnection(ormconfig).then(async connection => {
         myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/')
 
         createPreferencesForAll()
-        // createProfileForUsers()
+        createProfileForUsers()
 
-        // createUserSuggestionsForAll()
-        // // renovar sugestões de usuários a cada 1h
-        // setInterval(async () => {
-        //     createUserSuggestionsForAll()
-        // }, 60 * 1000 * 60)
+        createUserSuggestionsForAll()
+        // renovar sugestões de usuários a cada 1h
+        setInterval(async () => {
+            createUserSuggestionsForAll()
+        }, 60 * 1000 * 60)
 
         // Ping every15 min to avoid Heroku's server sleep 
         // Maybe split into different file?
