@@ -10,56 +10,53 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SkillProgress = void 0;
-var typeorm_1 = require("typeorm");
-var User_1 = require("../User");
-var Skill_1 = require("./Skill");
-var SkillProgress = /** @class */ (function () {
-    function SkillProgress() {
-    }
-    __decorate([
-        typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", Number)
-    ], SkillProgress.prototype, "id", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return User_1.User; }, function (user) { return user.skillProgresses; }, { onDelete: "CASCADE" }),
-        __metadata("design:type", User_1.User)
-    ], SkillProgress.prototype, "user", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], SkillProgress.prototype, "userId", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return Skill_1.Skill; }, function (skill) { return skill.progresses; }, { onDelete: "CASCADE" }),
-        __metadata("design:type", Skill_1.Skill)
-    ], SkillProgress.prototype, "skill", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], SkillProgress.prototype, "skillId", void 0);
-    __decorate([
-        typeorm_1.Column({ nullable: true }),
-        __metadata("design:type", Number)
-    ], SkillProgress.prototype, "oldLevel", void 0);
-    __decorate([
-        typeorm_1.Column({ nullable: true }),
-        __metadata("design:type", Number)
-    ], SkillProgress.prototype, "newLevel", void 0);
-    __decorate([
-        typeorm_1.Column({ nullable: true }),
-        __metadata("design:type", Number)
-    ], SkillProgress.prototype, "goalLevel", void 0);
-    __decorate([
-        typeorm_1.CreateDateColumn(),
-        __metadata("design:type", String)
-    ], SkillProgress.prototype, "createdAt", void 0);
-    __decorate([
-        typeorm_1.UpdateDateColumn(),
-        __metadata("design:type", String)
-    ], SkillProgress.prototype, "updatedAt", void 0);
-    SkillProgress = __decorate([
-        typeorm_1.Entity()
-    ], SkillProgress);
-    return SkillProgress;
-}());
+const typeorm_1 = require("typeorm");
+const User_1 = require("../User");
+const Skill_1 = require("./Skill");
+let SkillProgress = class SkillProgress {
+};
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], SkillProgress.prototype, "id", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => User_1.User, user => user.skillProgresses, { onDelete: "CASCADE" }),
+    __metadata("design:type", User_1.User)
+], SkillProgress.prototype, "user", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], SkillProgress.prototype, "userId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Skill_1.Skill, skill => skill.progresses, { onDelete: "CASCADE" }),
+    __metadata("design:type", Skill_1.Skill)
+], SkillProgress.prototype, "skill", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], SkillProgress.prototype, "skillId", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Number)
+], SkillProgress.prototype, "oldLevel", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Number)
+], SkillProgress.prototype, "newLevel", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", Number)
+], SkillProgress.prototype, "goalLevel", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", String)
+], SkillProgress.prototype, "createdAt", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", String)
+], SkillProgress.prototype, "updatedAt", void 0);
+SkillProgress = __decorate([
+    typeorm_1.Entity()
+], SkillProgress);
 exports.SkillProgress = SkillProgress;
 //# sourceMappingURL=SkillProgress.js.map

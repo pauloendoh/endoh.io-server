@@ -16,6 +16,7 @@ import passport = require("passport")
 import { memoryUsage } from 'process';
 import { createProfileForUsers } from './utils/user/createProfileForAll';
 import { createUserSuggestionsForAll } from './utils/user/createUserSuggestionsForAll/createUserSuggestionsForAll';
+import { scrapeLolRates } from './utils/lolrates/scrapeLolRates';
 require("./utils/passport-setup")
 require(`dotenv`).config()
 
@@ -82,6 +83,14 @@ createConnection(ormconfig).then(async connection => {
 
     app.listen(port, async () => {
         myConsoleSuccess("Listening to port " + port)
+
+
+        // scrape lolrates every 1h 
+        scrapeLolRates()
+        setInterval(async () => {
+            scrapeLolRates()
+        }, 60 * 1000 * 60)
+
 
         myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/')
 

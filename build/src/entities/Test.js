@@ -10,26 +10,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Test = void 0;
-var typeorm_1 = require("typeorm");
-var Test = /** @class */ (function () {
-    function Test() {
-    }
-    __decorate([
-        typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", Number)
-    ], Test.prototype, "id", void 0);
-    __decorate([
-        typeorm_1.Column({ default: '' }),
-        __metadata("design:type", String)
-    ], Test.prototype, "name", void 0);
-    __decorate([
-        typeorm_1.Column({ default: '' }),
-        __metadata("design:type", String)
-    ], Test.prototype, "color", void 0);
-    Test = __decorate([
-        typeorm_1.Entity()
-    ], Test);
-    return Test;
-}());
+const typeorm_1 = require("typeorm");
+let Test = class Test {
+};
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], Test.prototype, "id", void 0);
+__decorate([
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], Test.prototype, "name", void 0);
+__decorate([
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], Test.prototype, "color", void 0);
+Test = __decorate([
+    typeorm_1.Entity()
+], Test);
 exports.Test = Test;
 //# sourceMappingURL=Test.js.map

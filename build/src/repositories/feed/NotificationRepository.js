@@ -1,127 +1,83 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var typeorm_1 = require("typeorm");
-var Notification_1 = require("../../entities/feed/Notification");
-var Profile_1 = require("../../entities/feed/Profile");
-var TagRepository_1 = require("../relearn/TagRepository");
-var NotificationRepository = /** @class */ (function (_super) {
-    __extends(NotificationRepository, _super);
-    function NotificationRepository() {
-        return _super !== null && _super.apply(this, arguments) || this;
+const typeorm_1 = require("typeorm");
+const Notification_1 = require("../../entities/feed/Notification");
+const Profile_1 = require("../../entities/feed/Profile");
+const ResourceRepository_1 = require("../relearn/ResourceRepository");
+const TagRepository_1 = require("../relearn/TagRepository");
+const UserRepository_1 = require("../UserRepository");
+let NotificationRepository = class NotificationRepository extends typeorm_1.Repository {
+    async createFollowingNotification(follower, followedUser, followingTags) {
+        const followerProfile = await typeorm_1.getRepository(Profile_1.Profile)
+            .findOne({ where: { userId: follower.id } });
+        const tagRepo = typeorm_1.getCustomRepository(TagRepository_1.default);
+        // building message
+        let message = `${follower.username} is following you in `;
+        let index = 0;
+        for (const followingTag of followingTags) {
+            const tag = await tagRepo.findOne({ where: { id: followingTag.tagId } });
+            if (followingTags.length === 1) { // if only one
+                message += `"${tag.name}"`;
+            }
+            else if (index === followingTags.length - 1) { // if last one
+                message += `and "${tag.name}"`;
+            }
+            else { // if not last one
+                message += `"${tag.name}", `;
+            }
+            index++;
+        }
+        // remove any previous notification of this type from the follower 
+        this.delete({ type: "follow", userId: followedUser.id, followerId: follower.id });
+        return this.save({
+            type: "follow",
+            userId: followedUser.id,
+            message: message,
+            followerId: follower.id,
+        });
     }
-    NotificationRepository.prototype.createFollowingNotification = function (follower, followedUser, followingTags) {
-        return __awaiter(this, void 0, void 0, function () {
-            var followerProfile, tagRepo, message, index, _i, followingTags_1, followingTag, tag;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, typeorm_1.getRepository(Profile_1.Profile)
-                            .findOne({ where: { userId: follower.id } })];
-                    case 1:
-                        followerProfile = _a.sent();
-                        tagRepo = typeorm_1.getCustomRepository(TagRepository_1.default);
-                        message = follower.username + " is following you in ";
-                        index = 0;
-                        _i = 0, followingTags_1 = followingTags;
-                        _a.label = 2;
-                    case 2:
-                        if (!(_i < followingTags_1.length)) return [3 /*break*/, 5];
-                        followingTag = followingTags_1[_i];
-                        return [4 /*yield*/, tagRepo.findOne({ where: { id: followingTag.tagId } })];
-                    case 3:
-                        tag = _a.sent();
-                        if (followingTags.length === 1) { // if only one
-                            message += "\"" + tag.name + "\"";
-                        }
-                        else if (index === followingTags.length - 1) { // if last one
-                            message += "and \"" + tag.name + "\"";
-                        }
-                        else { // if not last one
-                            message += "\"" + tag.name + "\", ";
-                        }
-                        index++;
-                        _a.label = 4;
-                    case 4:
-                        _i++;
-                        return [3 /*break*/, 2];
-                    case 5:
-                        // remove any previous notification of this type from the follower 
-                        this.delete({ type: "follow", userId: followedUser.id, followerId: follower.id });
-                        return [2 /*return*/, this.save({
-                                type: "follow",
-                                userId: followedUser.id,
-                                message: message,
-                                followerId: follower.id,
-                            })];
-                }
+    async createSavedResourceNotification(saverId, resourceId) {
+        try {
+            const resourceRepo = typeorm_1.getCustomRepository(ResourceRepository_1.default);
+            const userRepo = typeorm_1.getCustomRepository(UserRepository_1.default);
+            const resource = await resourceRepo.findOne({ id: resourceId });
+            const owner = await userRepo.findOne({ id: resource.userId });
+            const saver = await userRepo.findOne({ id: saverId });
+            return this.save({
+                type: "userSavedYourResource",
+                userId: owner.id,
+                message: `${saver.username} saved your resource: ${resource.title}`,
+                followerId: saverId,
             });
-        });
-    };
-    NotificationRepository.prototype.getNotifications = function (userId) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.query("\n    select ntf.\"id\",\n\t\t   ntf.\"seen\",\n\t\t   ntf.\"message\",\n\t\t   ntf.\"createdAt\",\n\t\t   ntf.\"userId\",\n\t\t   usu.\"username\",\n\t\t   pro.\"fullName\",\n\t\t   pro.\"pictureUrl\"\n\t  from \"notification\" \tntf\ninner join \"user\"\t\t\tusu on usu.\"id\" = ntf.\"followerId\"\ninner join \"profile\"\t\tpro on pro.\"userId\" = ntf.\"followerId\"\n     where ntf.\"userId\" = $1\n  order by ntf.\"createdAt\" desc", [userId])];
-            });
-        });
-    };
-    NotificationRepository = __decorate([
-        typeorm_1.EntityRepository(Notification_1.Notification)
-    ], NotificationRepository);
-    return NotificationRepository;
-}(typeorm_1.Repository));
+        }
+        catch (err) {
+        }
+    }
+    async getNotifications(userId) {
+        return this.query(`
+    select ntf."id",
+		   ntf."seen",
+		   ntf."message",
+		   ntf."createdAt",
+		   ntf."userId",
+		   usu."username",
+		   pro."fullName",
+		   pro."pictureUrl"
+	  from "notification" 	ntf
+inner join "user"			usu on usu."id" = ntf."followerId"
+inner join "profile"		pro on pro."userId" = ntf."followerId"
+     where ntf."userId" = $1
+  order by ntf."createdAt" desc`, [userId]);
+    }
+};
+NotificationRepository = __decorate([
+    typeorm_1.EntityRepository(Notification_1.Notification)
+], NotificationRepository);
 exports.default = NotificationRepository;
 //# sourceMappingURL=NotificationRepository.js.map

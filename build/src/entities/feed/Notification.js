@@ -10,57 +10,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Notification = void 0;
-var typeorm_1 = require("typeorm");
-var User_1 = require("../User");
-var Notification = /** @class */ (function () {
-    function Notification() {
-    }
-    __decorate([
-        typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", Number)
-    ], Notification.prototype, "id", void 0);
-    __decorate([
-        typeorm_1.OneToMany(function (type) { return User_1.User; }, function (user) { return user.notifications; }, { onDelete: "CASCADE" }),
-        typeorm_1.JoinColumn(),
-        __metadata("design:type", User_1.User)
-    ], Notification.prototype, "user", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Notification.prototype, "userId", void 0);
-    __decorate([
-        typeorm_1.Column({ default: '' }),
-        __metadata("design:type", String)
-    ], Notification.prototype, "type", void 0);
-    __decorate([
-        typeorm_1.Column({ default: '' }),
-        __metadata("design:type", String)
-    ], Notification.prototype, "message", void 0);
-    __decorate([
-        typeorm_1.Column({ default: false }),
-        __metadata("design:type", Boolean)
-    ], Notification.prototype, "seen", void 0);
-    __decorate([
-        typeorm_1.OneToMany(function (type) { return User_1.User; }, function (user) { return user.followingNotifications; }, { onDelete: "CASCADE" }),
-        typeorm_1.JoinColumn(),
-        __metadata("design:type", User_1.User)
-    ], Notification.prototype, "follower", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Notification.prototype, "followerId", void 0);
-    __decorate([
-        typeorm_1.CreateDateColumn(),
-        __metadata("design:type", Date)
-    ], Notification.prototype, "createdAt", void 0);
-    __decorate([
-        typeorm_1.UpdateDateColumn(),
-        __metadata("design:type", Date)
-    ], Notification.prototype, "updatedAt", void 0);
-    Notification = __decorate([
-        typeorm_1.Entity()
-    ], Notification);
-    return Notification;
-}());
+const typeorm_1 = require("typeorm");
+const User_1 = require("../User");
+let Notification = class Notification {
+};
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], Notification.prototype, "id", void 0);
+__decorate([
+    typeorm_1.OneToMany(type => User_1.User, user => user.notifications, { onDelete: "CASCADE" }),
+    typeorm_1.JoinColumn(),
+    __metadata("design:type", User_1.User)
+], Notification.prototype, "user", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Notification.prototype, "userId", void 0);
+__decorate([
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], Notification.prototype, "type", void 0);
+__decorate([
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], Notification.prototype, "message", void 0);
+__decorate([
+    typeorm_1.Column({ default: false }),
+    __metadata("design:type", Boolean)
+], Notification.prototype, "seen", void 0);
+__decorate([
+    typeorm_1.OneToMany(type => User_1.User, user => user.followingNotifications, { onDelete: "CASCADE" }),
+    typeorm_1.JoinColumn(),
+    __metadata("design:type", User_1.User)
+], Notification.prototype, "follower", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Notification.prototype, "followerId", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], Notification.prototype, "createdAt", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], Notification.prototype, "updatedAt", void 0);
+Notification = __decorate([
+    typeorm_1.Entity()
+], Notification);
 exports.Notification = Notification;
 //# sourceMappingURL=Notification.js.map

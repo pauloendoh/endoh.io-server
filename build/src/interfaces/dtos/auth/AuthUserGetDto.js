@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthUserGetDto = void 0;
 // PE 3/3 
-var AuthUserGetDto = /** @class */ (function () {
-    function AuthUserGetDto(user, token, expiresAt) {
+class AuthUserGetDto {
+    constructor(user, token, expiresAt) {
         this.id = user.id;
         this.username = user.username;
         this.email = user.email;
@@ -11,7 +11,6 @@ var AuthUserGetDto = /** @class */ (function () {
         this.token = token;
         this.expiresAt = expiresAt;
     }
-    return AuthUserGetDto;
-}());
+}
 exports.AuthUserGetDto = AuthUserGetDto;
 //# sourceMappingURL=AuthUserGetDto.js.map

@@ -10,53 +10,50 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserSuggestion = void 0;
-var typeorm_1 = require("typeorm");
-var User_1 = require("../User");
-var UserSuggestion = /** @class */ (function () {
-    function UserSuggestion() {
-    }
-    __decorate([
-        typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", Number)
-    ], UserSuggestion.prototype, "id", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return User_1.User; }, function (user) { return user.userSuggestions; }, { onDelete: "CASCADE" }),
-        typeorm_1.JoinColumn(),
-        __metadata("design:type", User_1.User)
-    ], UserSuggestion.prototype, "user", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], UserSuggestion.prototype, "userId", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return User_1.User; }, function (user) { return user.suggestedBy; }, { onDelete: "CASCADE" }),
-        typeorm_1.JoinColumn(),
-        __metadata("design:type", User_1.User)
-    ], UserSuggestion.prototype, "suggestedUser", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], UserSuggestion.prototype, "suggestedUserId", void 0);
-    __decorate([
-        typeorm_1.Column({ default: '' }),
-        __metadata("design:type", String)
-    ], UserSuggestion.prototype, "description", void 0);
-    __decorate([
-        typeorm_1.Column({ default: '' }),
-        __metadata("design:type", String)
-    ], UserSuggestion.prototype, "dontShowUntil", void 0);
-    __decorate([
-        typeorm_1.CreateDateColumn(),
-        __metadata("design:type", Date)
-    ], UserSuggestion.prototype, "createdAt", void 0);
-    __decorate([
-        typeorm_1.UpdateDateColumn(),
-        __metadata("design:type", Date)
-    ], UserSuggestion.prototype, "updatedAt", void 0);
-    UserSuggestion = __decorate([
-        typeorm_1.Entity()
-    ], UserSuggestion);
-    return UserSuggestion;
-}());
+const typeorm_1 = require("typeorm");
+const User_1 = require("../User");
+let UserSuggestion = class UserSuggestion {
+};
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], UserSuggestion.prototype, "id", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => User_1.User, user => user.userSuggestions, { onDelete: "CASCADE" }),
+    typeorm_1.JoinColumn(),
+    __metadata("design:type", User_1.User)
+], UserSuggestion.prototype, "user", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserSuggestion.prototype, "userId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => User_1.User, user => user.suggestedBy, { onDelete: "CASCADE" }),
+    typeorm_1.JoinColumn(),
+    __metadata("design:type", User_1.User)
+], UserSuggestion.prototype, "suggestedUser", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserSuggestion.prototype, "suggestedUserId", void 0);
+__decorate([
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], UserSuggestion.prototype, "description", void 0);
+__decorate([
+    typeorm_1.Column({ default: '' }),
+    __metadata("design:type", String)
+], UserSuggestion.prototype, "dontShowUntil", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], UserSuggestion.prototype, "createdAt", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], UserSuggestion.prototype, "updatedAt", void 0);
+UserSuggestion = __decorate([
+    typeorm_1.Entity()
+], UserSuggestion);
 exports.UserSuggestion = UserSuggestion;
 //# sourceMappingURL=UserSuggestion.js.map

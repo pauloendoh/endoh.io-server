@@ -10,55 +10,52 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FollowingTag = void 0;
-var typeorm_1 = require("typeorm");
-var Tag_1 = require("../relearn/Tag");
-var User_1 = require("../User");
-var FollowingTag = /** @class */ (function () {
-    function FollowingTag() {
-    }
-    __decorate([
-        typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", Number)
-    ], FollowingTag.prototype, "id", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return User_1.User; }, function (user) { return user.followingTags; }, { onDelete: "CASCADE" }),
-        typeorm_1.JoinColumn(),
-        __metadata("design:type", User_1.User)
-    ], FollowingTag.prototype, "follower", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], FollowingTag.prototype, "followerId", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return User_1.User; }, function (user) { return user.followingTags; }, { onDelete: "CASCADE" }),
-        typeorm_1.JoinColumn(),
-        __metadata("design:type", User_1.User)
-    ], FollowingTag.prototype, "followingUser", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], FollowingTag.prototype, "followingUserId", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return Tag_1.Tag; }, function (tag) { return tag.tagFollowers; }, { onDelete: "CASCADE" }),
-        typeorm_1.JoinColumn(),
-        __metadata("design:type", Tag_1.Tag)
-    ], FollowingTag.prototype, "tag", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], FollowingTag.prototype, "tagId", void 0);
-    __decorate([
-        typeorm_1.CreateDateColumn(),
-        __metadata("design:type", Date)
-    ], FollowingTag.prototype, "createdAt", void 0);
-    __decorate([
-        typeorm_1.UpdateDateColumn(),
-        __metadata("design:type", Date)
-    ], FollowingTag.prototype, "updatedAt", void 0);
-    FollowingTag = __decorate([
-        typeorm_1.Entity()
-    ], FollowingTag);
-    return FollowingTag;
-}());
+const typeorm_1 = require("typeorm");
+const Tag_1 = require("../relearn/Tag");
+const User_1 = require("../User");
+let FollowingTag = class FollowingTag {
+};
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], FollowingTag.prototype, "id", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => User_1.User, user => user.followingTags, { onDelete: "CASCADE" }),
+    typeorm_1.JoinColumn(),
+    __metadata("design:type", User_1.User)
+], FollowingTag.prototype, "follower", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], FollowingTag.prototype, "followerId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => User_1.User, user => user.followingTags, { onDelete: "CASCADE" }),
+    typeorm_1.JoinColumn(),
+    __metadata("design:type", User_1.User)
+], FollowingTag.prototype, "followingUser", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], FollowingTag.prototype, "followingUserId", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => Tag_1.Tag, tag => tag.tagFollowers, { onDelete: "CASCADE" }),
+    typeorm_1.JoinColumn(),
+    __metadata("design:type", Tag_1.Tag)
+], FollowingTag.prototype, "tag", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], FollowingTag.prototype, "tagId", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], FollowingTag.prototype, "createdAt", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], FollowingTag.prototype, "updatedAt", void 0);
+FollowingTag = __decorate([
+    typeorm_1.Entity()
+], FollowingTag);
 exports.FollowingTag = FollowingTag;
 //# sourceMappingURL=FollowingTag.js.map

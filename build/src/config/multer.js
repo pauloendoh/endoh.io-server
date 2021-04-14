@@ -1,28 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var multer = require('multer');
-var path = require('path');
-var multerS3 = require('multer-s3');
-var aws = require('aws-sdk');
-var chalk_1 = require("chalk");
-var crypto = require("crypto");
+const multer = require('multer');
+const path = require('path');
+const multerS3 = require('multer-s3');
+const aws = require('aws-sdk');
+const chalk_1 = require("chalk");
+const crypto = require("crypto");
 require('dotenv').config();
-var storageS3 = new aws.S3({
+const storageS3 = new aws.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
-var storageTypes = {
+const storageTypes = {
     local: multer.diskStorage({
-        destination: function (req, file, cb) {
+        destination: (req, file, cb) => {
             cb(null, path.resolve(__dirname, '..', 'tmp', 'uploads'));
         },
-        filename: function (req, file, cb) {
+        filename: (req, file, cb) => {
             // garantir que os nomes não se sobreponham
             // usa-se um hash 
-            crypto.randomBytes(16, function (err, hash) {
+            crypto.randomBytes(16, (err, hash) => {
                 if (err)
                     chalk_1.cyanBright(err);
-                file.key = hash.toString('hex') + "-" + file.originalname;
+                file.key = `${hash.toString('hex')}-${file.originalname}`;
                 cb(null, file.key);
             });
         }
@@ -32,13 +32,13 @@ var storageTypes = {
         bucket: 'endoh',
         contentType: multerS3.AUTO_CONTENT_TYPE,
         acl: 'public-read',
-        key: function (req, file, cb) {
+        key: (req, file, cb) => {
             // garantir que os nomes não se sobreponham
             // usa-se um hash 
-            crypto.randomBytes(16, function (err, hash) {
+            crypto.randomBytes(16, (err, hash) => {
                 if (err)
                     chalk_1.cyanBright(err);
-                var fileName = hash.toString('hex') + "-" + file.originalname;
+                const fileName = `${hash.toString('hex')}-${file.originalname}`;
                 cb(null, fileName);
             });
         }
@@ -50,8 +50,8 @@ module.exports = {
     limits: {
         fileSize: 2 * 1024 * 1024
     },
-    fileFilter: function (req, file, cb) {
-        var allowedMimes = [
+    fileFilter: (req, file, cb) => {
+        const allowedMimes = [
             'image/jpeg',
             'image/pjpeg',
             'image/png',

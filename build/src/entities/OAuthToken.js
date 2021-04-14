@@ -10,47 +10,44 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserToken = void 0;
-var typeorm_1 = require("typeorm");
-var User_1 = require("./User");
-var UserToken = /** @class */ (function () {
-    function UserToken() {
-    }
-    __decorate([
-        typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", Number)
-    ], UserToken.prototype, "id", void 0);
-    __decorate([
-        typeorm_1.ManyToOne(function (type) { return User_1.User; }, function (user) { return user.tokens; }, { onDelete: "CASCADE" }),
-        __metadata("design:type", User_1.User)
-    ], UserToken.prototype, "user", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], UserToken.prototype, "userId", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], UserToken.prototype, "type", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], UserToken.prototype, "token", void 0);
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], UserToken.prototype, "expiresAt", void 0);
-    __decorate([
-        typeorm_1.CreateDateColumn(),
-        __metadata("design:type", Date)
-    ], UserToken.prototype, "createdAt", void 0);
-    __decorate([
-        typeorm_1.UpdateDateColumn(),
-        __metadata("design:type", Date)
-    ], UserToken.prototype, "updatedAt", void 0);
-    UserToken = __decorate([
-        typeorm_1.Entity()
-    ], UserToken);
-    return UserToken;
-}());
+const typeorm_1 = require("typeorm");
+const User_1 = require("./User");
+let UserToken = class UserToken {
+};
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], UserToken.prototype, "id", void 0);
+__decorate([
+    typeorm_1.ManyToOne(type => User_1.User, user => user.tokens, { onDelete: "CASCADE" }),
+    __metadata("design:type", User_1.User)
+], UserToken.prototype, "user", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], UserToken.prototype, "userId", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], UserToken.prototype, "type", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], UserToken.prototype, "token", void 0);
+__decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], UserToken.prototype, "expiresAt", void 0);
+__decorate([
+    typeorm_1.CreateDateColumn(),
+    __metadata("design:type", Date)
+], UserToken.prototype, "createdAt", void 0);
+__decorate([
+    typeorm_1.UpdateDateColumn(),
+    __metadata("design:type", Date)
+], UserToken.prototype, "updatedAt", void 0);
+UserToken = __decorate([
+    typeorm_1.Entity()
+], UserToken);
 exports.UserToken = UserToken;
 //# sourceMappingURL=OAuthToken.js.map

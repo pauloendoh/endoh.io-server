@@ -1,108 +1,119 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var typeorm_1 = require("typeorm");
-var FollowingTag_1 = require("../../entities/feed/FollowingTag");
-var FollowingTagRepository = /** @class */ (function (_super) {
-    __extends(FollowingTagRepository, _super);
-    function FollowingTagRepository() {
-        return _super !== null && _super.apply(this, arguments) || this;
+const typeorm_1 = require("typeorm");
+const FollowingTag_1 = require("../../entities/feed/FollowingTag");
+let FollowingTagRepository = class FollowingTagRepository extends typeorm_1.Repository {
+    async getFollowingUsers(follower) {
+        return this.query(`
+        SELECT json_build_object('userId', FUS.id,
+                                 'username', FUS.username,
+                                 'fullName', PRO."fullName",
+								 'pictureUrl', PRO."pictureUrl") AS "followingUser",
+	 	       (SELECT JSON_AGG(B) FROM "following_tag" A
+		                     INNER JOIN "tag"		    B ON B.id = A."tagId"
+		                          WHERE A."followingUserId" = FUS.id
+                                    AND A."followerId" = $1)  AS "tags"
+    	  FROM "following_tag" 	FTG
+    INNER JOIN "user"			FUS ON FUS.id = FTG."followingUserId"
+    INNER JOIN "profile"		PRO	ON PRO."userId" = FUS."id"
+         WHERE FTG."followerId" = $1
+      GROUP BY FUS.id,
+	  		   PRO."fullName",
+			   PRO."pictureUrl"`, [follower.id]);
     }
-    FollowingTagRepository.prototype.getFollowingUsers = function (follower) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.query("\n        SELECT json_build_object('userId', FUS.id,\n                                 'username', FUS.username,\n                                 'fullName', PRO.\"fullName\",\n\t\t\t\t\t\t\t\t 'pictureUrl', PRO.\"pictureUrl\") AS \"followingUser\",\n\t \t       (SELECT JSON_AGG(B) FROM \"following_tag\" A\n\t\t                     INNER JOIN \"tag\"\t\t    B ON B.id = A.\"tagId\"\n\t\t                          WHERE A.\"followingUserId\" = FUS.id\n                                    AND A.\"followerId\" = $1)  AS \"tags\"\n    \t  FROM \"following_tag\" \tFTG\n    INNER JOIN \"user\"\t\t\tFUS ON FUS.id = FTG.\"followingUserId\"\n    INNER JOIN \"profile\"\t\tPRO\tON PRO.\"userId\" = FUS.\"id\"\n         WHERE FTG.\"followerId\" = $1\n      GROUP BY FUS.id,\n\t  \t\t   PRO.\"fullName\",\n\t\t\t   PRO.\"pictureUrl\"", [follower.id])];
-            });
-        });
-    };
-    FollowingTagRepository.prototype.getFollowers = function (user) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.query("\n        SELECT json_build_object('userId', FUS.id,\n                                 'username', FUS.username,\n                                 'fullName', PRO.\"fullName\",\n\t\t\t\t\t\t\t\t 'pictureUrl', PRO.\"pictureUrl\") AS \"follower\",\n\t \t       (SELECT JSON_AGG(B) FROM \"following_tag\" A\n\t\t                     INNER JOIN \"tag\"\t\t    B ON B.id = A.\"tagId\"\n\t\t                          WHERE A.\"followerId\" = FUS.id\n                                    AND A.\"followingUserId\" = $1)  AS \"tags\"\n    \t  FROM \"following_tag\" \tFTG\n    INNER JOIN \"user\"\t\t\tFUS ON FUS.id = FTG.\"followerId\"\n    INNER JOIN \"profile\"\t\tPRO\tON PRO.\"userId\" = FUS.\"id\"\n         WHERE FTG.\"followingUserId\" = $1\n      GROUP BY FUS.id,\n\t  \t\t   PRO.\"fullName\",\n\t\t\t   PRO.\"pictureUrl\"", [user.id])];
-            });
-        });
-    };
-    FollowingTagRepository.prototype.getMostFollowedUsersByUsersYouFollow = function (you, returnUpTo) {
-        if (returnUpTo === void 0) { returnUpTo = 40; }
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.query("\n        select (select json_build_object('userId', \"user\".id, 'username', \"user\".username) \n                  from \"user\" where \"id\" = \"followingUserId\") as user,\n\t             count(\"followingUserId\")                       as \"count\" \n\t        from (select distinct -- Todas os usu\u00E1rios seguidos pelos usu\u00E1rios q vc segue\n\t   \t   \t\t           \"followerId\",\n\t   \t   \t\t           \"followingUserId\"\n\t    \t          from \"following_tag\" \n\t    \t         where \"followerId\" in (select id  -- Todos os usu\u00E1rios que o usu\u00E1rio segue\n\t   \t\t\t\t\t\t                          from \"user\" \n\t   \t\t\t\t\t\t                         where \"id\" in (select \"followingUserId\" \n                                                          from \"following_tag\" \n                                                         where \"followerId\" = $1))) as todos_usuarios\n         -- n\u00E3o pode recomendar usu\u00E1rios q vc j\u00E1 segue, nem recomendar seu pr\u00F3prio usu\u00E1rio\n\t       where \"followingUserId\" not in (select \"followingUserId\" \n                                           from \"following_tag\" where \"followerId\" = $1) \n                                            and \"followingUserId\" != $1\n\t    group by \"followingUserId\" order by \"count\" desc\n\t    limit $2\n  ", [you.id, returnUpTo])];
-            });
-        });
-    };
-    FollowingTagRepository.prototype.getMostFollowedUsersByUsersYouDONTFollow = function (you, returnUpTo) {
-        if (returnUpTo === void 0) { returnUpTo = 10; }
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.query("\n        select (select json_build_object('userId', \"user\".id, 'username', \"user\".username)\n\t                from \"user\" \n                 where \"id\" = \"followingUserId\") as user, \n               count(\"followingUserId\") \n          from \"following_tag\" \n         where \"followerId\" not in (select \"followingUserId\"\n                                      from \"following_tag\"\n                                     where \"followerId\" = $1)\n\t\t       and \"followerId\" != $1\n      group by \"followingUserId\" \n\t\t\torder by count(\"followingUserId\") desc\n\t\t\t\t limit $2\n  ", [you.id, returnUpTo])];
-            });
-        });
-    };
-    FollowingTagRepository.prototype.getFeedResources = function (user) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.query("\n    select reso.\"id\", \n  \t\t     reso.\"title\", \n  \t\t     reso.\"url\",\n  \t\t     reso.\"thumbnail\",\n  \t\t     reso.\"estimatedTime\",\n  \t\t     reso.\"dueDate\",\n  \t\t     reso.\"rating\",\n  \t\t     reso.\"completedAt\",\n  \t\t     (select json_build_object('id', usu.id,\n                                     'username', usu.username,\n\t\t\t\t\t\t\t\t\t                   'pictureUrl', pro.\"pictureUrl\")\n              from \"user\" \t\tusu\n\t\t    inner join \"profile\"\tpro on pro.\"userId\" = usu.\"id\"\n             where usu.\"id\" = \"followingUserId\") as \"user\",\n           (select json_build_object('id', \"tag\".\"id\", \n                                     'name', \"tag\".\"name\",\n                                     'color', \"tag\".\"color\")\n  \t          from \"tag\" \n             where \"id\" = ftag.\"tagId\") as \"tag\"\n    \tfrom \"following_tag\" ftag\ninner join \"resource\"\t   reso\ton reso.\"tagId\" = ftag.\"tagId\"\n\t   where \"followerId\" = $1\n\t     and reso.\"rating\" > 0\n  order by reso.\"completedAt\" desc\n  ", [user.id])];
-            });
-        });
-    };
-    FollowingTagRepository = __decorate([
-        typeorm_1.EntityRepository(FollowingTag_1.FollowingTag)
-    ], FollowingTagRepository);
-    return FollowingTagRepository;
-}(typeorm_1.Repository));
+    async getFollowers(user) {
+        return this.query(`
+        SELECT json_build_object('userId', FUS.id,
+                                 'username', FUS.username,
+                                 'fullName', PRO."fullName",
+								 'pictureUrl', PRO."pictureUrl") AS "follower",
+	 	       (SELECT JSON_AGG(B) FROM "following_tag" A
+		                     INNER JOIN "tag"		    B ON B.id = A."tagId"
+		                          WHERE A."followerId" = FUS.id
+                                    AND A."followingUserId" = $1)  AS "tags"
+    	  FROM "following_tag" 	FTG
+    INNER JOIN "user"			FUS ON FUS.id = FTG."followerId"
+    INNER JOIN "profile"		PRO	ON PRO."userId" = FUS."id"
+         WHERE FTG."followingUserId" = $1
+      GROUP BY FUS.id,
+	  		   PRO."fullName",
+			   PRO."pictureUrl"`, [user.id]);
+    }
+    async getMostFollowedUsersByUsersYouFollow(you, returnUpTo = 40) {
+        return this.query(`
+        select (select json_build_object('userId', "user".id, 'username', "user".username) 
+                  from "user" where "id" = "followingUserId") as user,
+	             count("followingUserId")                       as "count" 
+	        from (select distinct -- Todas os usuários seguidos pelos usuários q vc segue
+	   	   		           "followerId",
+	   	   		           "followingUserId"
+	    	          from "following_tag" 
+	    	         where "followerId" in (select id  -- Todos os usuários que o usuário segue
+	   						                          from "user" 
+	   						                         where "id" in (select "followingUserId" 
+                                                          from "following_tag" 
+                                                         where "followerId" = $1))) as todos_usuarios
+         -- não pode recomendar usuários q vc já segue, nem recomendar seu próprio usuário
+	       where "followingUserId" not in (select "followingUserId" 
+                                           from "following_tag" where "followerId" = $1) 
+                                            and "followingUserId" != $1
+	    group by "followingUserId" order by "count" desc
+	    limit $2
+  `, [you.id, returnUpTo]);
+    }
+    async getMostFollowedUsersByUsersYouDONTFollow(you, returnUpTo = 10) {
+        return this.query(`
+        select (select json_build_object('userId', "user".id, 'username', "user".username)
+	                from "user" 
+                 where "id" = "followingUserId") as user, 
+               count("followingUserId") 
+          from "following_tag" 
+         where "followerId" not in (select "followingUserId"
+                                      from "following_tag"
+                                     where "followerId" = $1)
+		       and "followerId" != $1
+      group by "followingUserId" 
+			order by count("followingUserId") desc
+				 limit $2
+  `, [you.id, returnUpTo]);
+    }
+    async getFeedResources(user) {
+        return this.query(`
+    select reso."id", 
+  		     reso."title", 
+  		     reso."url",
+  		     reso."thumbnail",
+  		     reso."estimatedTime",
+  		     reso."dueDate",
+  		     reso."rating",
+  		     reso."completedAt",
+  		     (select json_build_object('id', usu.id,
+                                     'username', usu.username,
+									                   'pictureUrl', pro."pictureUrl")
+              from "user" 		usu
+		    inner join "profile"	pro on pro."userId" = usu."id"
+             where usu."id" = "followingUserId") as "user",
+           (select json_build_object('id', "tag"."id", 
+                                     'name', "tag"."name",
+                                     'color', "tag"."color")
+  	          from "tag" 
+             where "id" = ftag."tagId") as "tag"
+    	from "following_tag" ftag
+inner join "resource"	   reso	on reso."tagId" = ftag."tagId"
+	   where "followerId" = $1
+	     and reso."rating" > 0
+  order by reso."completedAt" desc
+  `, [user.id]);
+    }
+};
+FollowingTagRepository = __decorate([
+    typeorm_1.EntityRepository(FollowingTag_1.FollowingTag)
+], FollowingTagRepository);
 exports.default = FollowingTagRepository;
 //# sourceMappingURL=FollowingTagRepository.js.map

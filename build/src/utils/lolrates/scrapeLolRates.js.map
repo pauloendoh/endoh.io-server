@@ -1,0 +1,1 @@
+{"version":3,"file":"scrapeLolRates.js","sourceRoot":"","sources":["../../../../src/utils/lolrates/scrapeLolRates.ts"],"names":[],"mappings":";;;AAAA,sDAAkD;AAGlD,sEAAkE;AAG3D,KAAK,UAAU,cAAc;IAChC,IAAI;QACA,0BAA0B;QAC1B,qBAAqB;QACrB,MAAM,iCAAe,EAAE,CAAA;KAG1B;IAAC,OAAO,GAAG,EAAE;QACV,+BAAc,CAAC,GAAG,CAAC,OAAO,CAAC,CAAA;KAC9B;AAEL,CAAC;AAXD,wCAWC"}

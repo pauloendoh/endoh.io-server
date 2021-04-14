@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // PE 2/3 - maybe validateUserFields ?; also, MyError is a little confusing;
-var validateUser = function (user) {
-    var errors = [];
+const validateUser = (user) => {
+    let errors = [];
     if (!user.email.length) {
         errors.push({ field: 'email', message: 'Email is required' });
     }
