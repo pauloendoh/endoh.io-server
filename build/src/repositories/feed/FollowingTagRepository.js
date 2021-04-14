@@ -5,12 +5,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const FollowingTag_1 = require("../../entities/feed/FollowingTag");
 let FollowingTagRepository = class FollowingTagRepository extends typeorm_1.Repository {
-    async getFollowingUsers(follower) {
-        return this.query(`
+    getFollowingUsers(follower) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.query(`
         SELECT json_build_object('userId', FUS.id,
                                  'username', FUS.username,
                                  'fullName', PRO."fullName",
@@ -26,9 +36,11 @@ let FollowingTagRepository = class FollowingTagRepository extends typeorm_1.Repo
       GROUP BY FUS.id,
 	  		   PRO."fullName",
 			   PRO."pictureUrl"`, [follower.id]);
+        });
     }
-    async getFollowers(user) {
-        return this.query(`
+    getFollowers(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.query(`
         SELECT json_build_object('userId', FUS.id,
                                  'username', FUS.username,
                                  'fullName', PRO."fullName",
@@ -44,9 +56,11 @@ let FollowingTagRepository = class FollowingTagRepository extends typeorm_1.Repo
       GROUP BY FUS.id,
 	  		   PRO."fullName",
 			   PRO."pictureUrl"`, [user.id]);
+        });
     }
-    async getMostFollowedUsersByUsersYouFollow(you, returnUpTo = 40) {
-        return this.query(`
+    getMostFollowedUsersByUsersYouFollow(you, returnUpTo = 40) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.query(`
         select (select json_build_object('userId', "user".id, 'username', "user".username) 
                   from "user" where "id" = "followingUserId") as user,
 	             count("followingUserId")                       as "count" 
@@ -66,9 +80,11 @@ let FollowingTagRepository = class FollowingTagRepository extends typeorm_1.Repo
 	    group by "followingUserId" order by "count" desc
 	    limit $2
   `, [you.id, returnUpTo]);
+        });
     }
-    async getMostFollowedUsersByUsersYouDONTFollow(you, returnUpTo = 10) {
-        return this.query(`
+    getMostFollowedUsersByUsersYouDONTFollow(you, returnUpTo = 10) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.query(`
         select (select json_build_object('userId', "user".id, 'username', "user".username)
 	                from "user" 
                  where "id" = "followingUserId") as user, 
@@ -82,9 +98,11 @@ let FollowingTagRepository = class FollowingTagRepository extends typeorm_1.Repo
 			order by count("followingUserId") desc
 				 limit $2
   `, [you.id, returnUpTo]);
+        });
     }
-    async getFeedResources(user) {
-        return this.query(`
+    getFeedResources(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.query(`
     select reso."id", 
   		     reso."title", 
   		     reso."url",
@@ -110,6 +128,7 @@ inner join "resource"	   reso	on reso."tagId" = ftag."tagId"
 	     and reso."rating" > 0
   order by reso."completedAt" desc
   `, [user.id]);
+        });
     }
 };
 FollowingTagRepository = __decorate([

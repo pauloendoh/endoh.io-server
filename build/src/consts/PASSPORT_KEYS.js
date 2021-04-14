@@ -8,8 +8,5 @@ const GOOGLE_TOKENS = {
 const SESSION = {
     COOKIE_KEY: "thisappisawesome"
 };
-exports.PASSPORT_KEYS = {
-    ...GOOGLE_TOKENS,
-    ...SESSION
-};
+exports.PASSPORT_KEYS = Object.assign(Object.assign({}, GOOGLE_TOKENS), SESSION);
 //# sourceMappingURL=PASSPORT_KEYS.js.map

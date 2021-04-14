@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = require("dotenv");
 const express_1 = require("express");
@@ -17,7 +26,7 @@ const myConsoleError_1 = require("../utils/myConsoleError");
 dotenv.config();
 const utilsRoute = express_1.Router();
 const userRepo = typeorm_1.getCustomRepository(UserRepository_1.default);
-utilsRoute.get('/link-preview', authMiddleware_1.default, async (req, res) => {
+utilsRoute.get('/link-preview', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const url = req.query['url'];
     if (!isValidUrl_1.isValidUrl(url)) {
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse('URL is not valid', 'url'));
@@ -34,14 +43,14 @@ utilsRoute.get('/link-preview', authMiddleware_1.default, async (req, res) => {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
-utilsRoute.post('/passwordResetEmail', async (req, res) => {
+}));
+utilsRoute.post('/passwordResetEmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = req.body;
         if (!isValidEmail_1.isValidEmail(email)) {
             return res.sendStatus(400).json(new ErrorMessage_1.MyErrorsResponse("This is not an email lol"));
         }
-        const registeredUser = await userRepo.findOne({ email });
+        const registeredUser = yield userRepo.findOne({ email });
         if (!registeredUser) {
             return res.sendStatus(200);
         }
@@ -53,18 +62,18 @@ utilsRoute.post('/passwordResetEmail', async (req, res) => {
         myConsoleError_1.myConsoleError(err.message);
         return res.sendStatus(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
+}));
 //  PE 2/3 
-utilsRoute.get('/search', authMiddleware_1.default, async (req, res) => {
+utilsRoute.get('/search', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const query = req.query.q;
     const resourcesRepo = typeorm_1.getCustomRepository(ResourceRepository_1.default);
     const userRepo = typeorm_1.getCustomRepository(UserRepository_1.default);
     const skillsRepo = typeorm_1.getCustomRepository(SkillRepository_1.default);
     try {
         const results = {
-            resources: await resourcesRepo.getResourcesByText(req.user, query),
-            users: await userRepo.getUsersByText(query),
-            skills: await skillsRepo.getByText(req.user.id, query)
+            resources: yield resourcesRepo.getResourcesByText(req.user, query),
+            users: yield userRepo.getUsersByText(query),
+            skills: yield skillsRepo.getByText(req.user.id, query)
         };
         return res.status(200).json(results);
     }
@@ -72,34 +81,34 @@ utilsRoute.get('/search', authMiddleware_1.default, async (req, res) => {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
-utilsRoute.get('/notifications', authMiddleware_1.default, async (req, res) => {
+}));
+utilsRoute.get('/notifications', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repo = typeorm_1.getCustomRepository(NotificationRepository_1.default);
     try {
-        const notifications = await repo.getNotifications(req.user.id);
+        const notifications = yield repo.getNotifications(req.user.id);
         return res.status(200).json(notifications);
     }
     catch (err) {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
-utilsRoute.post('/notifications/seeAll', authMiddleware_1.default, async (req, res) => {
+}));
+utilsRoute.post('/notifications/seeAll', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const notRepo = typeorm_1.getCustomRepository(NotificationRepository_1.default);
     try {
-        await notRepo
+        yield notRepo
             .createQueryBuilder()
             .update()
             .set({ seen: true })
             .where("userId = :userId", { userId: req.user.id })
             .execute();
-        const notifications = await notRepo.getNotifications(req.user.id);
+        const notifications = yield notRepo.getNotifications(req.user.id);
         return res.status(200).json(notifications);
     }
     catch (err) {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
+}));
 exports.default = utilsRoute;
 //# sourceMappingURL=utilsRoute.js.map

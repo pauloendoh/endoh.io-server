@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const typeorm_1 = require("typeorm");
@@ -9,24 +18,24 @@ const ErrorMessage_1 = require("../../utils/ErrorMessage");
 const myConsoleError_1 = require("../../utils/myConsoleError");
 const skillRoute = express_1.Router();
 const skillRepo = typeorm_1.getCustomRepository(SkillRepository_1.default);
-skillRoute.get('/', authMiddleware_1.default, async (req, res) => {
+skillRoute.get('/', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { user } = req;
     try {
-        const skills = await skillRepo.getAllFromUser(user.id);
+        const skills = yield skillRepo.getAllFromUser(user.id);
         return res.status(200).json(skills);
     }
     catch (err) {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
-skillRoute.post('/', authMiddleware_1.default, async (req, res) => {
+}));
+skillRoute.post('/', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const sentSkill = req.body;
     const { user } = req;
     try {
         // checking ownership
         if (sentSkill.id) {
-            const found = await skillRepo.findOne({ id: sentSkill.id, user });
+            const found = yield skillRepo.findOne({ id: sentSkill.id, user });
             if (!found) {
                 return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(`Now owner.`));
             }
@@ -39,28 +48,28 @@ skillRoute.post('/', authMiddleware_1.default, async (req, res) => {
                 newProgress.oldLevel = found.currentLevel;
                 newProgress.newLevel = sentSkill.currentLevel;
                 newProgress.goalLevel = sentSkill.goalLevel;
-                await typeorm_1.getRepository(SkillProgress_1.SkillProgress).save(newProgress);
+                yield typeorm_1.getRepository(SkillProgress_1.SkillProgress).save(newProgress);
             }
         }
         sentSkill.userId = req.user.id;
-        await skillRepo.save(sentSkill);
-        const allSkills = await skillRepo.getAllFromUser(user.id);
+        yield skillRepo.save(sentSkill);
+        const allSkills = yield skillRepo.getAllFromUser(user.id);
         return res.status(200).json(allSkills);
     }
     catch (err) {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
-skillRoute.put('/:id', authMiddleware_1.default, async (req, res) => {
+}));
+skillRoute.put('/:id', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { user } = req;
     const skillId = Number(req.params['id']);
     const sentSkill = req.body;
     try {
-        const isOwner = await skillRepo.findOne({ userId: user.id, id: skillId });
+        const isOwner = yield skillRepo.findOne({ userId: user.id, id: skillId });
         if (isOwner) {
             sentSkill.id = skillId;
-            const savedSkill = await skillRepo.save(sentSkill);
+            const savedSkill = yield skillRepo.save(sentSkill);
             return res.status(200).json(savedSkill);
         }
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse("User is not owner or id doesn't exist"));
@@ -69,19 +78,19 @@ skillRoute.put('/:id', authMiddleware_1.default, async (req, res) => {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
-skillRoute.delete('/', authMiddleware_1.default, async (req, res) => {
+}));
+skillRoute.delete('/', authMiddleware_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { user } = req;
     const { ids } = req.body;
     try {
-        await skillRepo.deleteIdsFromUser(ids, user.id);
-        const skills = await skillRepo.getAllFromUser(user.id);
+        yield skillRepo.deleteIdsFromUser(ids, user.id);
+        const skills = yield skillRepo.getAllFromUser(user.id);
         return res.status(200).json(skills);
     }
     catch (err) {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
-});
+}));
 exports.default = skillRoute;
 //# sourceMappingURL=skillRoute.js.map
