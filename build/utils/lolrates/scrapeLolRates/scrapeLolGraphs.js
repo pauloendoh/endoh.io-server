@@ -8,7 +8,7 @@ const myConsoleError_1 = require("../../myConsoleError");
 const myConsoleSuccess_1 = require("../../myConsoleSuccess");
 async function scrapeLolGraphs() {
     myConsoleSuccess_1.myConsoleSuccess("Starting scrapeLolGraphs");
-    const browser = await pup.launch({ args: ['--no-sandbox'] });
+    const browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     try {
         const page = await browser.newPage();
         await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36");

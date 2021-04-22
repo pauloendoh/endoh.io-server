@@ -9,7 +9,7 @@ import { IOpggResult } from './scrapeOpgg'
 
 export async function scrapeLolGraphs() {
     myConsoleSuccess("Starting scrapeLolGraphs")
-    const browser = await pup.launch({ args: ['--no-sandbox'] })
+    const browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] })
     try {
         const page = await browser.newPage()
 
