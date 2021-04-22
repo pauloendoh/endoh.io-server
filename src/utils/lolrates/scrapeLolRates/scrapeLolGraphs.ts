@@ -89,7 +89,7 @@ export async function scrapeLolGraphs() {
         })
 
 
-        const saved = await getCustomRepository(LolRateRepository).saveLolGraphs(results)
+        await getCustomRepository(LolRateRepository).saveLolGraphs(results)
 
         myConsoleSuccess("Finished scrapeLolGraphs")
         await browser.close();
