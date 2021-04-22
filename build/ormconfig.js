@@ -20,7 +20,7 @@ var ormconfig = {
         __dirname + "/src/entities/**/*.js",
     ],
     synchronize: false,
-    logging: true,
+    logging: false,
     migrations: [
         __dirname + "/src/migrations/**/*.ts",
         __dirname + "/src/migrations/**/*.js",

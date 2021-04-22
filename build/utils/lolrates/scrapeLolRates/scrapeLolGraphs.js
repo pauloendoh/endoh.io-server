@@ -66,7 +66,7 @@ async function scrapeLolGraphs() {
             }
             return results;
         });
-        const saved = await typeorm_1.getCustomRepository(LolRateRepository_1.default).saveLolGraphs(results);
+        await typeorm_1.getCustomRepository(LolRateRepository_1.default).saveLolGraphs(results);
         myConsoleSuccess_1.myConsoleSuccess("Finished scrapeLolGraphs");
         await browser.close();
     }
