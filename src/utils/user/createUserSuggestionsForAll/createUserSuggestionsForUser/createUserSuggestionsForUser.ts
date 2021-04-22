@@ -16,7 +16,6 @@ const createUserSuggestionsForUser = async (user: User) => {
             .from(UserSuggestion)
             .where("userId = :userId", { userId: user.id })
             .execute()
-        console.log(result)
 
         // from users YOU FOLLOW
         const mostFollowedUsers =

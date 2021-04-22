@@ -37,7 +37,6 @@ export default class LolRateRepository extends Repository<LolRate>{
     }
 
     async saveOpgg(results: ScrapeResult[]) {
-        console.log(results)
         try {
             // resetting all from op.gg
             await this.createQueryBuilder()
@@ -72,7 +71,6 @@ export default class LolRateRepository extends Repository<LolRate>{
     }
 
     async saveLolGraphs(results: ScrapeResult[]) {
-        console.log(results)
         try {
             // resetting all from op.gg
             await this.createQueryBuilder()

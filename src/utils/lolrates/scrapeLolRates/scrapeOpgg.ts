@@ -32,10 +32,10 @@ export async function scrapeOpgg() {
 
             const results: IOpggResult[] = []
 
-            const tbodies = document.querySelectorAll('tbody')
+            const tbodies = Array.from(document.querySelectorAll('tbody'))
             let tbodyIndex = 0;
             for (const tbody of tbodies) {
-                const trs = tbody.querySelectorAll('tr')
+                const trs = Array.from(tbody.querySelectorAll('tr'))
 
 
                 for (const tr of trs) {
@@ -60,7 +60,6 @@ export async function scrapeOpgg() {
 
         const saved = await getCustomRepository(LolRateRepository).saveOpgg(results)
 
-        console.log(saved)
         await browser.close();
         return
     } catch (err) {

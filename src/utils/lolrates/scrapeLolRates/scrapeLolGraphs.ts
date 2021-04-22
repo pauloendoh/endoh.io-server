@@ -8,17 +8,13 @@ import { IOpggResult } from './scrapeOpgg'
 
 
 export async function scrapeLolGraphs() {
+    myConsoleSuccess("Starting scrapeLolGraphs")
+    const browser = await pup.launch()
+
     try {
-        myConsoleSuccess("Starting scrapeLolGraphs")
-        const browser = await pup.launch({ ignoreDefaultArgs: true, })
-
-
         const page = await browser.newPage()
-        await page.setViewport({
-            width: 640,
-            height: 480,
-            deviceScaleFactor: 1,
-        });
+
+        await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36")
 
         await page.goto('http://www.leagueofgraphs.com/champions/builds/by-winrate')
         await page.screenshot({ path: __dirname + '/scrapeLolGraphs.png' });
@@ -68,19 +64,19 @@ export async function scrapeLolGraphs() {
                 roleButton.click()
                 await delay(2000)
 
-                console.log(1)
-                const trs = document.querySelectorAll('.data_table.with_sortable_column tbody tr')
+                // console.log(1)
+                const trs = Array.from(document.querySelectorAll('.data_table.with_sortable_column tbody tr'))
                 for (const tr of trs) {
                     if (tr.textContent.includes('KDA') || !tr.querySelector('.name'))
                         continue;
 
 
                     const tds = tr.querySelectorAll('td')
-                    console.log(2)
+                    // console.log(2)
                     const championName = tds[1].querySelector('.name').textContent.trim()
-                    console.log(3)
+                    // console.log(3)
                     const pickRate = tds[2].querySelector('.progressBarTxt').textContent
-                    console.log(4)
+                    // console.log(4)
                     const winRate = tds[3].querySelector('.progressBarTxt').textContent
 
                     results.push({ role, championName, pickRate, winRate })
@@ -90,17 +86,17 @@ export async function scrapeLolGraphs() {
 
 
 
-
             return results
         })
 
 
         const saved = await getCustomRepository(LolRateRepository).saveLolGraphs(results)
-        console.log(saved)
+
         myConsoleSuccess("Finished scrapeLolGraphs")
         await browser.close();
 
     } catch (err) {
+        await browser.close()
         myConsoleError(err.message)
     }
 

@@ -20,7 +20,7 @@ export async function scrapeChampions() {
         const champions = await page.evaluate(() => {
 
             const champions: IChampion[] = []
-            const containers = document.querySelectorAll('.champion-name-container')
+            const containers = Array.from(document.querySelectorAll('.champion-name-container'))
 
             for (const container of containers) {
                 const iconUrl = container.querySelector('img').getAttribute('src')

@@ -7,7 +7,7 @@ import { scrapeLolGraphs } from './scrapeLolRates/scrapeLolGraphs'
 export async function scrapeLolRates() {
     try {
         // await scrapeChampions()
-        // await scrapeOpgg()
+        await scrapeOpgg()
         await scrapeLolGraphs()
 
 

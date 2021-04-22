@@ -1,10 +1,7 @@
 {
   "name": "back",
-  "version": "10.15.3",
+  "version": "14.16.1",
   "description": "Awesome project developed with TypeORM.",
-  "engines": {
-    "node": "10.15.3"
-  },
   "devDependencies": {
     "@types/bcrypt": "^3.0.1",
     "@types/cookie-session": "^2.0.42",
@@ -44,7 +41,7 @@
     "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
-    "pg": "^7.3.0",
+    "pg": "^8.6.0",
     "puppeteer": "^8.0.0",
     "reflect-metadata": "^0.1.10",
     "sqlite3": "^5.0.0",
@@ -62,15 +59,8 @@
     "revertMigration": "ts-node node_modules/typeorm/cli.js migration:revert"
   },
   "nodemonConfig": {
-    "ignore": [
-      "**/*.test.ts",
-      "**/*.spec.ts",
-      ".git",
-      "node_modules"
-    ],
-    "watch": [
-      "src"
-    ],
+    "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "node_modules"],
+    "watch": ["src"],
     "exec": "npm run watch",
     "ext": "ts"
   }

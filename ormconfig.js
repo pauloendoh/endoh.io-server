@@ -18,7 +18,7 @@ let ormconfig = {
    ],
    synchronize: false,
    logging:
-      true,
+      false,
 
    migrations: [
       __dirname + "/src/migrations/**/*.ts",
