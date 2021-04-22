@@ -99,4 +99,3 @@ LolRateRepository = __decorate([
     typeorm_1.EntityRepository(LolRate_1.LolRate)
 ], LolRateRepository);
 exports.default = LolRateRepository;
-//# sourceMappingURL=LolRateRepository.js.map

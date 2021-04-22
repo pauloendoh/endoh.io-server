@@ -6,4 +6,3 @@ const isValidEmail = (text) => {
     return re.test(String(text).toLowerCase());
 };
 exports.isValidEmail = isValidEmail;
-//# sourceMappingURL=isValidEmail.js.map

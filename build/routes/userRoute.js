@@ -170,4 +170,3 @@ userRoute.post('/picture', multer(multerConfig).single('file'), authMiddleware_1
     }
 });
 exports.default = userRoute;
-//# sourceMappingURL=userRoute.js.map

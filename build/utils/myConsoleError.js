@@ -12,4 +12,3 @@ function myConsoleError(text) {
     return;
 }
 exports.myConsoleError = myConsoleError;
-//# sourceMappingURL=myConsoleError.js.map

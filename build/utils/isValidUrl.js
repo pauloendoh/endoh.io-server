@@ -11,4 +11,3 @@ function isValidUrl(text) {
     return true;
 }
 exports.isValidUrl = isValidUrl;
-//# sourceMappingURL=isValidUrl.js.map

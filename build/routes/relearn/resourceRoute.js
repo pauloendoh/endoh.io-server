@@ -151,4 +151,3 @@ resourceRoute.post('/duplicate/:id', authMiddleware_1.default, async (req, res) 
     }
 });
 exports.default = resourceRoute;
-//# sourceMappingURL=resourceRoute.js.map

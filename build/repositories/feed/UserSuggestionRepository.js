@@ -28,4 +28,3 @@ UserSuggestionRepository = __decorate([
     typeorm_1.EntityRepository(UserSuggestion_1.UserSuggestion)
 ], UserSuggestionRepository);
 exports.default = UserSuggestionRepository;
-//# sourceMappingURL=UserSuggestionRepository.js.map

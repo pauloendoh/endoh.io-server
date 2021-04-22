@@ -99,4 +99,3 @@ typeorm_1.createConnection(ormconfig).then(async (connection) => {
         }, 60 * 1000 * 15);
     });
 }).catch(error => myConsoleError_1.myConsoleError(error));
-//# sourceMappingURL=server.js.map

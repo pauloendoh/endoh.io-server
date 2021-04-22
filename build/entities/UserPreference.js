@@ -67,4 +67,3 @@ UserPreference = __decorate([
     __metadata("design:paramtypes", [])
 ], UserPreference);
 exports.UserPreference = UserPreference;
-//# sourceMappingURL=UserPreference.js.map

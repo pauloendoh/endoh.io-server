@@ -116,4 +116,3 @@ ResourceRepository = __decorate([
     typeorm_1.EntityRepository(Resource_1.Resource)
 ], ResourceRepository);
 exports.default = ResourceRepository;
-//# sourceMappingURL=ResourceRepository.js.map

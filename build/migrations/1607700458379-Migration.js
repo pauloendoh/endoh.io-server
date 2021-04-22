@@ -13,4 +13,3 @@ class Migration1607700458379 {
     }
 }
 exports.Migration1607700458379 = Migration1607700458379;
-//# sourceMappingURL=1607700458379-Migration.js.map

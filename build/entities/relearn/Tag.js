@@ -69,4 +69,3 @@ Tag = __decorate([
     typeorm_1.Entity()
 ], Tag);
 exports.Tag = Tag;
-//# sourceMappingURL=Tag.js.map

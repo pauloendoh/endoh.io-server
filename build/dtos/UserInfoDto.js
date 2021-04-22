@@ -10,4 +10,3 @@ const newUserInfo = () => ({
     followers: [],
 });
 exports.newUserInfo = newUserInfo;
-//# sourceMappingURL=UserInfoDto.js.map

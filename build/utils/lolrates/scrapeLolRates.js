@@ -16,4 +16,3 @@ async function scrapeLolRates() {
     }
 }
 exports.scrapeLolRates = scrapeLolRates;
-//# sourceMappingURL=scrapeLolRates.js.map

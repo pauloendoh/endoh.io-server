@@ -84,4 +84,3 @@ skillRoute.delete('/', authMiddleware_1.default, async (req, res) => {
     }
 });
 exports.default = skillRoute;
-//# sourceMappingURL=skillRoute.js.map

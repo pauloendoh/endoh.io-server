@@ -46,4 +46,3 @@ UserSubscriber = __decorate([
     typeorm_1.EventSubscriber()
 ], UserSubscriber);
 exports.UserSubscriber = UserSubscriber;
-//# sourceMappingURL=UserSubscriber.js.map

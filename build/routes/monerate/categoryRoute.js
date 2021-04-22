@@ -65,4 +65,3 @@ categoryRoute.delete('/:id', authMiddleware_1.default, async (req, res) => {
     }
 });
 exports.default = categoryRoute;
-//# sourceMappingURL=categoryRoute.js.map

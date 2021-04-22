@@ -17,9 +17,7 @@ let ormconfig = {
       __dirname + "/src/entities/**/*.ts",
    ],
    synchronize: false,
-   logging:
-      false,
-
+   logging: false,
    migrations: [
       __dirname + "/src/migrations/**/*.ts",
    ],
@@ -42,21 +40,20 @@ if (process.env.NODE_ENV === 'production') {
       password: process.env.DB_PASSWORD,
       database: "endoh.io",
       entities: [
-         "build/entities/**/*.js",
+         __dirname + "/entities/**/*.js",
       ],
       synchronize: false,
-      logging:
-         false,
+      logging: false,
       migrations: [
-         "build/migrations/**/*.js",
+         __dirname + "/migrations/**/*.js",
       ],
       subscribers: [
-         "build/subscriber/**/*.js",
+         __dirname + "/subscriber/**/*.js",
       ],
       cli: {
-         "entitiesDir": "build/entities",
-         "migrationsDir": "build/migrations",
-         "subscribersDir": "build/subscriber",
+         "entitiesDir": "build/src/entities",
+         "migrationsDir": "build/src/migrations",
+         "subscribersDir": "build/src/subscriber",
 
       }
    }

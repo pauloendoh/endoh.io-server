@@ -54,4 +54,3 @@ Category = __decorate([
     typeorm_1.Entity()
 ], Category);
 exports.default = Category;
-//# sourceMappingURL=Category.js.map

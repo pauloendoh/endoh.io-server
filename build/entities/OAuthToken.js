@@ -50,4 +50,3 @@ UserToken = __decorate([
     typeorm_1.Entity()
 ], UserToken);
 exports.UserToken = UserToken;
-//# sourceMappingURL=OAuthToken.js.map

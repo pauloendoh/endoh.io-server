@@ -59,4 +59,3 @@ SkillProgress = __decorate([
     typeorm_1.Entity()
 ], SkillProgress);
 exports.SkillProgress = SkillProgress;
-//# sourceMappingURL=SkillProgress.js.map

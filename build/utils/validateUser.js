@@ -21,4 +21,3 @@ const validateUser = (user) => {
     return errors;
 };
 exports.default = validateUser;
-//# sourceMappingURL=validateUser.js.map

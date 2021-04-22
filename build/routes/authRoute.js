@@ -300,4 +300,3 @@ authRoute.post('/user-preference', authMiddleware_1.default, async (req, res) =>
     }
 });
 exports.default = authRoute;
-//# sourceMappingURL=authRoute.js.map

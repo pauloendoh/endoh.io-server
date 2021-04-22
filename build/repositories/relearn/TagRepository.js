@@ -23,4 +23,3 @@ TagRepository = __decorate([
     typeorm_1.EntityRepository(Tag_1.Tag)
 ], TagRepository);
 exports.default = TagRepository;
-//# sourceMappingURL=TagRepository.js.map

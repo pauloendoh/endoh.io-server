@@ -32,4 +32,3 @@ const createProfileForUsers = async () => {
     }
 };
 exports.createProfileForUsers = createProfileForUsers;
-//# sourceMappingURL=createProfileForAll.js.map

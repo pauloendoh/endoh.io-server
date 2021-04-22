@@ -105,4 +105,3 @@ LolRate = __decorate([
     typeorm_1.Entity()
 ], LolRate);
 exports.LolRate = LolRate;
-//# sourceMappingURL=LolRate.js.map

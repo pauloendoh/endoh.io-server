@@ -40,4 +40,3 @@ SkillRepository = __decorate([
     typeorm_1.EntityRepository(Skill_1.Skill)
 ], SkillRepository);
 exports.default = SkillRepository;
-//# sourceMappingURL=SkillRepository.js.map

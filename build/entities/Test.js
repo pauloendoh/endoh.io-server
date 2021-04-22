@@ -29,4 +29,3 @@ Test = __decorate([
     typeorm_1.Entity()
 ], Test);
 exports.Test = Test;
-//# sourceMappingURL=Test.js.map

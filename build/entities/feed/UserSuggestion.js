@@ -56,4 +56,3 @@ UserSuggestion = __decorate([
     typeorm_1.Entity()
 ], UserSuggestion);
 exports.UserSuggestion = UserSuggestion;
-//# sourceMappingURL=UserSuggestion.js.map

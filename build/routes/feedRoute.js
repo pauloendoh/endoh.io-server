@@ -37,4 +37,3 @@ feedRoute.get('/resources', authMiddleware_1.default, async (req, res) => {
     }
 });
 exports.default = feedRoute;
-//# sourceMappingURL=feedRoute.js.map

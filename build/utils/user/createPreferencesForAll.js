@@ -31,4 +31,3 @@ const createPreferencesForAll = async () => {
     }
 };
 exports.createPreferencesForAll = createPreferencesForAll;
-//# sourceMappingURL=createPreferencesForAll.js.map

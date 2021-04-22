@@ -17,4 +17,3 @@ class MyErrorsResponse {
     }
 }
 exports.MyErrorsResponse = MyErrorsResponse;
-//# sourceMappingURL=ErrorMessage.js.map

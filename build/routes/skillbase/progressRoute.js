@@ -38,4 +38,3 @@ progressRoute.delete('/:id', authMiddleware_1.default, async (req, res) => {
     }
 });
 exports.default = progressRoute;
-//# sourceMappingURL=progressRoute.js.map

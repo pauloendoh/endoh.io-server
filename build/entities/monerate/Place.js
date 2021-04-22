@@ -54,4 +54,3 @@ Place = __decorate([
     typeorm_1.Entity()
 ], Place);
 exports.default = Place;
-//# sourceMappingURL=Place.js.map

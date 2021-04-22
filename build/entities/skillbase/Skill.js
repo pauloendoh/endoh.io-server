@@ -88,4 +88,3 @@ Skill = Skill_1 = __decorate([
     typeorm_1.Entity()
 ], Skill);
 exports.Skill = Skill;
-//# sourceMappingURL=Skill.js.map

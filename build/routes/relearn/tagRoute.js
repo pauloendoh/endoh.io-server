@@ -70,4 +70,3 @@ tagRoute.delete('/:id', authMiddleware_1.default, async (req, res) => {
     }
 });
 exports.default = tagRoute;
-//# sourceMappingURL=tagRoute.js.map

@@ -4,9 +4,9 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "./build",
-    "declaration": true,
+    "declaration": false, // don't generate d.ts files
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "sourceMap": true
+    "sourceMap": false // don't generate js.map files
   }
 }

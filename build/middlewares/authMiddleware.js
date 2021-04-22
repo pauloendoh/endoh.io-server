@@ -28,4 +28,3 @@ function authMiddleware(req, res, next) {
     }
 }
 exports.default = authMiddleware;
-//# sourceMappingURL=authMiddleware.js.map

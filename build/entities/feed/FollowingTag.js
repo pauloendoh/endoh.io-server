@@ -58,4 +58,3 @@ FollowingTag = __decorate([
     typeorm_1.Entity()
 ], FollowingTag);
 exports.FollowingTag = FollowingTag;
-//# sourceMappingURL=FollowingTag.js.map

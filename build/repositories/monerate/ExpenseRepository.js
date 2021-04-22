@@ -30,4 +30,3 @@ ExpenseRepository = __decorate([
     typeorm_1.EntityRepository(Expense_1.Expense)
 ], ExpenseRepository);
 exports.default = ExpenseRepository;
-//# sourceMappingURL=ExpenseRepository.js.map

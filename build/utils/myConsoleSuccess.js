@@ -12,4 +12,3 @@ function myConsoleSuccess(text) {
     return;
 }
 exports.myConsoleSuccess = myConsoleSuccess;
-//# sourceMappingURL=myConsoleSuccess.js.map

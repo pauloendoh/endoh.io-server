@@ -40,4 +40,3 @@ const createUserSuggestionsForUser = async (user) => {
     }
 };
 exports.default = createUserSuggestionsForUser;
-//# sourceMappingURL=createUserSuggestionsForUser.js.map

@@ -60,4 +60,3 @@ Notification = __decorate([
     typeorm_1.Entity()
 ], Notification);
 exports.Notification = Notification;
-//# sourceMappingURL=Notification.js.map

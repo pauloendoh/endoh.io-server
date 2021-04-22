@@ -59,4 +59,3 @@ expenseRoute.delete('/:id', authMiddleware_1.default, async (req, res) => {
     }
 });
 exports.default = expenseRoute;
-//# sourceMappingURL=expenseRoute.js.map

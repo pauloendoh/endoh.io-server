@@ -48,4 +48,3 @@ async function sendPasswordResetEmail(user) {
     myConsoleSuccess_1.myConsoleSuccess("Message sent: " + sentEmailInfo.messageId);
 }
 exports.sendPasswordResetEmail = sendPasswordResetEmail;
-//# sourceMappingURL=sendPasswordResetEmail.js.map

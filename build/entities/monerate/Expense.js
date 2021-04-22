@@ -72,4 +72,3 @@ Expense = __decorate([
     typeorm_1.Entity()
 ], Expense);
 exports.Expense = Expense;
-//# sourceMappingURL=Expense.js.map

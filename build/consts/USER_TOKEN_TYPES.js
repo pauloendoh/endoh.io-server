@@ -5,4 +5,3 @@ exports.USER_TOKEN_TYPES = {
     googleOauth: 'googleOauth',
     passwordReset: 'passwordReset'
 };
-//# sourceMappingURL=USER_TOKEN_TYPES.js.map

@@ -116,4 +116,3 @@ FollowingTagRepository = __decorate([
     typeorm_1.EntityRepository(FollowingTag_1.FollowingTag)
 ], FollowingTagRepository);
 exports.default = FollowingTagRepository;
-//# sourceMappingURL=FollowingTagRepository.js.map

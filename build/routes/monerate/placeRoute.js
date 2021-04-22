@@ -65,4 +65,3 @@ placeRoute.delete('/:id', authMiddleware_1.default, async (req, res) => {
     }
 });
 exports.default = placeRoute;
-//# sourceMappingURL=placeRoute.js.map

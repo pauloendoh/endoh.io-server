@@ -21,4 +21,3 @@ ProgressRepository = __decorate([
     typeorm_1.EntityRepository(SkillProgress_1.SkillProgress)
 ], ProgressRepository);
 exports.default = ProgressRepository;
-//# sourceMappingURL=ProgressRepository.js.map

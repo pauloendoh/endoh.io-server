@@ -26,4 +26,3 @@ CategoryRepository = __decorate([
     typeorm_1.EntityRepository(Category_1.default)
 ], CategoryRepository);
 exports.default = CategoryRepository;
-//# sourceMappingURL=CategoryRepository.js.map

@@ -32,4 +32,3 @@ async function scrapeChampions() {
     }
 }
 exports.scrapeChampions = scrapeChampions;
-//# sourceMappingURL=scrapeChampions.js.map

@@ -5,4 +5,3 @@ const addMinutes = (date, minutes) => {
     return new Date(date.getTime() + minutes * 60000);
 };
 exports.addMinutes = addMinutes;
-//# sourceMappingURL=addMinutes.js.map

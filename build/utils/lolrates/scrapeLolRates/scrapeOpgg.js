@@ -52,4 +52,3 @@ async function scrapeOpgg() {
     }
 }
 exports.scrapeOpgg = scrapeOpgg;
-//# sourceMappingURL=scrapeOpgg.js.map

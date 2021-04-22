@@ -76,4 +76,3 @@ async function scrapeLolGraphs() {
     }
 }
 exports.scrapeLolGraphs = scrapeLolGraphs;
-//# sourceMappingURL=scrapeLolGraphs.js.map

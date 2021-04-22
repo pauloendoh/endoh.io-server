@@ -102,4 +102,3 @@ utilsRoute.post('/notifications/seeAll', authMiddleware_1.default, async (req, r
     }
 });
 exports.default = utilsRoute;
-//# sourceMappingURL=utilsRoute.js.map

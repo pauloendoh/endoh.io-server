@@ -21,4 +21,3 @@ const createUserSuggestionsForAll = async () => {
     }
 };
 exports.createUserSuggestionsForAll = createUserSuggestionsForAll;
-//# sourceMappingURL=createUserSuggestionsForAll.js.map
