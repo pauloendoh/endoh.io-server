@@ -22,7 +22,7 @@ const scrapeLolRates_1 = require("./utils/lolrates/scrapeLolRates");
 require("./utils/passport-setup");
 require(`dotenv`).config();
 // It must use 'require' to work properly. 
-const ormconfig = require('./ormconfig');
+const ormconfig = require('../ormconfig');
 // PE 2/3 
 myConsoleSuccess_1.myConsoleSuccess("Connecting with ormconfig");
 typeorm_1.createConnection(ormconfig).then(async (connection) => {
