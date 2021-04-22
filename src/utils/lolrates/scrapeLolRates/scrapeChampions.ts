@@ -10,7 +10,7 @@ export interface IChampion {
 
 export async function scrapeChampions() {
     try {
-        const browser = await pup.launch()
+        const browser = await pup.launch({ args: ['--no-sandbox'] })
         const page = await browser.newPage()
 
         await page.goto('https://blitz.gg/lol/champions/overview')

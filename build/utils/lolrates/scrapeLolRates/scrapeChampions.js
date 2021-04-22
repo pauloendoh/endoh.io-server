@@ -7,7 +7,7 @@ const LolRateRepository_1 = require("../../../repositories/LolRateRepository");
 const myConsoleError_1 = require("../../myConsoleError");
 async function scrapeChampions() {
     try {
-        const browser = await pup.launch();
+        const browser = await pup.launch({ args: ['--no-sandbox'] });
         const page = await browser.newPage();
         await page.goto('https://blitz.gg/lol/champions/overview');
         await page.waitForSelector('.champion-name-container');

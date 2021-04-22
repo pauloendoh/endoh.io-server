@@ -10,7 +10,7 @@ export interface IOpggResult {
 
 export async function scrapeOpgg() {
     try {
-        const browser = await pup.launch()
+        const browser = await pup.launch({ args: ['--no-sandbox'] })
         const page = await browser.newPage()
 
         await page.goto('https://www.op.gg/champion/statistics')

@@ -7,7 +7,7 @@ const LolRateRepository_1 = require("../../../repositories/LolRateRepository");
 const myConsoleError_1 = require("../../myConsoleError");
 async function scrapeOpgg() {
     try {
-        const browser = await pup.launch();
+        const browser = await pup.launch({ args: ['--no-sandbox'] });
         const page = await browser.newPage();
         await page.goto('https://www.op.gg/champion/statistics');
         await page.waitForSelector('[data-tab-show-class="champion-trend-winratio"]');
