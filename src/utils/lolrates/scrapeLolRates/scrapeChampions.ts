@@ -13,6 +13,8 @@ export async function scrapeChampions() {
         const browser = await pup.launch({ args: ['--no-sandbox'] })
         const page = await browser.newPage()
 
+        await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36")
+
         await page.goto('https://blitz.gg/lol/champions/overview')
 
         await page.waitForSelector('.champion-name-container')
