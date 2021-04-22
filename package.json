@@ -50,7 +50,7 @@
     "typescript": "^4.0.5"
   },
   "scripts": {
-    "start": "typeorm migration:run && node build/src/server.js",
+    "start": "typeorm migration:run && node build/server.js",
     "watch": "node --inspect=5757 -r ts-node/register ./src/server.ts ",
     "dev": "nodemon",
     "build": "tsc",
