@@ -42,15 +42,16 @@ if (process.env.NODE_ENV === 'production') {
       password: process.env.DB_PASSWORD,
       database: "endoh.io",
       entities: [
-         __dirname + "build/src/entities/**/*.js",
+         __dirname + "/src/entities/**/*.js",
       ],
       synchronize: false,
-      logging: false,
+      logging:
+         false,
       migrations: [
          "build/src/migrations/**/*.js",
       ],
       subscribers: [
-         __dirname + "build/src/subscriber/**/*.js",
+         __dirname + "/src/subscriber/**/*.js",
       ],
       cli: {
          "entitiesDir": "build/src/entities",
