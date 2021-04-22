@@ -125,5 +125,3 @@ createConnection(ormconfig).then(async connection => {
 
 
 }).catch(error => myConsoleError(error));
-
-console.log('')
