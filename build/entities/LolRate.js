@@ -30,15 +30,15 @@ __decorate([
     __metadata("design:type", String)
 ], LolRate.prototype, "role", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "opggPick", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "opggWin", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "opggAvg", void 0);
 __decorate([
@@ -46,15 +46,15 @@ __decorate([
     __metadata("design:type", String)
 ], LolRate.prototype, "opggUpdatedAt", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "lolgraphsPick", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "lolgraphsWin", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "lolgraphsAvg", void 0);
 __decorate([
@@ -62,15 +62,15 @@ __decorate([
     __metadata("design:type", String)
 ], LolRate.prototype, "lolgraphsUpdatedAt", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "lolalyticsPick", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "lolalyticsWin", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "lolalyticsAvg", void 0);
 __decorate([
@@ -78,15 +78,15 @@ __decorate([
     __metadata("design:type", String)
 ], LolRate.prototype, "lolalyticsUpdatedAt", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "blitzPick", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "blitzWin", void 0);
 __decorate([
-    typeorm_1.Column({ nullable: true, type: "decimal", precision: 5, scale: 2 }),
+    typeorm_1.Column("double precision", { nullable: true }),
     __metadata("design:type", Number)
 ], LolRate.prototype, "blitzAvg", void 0);
 __decorate([

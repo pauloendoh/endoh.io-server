@@ -1,74 +1,76 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm"
 
 @Entity()
 export class LolRate {
+  @PrimaryGeneratedColumn()
+  id: number
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column()
+  championName: string
 
-    @Column()
-    championName: string
+  @Column()
+  iconUrl: string
 
-    @Column()
-    iconUrl: string
+  @Column()
+  role: string
 
-    @Column()
-    role: string
+  @Column("double precision", { nullable: true })
+  opggPick: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    opggPick: number
+  @Column("double precision", { nullable: true })
+  opggWin: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    opggWin: number
+  @Column("double precision", { nullable: true })
+  opggAvg: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    opggAvg: number
+  @Column({ nullable: true })
+  opggUpdatedAt: string
 
-    @Column({ nullable: true })
-    opggUpdatedAt: string
+  @Column("double precision", { nullable: true })
+  lolgraphsPick: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    lolgraphsPick: number
+  @Column("double precision", { nullable: true })
+  lolgraphsWin: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    lolgraphsWin: number
+  @Column("double precision", { nullable: true })
+  lolgraphsAvg: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    lolgraphsAvg: number
+  @Column({ nullable: true })
+  lolgraphsUpdatedAt: string
 
-    @Column({ nullable: true })
-    lolgraphsUpdatedAt: string
+  @Column("double precision", { nullable: true })
+  lolalyticsPick: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    lolalyticsPick: number
+  @Column("double precision", { nullable: true })
+  lolalyticsWin: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    lolalyticsWin: number
+  @Column("double precision", { nullable: true })
+  lolalyticsAvg: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    lolalyticsAvg: number
+  @Column({ nullable: true })
+  lolalyticsUpdatedAt: string
 
-    @Column({ nullable: true })
-    lolalyticsUpdatedAt: string
+  @Column("double precision", { nullable: true })
+  blitzPick: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    blitzPick: number
+  @Column("double precision", { nullable: true })
+  blitzWin: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    blitzWin: number
+  @Column("double precision", { nullable: true })
+  blitzAvg: number
 
-    @Column({ nullable: true, type: "decimal", precision: 5, scale: 2 })
-    blitzAvg: number
+  @Column({ nullable: true })
+  blitzUpdatedAt: string
 
-    @Column({ nullable: true })
-    blitzUpdatedAt: string
+  @CreateDateColumn()
+  createdAt: string
 
-    @CreateDateColumn()
-    createdAt: string
-
-    @UpdateDateColumn()
-    updatedAt: string
-
+  @UpdateDateColumn()
+  updatedAt: string
 }
-

@@ -10,12 +10,41 @@ const typeorm_1 = require("typeorm");
 const LolRate_1 = require("../entities/LolRate");
 const myConsoleError_1 = require("../utils/myConsoleError");
 let LolRateRepository = class LolRateRepository extends typeorm_1.Repository {
+    async getRates() {
+        try {
+            return this.query(`
+           select avgs.*,
+                   (avgs."avgPick" + avgs."avgWin")/2  as "avgAvg"
+	          from (select "championName",
+                           "role",
+                           "iconUrl",
+                           "opggPick",
+                           "opggWin",
+                           "lolgraphsPick",
+                           "lolgraphsWin",
+                           ("opggPick" + "lolgraphsPick")/2 as "avgPick",
+                           ("opggWin" + "lolgraphsWin")/2 as "avgWin"
+                      from "lol_rate") as avgs
+	         where avgs."avgWin" >= 51
+             order by "avgAvg" desc
+        `);
+        }
+        catch (err) { }
+    }
+    async getUpdatedAt() {
+        return this.query(`
+            select "opggUpdatedAt",
+                   "lolgraphsUpdatedAt"
+              from "lol_rate"
+             limit 1
+        `);
+    }
     async saveChampions(champions) {
         try {
             for (const champion of champions) {
                 const { name: championName, iconUrl } = champion;
                 const exists = await this.findOne({
-                    where: { championName, iconUrl }
+                    where: { championName, iconUrl },
                 });
                 if (!exists) {
                     const roles = ["TOP", "JUNGLE", "MID", "BOT", "SUP"];
@@ -39,12 +68,12 @@ let LolRateRepository = class LolRateRepository extends typeorm_1.Repository {
                 opggPick: null,
                 opggWin: null,
                 opggAvg: null,
-                opggUpdatedAt: new Date().toISOString()
+                opggUpdatedAt: new Date().toISOString(),
             })
                 .execute();
             for (const { role, championName, pickRate, winRate } of results) {
-                const opggPick = Number(pickRate.trim().replace(/%/g, ''));
-                const opggWin = Number(winRate.trim().replace(/%/g, ''));
+                const opggPick = Number(pickRate.trim().replace(/%/g, ""));
+                const opggWin = Number(winRate.trim().replace(/%/g, ""));
                 const opggAvg = Number((opggPick + opggWin) / 2);
                 await this.createQueryBuilder()
                     .update()
@@ -52,10 +81,11 @@ let LolRateRepository = class LolRateRepository extends typeorm_1.Repository {
                     opggPick,
                     opggWin,
                     opggAvg,
-                    opggUpdatedAt: new Date().toISOString()
+                    opggUpdatedAt: new Date().toISOString(),
                 })
                     .where("championName = :championName", { championName })
-                    .andWhere("role = :role", { role }).execute();
+                    .andWhere("role = :role", { role })
+                    .execute();
             }
         }
         catch (err) {
@@ -71,12 +101,12 @@ let LolRateRepository = class LolRateRepository extends typeorm_1.Repository {
                 lolgraphsPick: null,
                 lolgraphsWin: null,
                 lolgraphsAvg: null,
-                lolgraphsUpdatedAt: new Date().toISOString()
+                lolgraphsUpdatedAt: new Date().toISOString(),
             })
                 .execute();
             for (const { role, championName, pickRate, winRate } of results) {
-                const lolgraphsPick = Number(pickRate.trim().replace(/%/g, ''));
-                const lolgraphsWin = Number(winRate.trim().replace(/%/g, ''));
+                const lolgraphsPick = Number(pickRate.trim().replace(/%/g, ""));
+                const lolgraphsWin = Number(winRate.trim().replace(/%/g, ""));
                 const lolgraphsAvg = Number((lolgraphsPick + lolgraphsWin) / 2);
                 await this.createQueryBuilder()
                     .update()
@@ -84,10 +114,11 @@ let LolRateRepository = class LolRateRepository extends typeorm_1.Repository {
                     lolgraphsPick,
                     lolgraphsWin,
                     lolgraphsAvg,
-                    lolgraphsUpdatedAt: new Date().toISOString()
+                    lolgraphsUpdatedAt: new Date().toISOString(),
                 })
                     .where("championName = :championName", { championName })
-                    .andWhere("role = :role", { role }).execute();
+                    .andWhere("role = :role", { role })
+                    .execute();
             }
         }
         catch (err) {
