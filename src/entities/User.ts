@@ -1,40 +1,49 @@
-import { AfterInsert, BeforeInsert, Column, CreateDateColumn, Entity, getRepository, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { FollowingTag } from './feed/FollowingTag';
-import { Notification } from './feed/Notification';
-import { Profile } from './feed/Profile';
-import { UserSuggestion } from './feed/UserSuggestion';
-import Category from './monerate/Category';
-import { Expense } from './monerate/Expense';
-import Place from './monerate/Place';
-import { UserToken } from './OAuthToken';
-import { Tag } from './relearn/Tag';
-import { Skill } from './skillbase/Skill';
-import { SkillProgress } from './skillbase/SkillProgress';
-import { UserPreference } from './UserPreference';
-
+import {
+  AfterInsert,
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  Entity,
+  getRepository,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm"
+import { FollowingTag } from "./feed/FollowingTag"
+import { Notification } from "./feed/Notification"
+import { Profile } from "./feed/Profile"
+import { UserSuggestion } from "./feed/UserSuggestion"
+import Category from "./monerate/Category"
+import { Expense } from "./monerate/Expense"
+import Place from "./monerate/Place"
+import { UserToken } from "./OAuthToken"
+import { Tag } from "./relearn/Tag"
+import { Skill } from "./skillbase/Skill"
+import { SkillExpectation } from "./skillbase/SkillExpectation"
+import { SkillProgress } from "./skillbase/SkillProgress"
+import { UserPreference } from "./UserPreference"
 
 @Entity()
 export class User {
-
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column({ unique: true, nullable: true })
-  googleId: string;
+  googleId: string
 
   @Column({ unique: true })
-  username: string;
+  username: string
 
   @Column({ unique: true })
-  email: string;
+  email: string
 
   @Column()
-  password: string;
+  password: string
 
   @Column({ default: false })
   isAdmin: boolean
-
-
 
   @CreateDateColumn()
   createdAt: Date
@@ -42,55 +51,68 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ type: "timestamptz", nullable: true })
   expiresAt: string
 
   // Relations ----------------------------------------------------------------
-  @OneToOne(type => UserPreference, preference => preference.user, { eager: true })
+  @OneToOne((type) => UserPreference, (preference) => preference.user, {
+    eager: true,
+  })
   preference: UserPreference
 
-  @OneToOne(type => Profile, profile => profile.user)
+  @OneToOne((type) => Profile, (profile) => profile.user)
   profile: Profile
 
-  @OneToMany(type => Expense, expense => expense.user)
+  @OneToMany((type) => Expense, (expense) => expense.user)
   expenses: Expense[]
 
-  @OneToMany(type => Category, category => category.user)
+  @OneToMany((type) => Category, (category) => category.user)
   categories: Category[]
 
-  @OneToMany(type => Place, place => place.user)
+  @OneToMany((type) => Place, (place) => place.user)
   places: Place[]
 
-  @OneToMany(type => UserToken, oauthToken => oauthToken.user)
+  @OneToMany((type) => UserToken, (oauthToken) => oauthToken.user)
   tokens: UserToken[]
 
-  @OneToMany(type => Tag, tag => tag.user)
+  @OneToMany((type) => Tag, (tag) => tag.user)
   tags: Tag[]
 
   // Skillbase
-  @OneToMany(type => Skill, skill => skill.user)
+  @OneToMany((type) => Skill, (skill) => skill.user)
   skills: Skill[]
 
+  @OneToMany(
+    (type) => SkillExpectation,
+    (skillExpectation) => skillExpectation.user
+  )
+  skillExpectations: SkillExpectation[]
 
-  @OneToMany(type => SkillProgress, progress => progress.user)
+  @OneToMany((type) => SkillProgress, (progress) => progress.user)
   skillProgresses: SkillProgress[]
 
   // Feed
-  @OneToMany(type => FollowingTag, followingTag => followingTag.follower)
+  @OneToMany((type) => FollowingTag, (followingTag) => followingTag.follower)
   followingTags: FollowingTag[]
 
-  @OneToMany(type => FollowingTag, followingTag => followingTag.followingUser)
+  @OneToMany(
+    (type) => FollowingTag,
+    (followingTag) => followingTag.followingUser
+  )
   followerTags: FollowingTag[]
 
-  @OneToMany(type => UserSuggestion, userSuggestion => userSuggestion.user)
+  @OneToMany((type) => UserSuggestion, (userSuggestion) => userSuggestion.user)
   userSuggestions: UserSuggestion[]
 
-  @OneToMany(type => UserSuggestion, userSuggestion => userSuggestion.suggestedUser)
+  @OneToMany(
+    (type) => UserSuggestion,
+    (userSuggestion) => userSuggestion.suggestedUser
+  )
   suggestedBy: UserSuggestion[]
 
-  @OneToMany(type => Notification, notification => notification.user)
+  @OneToMany((type) => Notification, (notification) => notification.user)
   notifications: Notification[]
 
-  @OneToMany(type => Notification, notification => notification.follower)
+  @OneToMany((type) => Notification, (notification) => notification.follower)
   followingNotifications: Notification[]
 }

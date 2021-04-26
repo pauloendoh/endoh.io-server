@@ -14,6 +14,7 @@ exports.Skill = void 0;
 const typeorm_1 = require("typeorm");
 const Tag_1 = require("../relearn/Tag");
 const User_1 = require("../User");
+const SkillExpectation_1 = require("./SkillExpectation");
 const SkillProgress_1 = require("./SkillProgress");
 let Skill = Skill_1 = class Skill {
 };
@@ -22,7 +23,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Skill.prototype, "id", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => User_1.User, user => user.skills, { onDelete: "CASCADE" }),
+    typeorm_1.ManyToOne((type) => User_1.User, (user) => user.skills, { onDelete: "CASCADE" }),
     __metadata("design:type", User_1.User)
 ], Skill.prototype, "user", void 0);
 __decorate([
@@ -30,30 +31,30 @@ __decorate([
     __metadata("design:type", Number)
 ], Skill.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => SkillProgress_1.SkillProgress, progress => progress.skill),
+    typeorm_1.OneToMany((type) => SkillProgress_1.SkillProgress, (progress) => progress.skill),
     __metadata("design:type", Array)
 ], Skill.prototype, "progresses", void 0);
 __decorate([
-    typeorm_1.ManyToMany(type => Skill_1, skill => skill.childDependencies),
+    typeorm_1.ManyToMany((type) => Skill_1, (skill) => skill.childDependencies),
     typeorm_1.JoinTable({
         name: "skill_dependency",
         joinColumn: {
             name: "skillId",
-            referencedColumnName: "id"
+            referencedColumnName: "id",
         },
         inverseJoinColumn: {
             name: "dependencyId",
-            referencedColumnName: "id"
+            referencedColumnName: "id",
         },
     }),
     __metadata("design:type", Array)
 ], Skill.prototype, "dependencies", void 0);
 __decorate([
-    typeorm_1.ManyToMany(type => Skill_1, skill => skill.dependencies),
+    typeorm_1.ManyToMany((type) => Skill_1, (skill) => skill.dependencies),
     __metadata("design:type", Array)
 ], Skill.prototype, "childDependencies", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Tag_1.Tag, tag => tag.skills, { onDelete: "SET NULL" }),
+    typeorm_1.ManyToOne((type) => Tag_1.Tag, (tag) => tag.skills, { onDelete: "SET NULL" }),
     __metadata("design:type", Tag_1.Tag)
 ], Skill.prototype, "tag", void 0);
 __decorate([
@@ -61,11 +62,15 @@ __decorate([
     __metadata("design:type", Number)
 ], Skill.prototype, "tagId", void 0);
 __decorate([
+    typeorm_1.OneToMany((type) => SkillExpectation_1.SkillExpectation, (expectation) => expectation.skill),
+    __metadata("design:type", Array)
+], Skill.prototype, "expectations", void 0);
+__decorate([
     typeorm_1.Column({ default: false }),
     __metadata("design:type", Boolean)
 ], Skill.prototype, "isPriority", void 0);
 __decorate([
-    typeorm_1.Column({ default: '' }),
+    typeorm_1.Column({ default: "" }),
     __metadata("design:type", String)
 ], Skill.prototype, "name", void 0);
 __decorate([

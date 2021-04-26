@@ -25,8 +25,8 @@ let LolRateRepository = class LolRateRepository extends typeorm_1.Repository {
                            ("opggPick" + "lolgraphsPick")/2 as "avgPick",
                            ("opggWin" + "lolgraphsWin")/2 as "avgWin"
                       from "lol_rate") as avgs
-	         where avgs."avgWin" >= 51
-             order by "avgAvg" desc
+	         where  "avgWin" > 0
+             order by "avgAvg" desc 
         `);
         }
         catch (err) { }

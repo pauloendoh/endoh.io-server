@@ -21,6 +21,7 @@ const Place_1 = require("./monerate/Place");
 const OAuthToken_1 = require("./OAuthToken");
 const Tag_1 = require("./relearn/Tag");
 const Skill_1 = require("./skillbase/Skill");
+const SkillExpectation_1 = require("./skillbase/SkillExpectation");
 const SkillProgress_1 = require("./skillbase/SkillProgress");
 const UserPreference_1 = require("./UserPreference");
 let User = class User {
@@ -58,67 +59,73 @@ __decorate([
     __metadata("design:type", Date)
 ], User.prototype, "updatedAt", void 0);
 __decorate([
-    typeorm_1.Column({ type: 'timestamptz', nullable: true }),
+    typeorm_1.Column({ type: "timestamptz", nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "expiresAt", void 0);
 __decorate([
-    typeorm_1.OneToOne(type => UserPreference_1.UserPreference, preference => preference.user, { eager: true }),
+    typeorm_1.OneToOne((type) => UserPreference_1.UserPreference, (preference) => preference.user, {
+        eager: true,
+    }),
     __metadata("design:type", UserPreference_1.UserPreference)
 ], User.prototype, "preference", void 0);
 __decorate([
-    typeorm_1.OneToOne(type => Profile_1.Profile, profile => profile.user),
+    typeorm_1.OneToOne((type) => Profile_1.Profile, (profile) => profile.user),
     __metadata("design:type", Profile_1.Profile)
 ], User.prototype, "profile", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => Expense_1.Expense, expense => expense.user),
+    typeorm_1.OneToMany((type) => Expense_1.Expense, (expense) => expense.user),
     __metadata("design:type", Array)
 ], User.prototype, "expenses", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => Category_1.default, category => category.user),
+    typeorm_1.OneToMany((type) => Category_1.default, (category) => category.user),
     __metadata("design:type", Array)
 ], User.prototype, "categories", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => Place_1.default, place => place.user),
+    typeorm_1.OneToMany((type) => Place_1.default, (place) => place.user),
     __metadata("design:type", Array)
 ], User.prototype, "places", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => OAuthToken_1.UserToken, oauthToken => oauthToken.user),
+    typeorm_1.OneToMany((type) => OAuthToken_1.UserToken, (oauthToken) => oauthToken.user),
     __metadata("design:type", Array)
 ], User.prototype, "tokens", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => Tag_1.Tag, tag => tag.user),
+    typeorm_1.OneToMany((type) => Tag_1.Tag, (tag) => tag.user),
     __metadata("design:type", Array)
 ], User.prototype, "tags", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => Skill_1.Skill, skill => skill.user),
+    typeorm_1.OneToMany((type) => Skill_1.Skill, (skill) => skill.user),
     __metadata("design:type", Array)
 ], User.prototype, "skills", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => SkillProgress_1.SkillProgress, progress => progress.user),
+    typeorm_1.OneToMany((type) => SkillExpectation_1.SkillExpectation, (skillExpectation) => skillExpectation.user),
+    __metadata("design:type", Array)
+], User.prototype, "skillExpectations", void 0);
+__decorate([
+    typeorm_1.OneToMany((type) => SkillProgress_1.SkillProgress, (progress) => progress.user),
     __metadata("design:type", Array)
 ], User.prototype, "skillProgresses", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => FollowingTag_1.FollowingTag, followingTag => followingTag.follower),
+    typeorm_1.OneToMany((type) => FollowingTag_1.FollowingTag, (followingTag) => followingTag.follower),
     __metadata("design:type", Array)
 ], User.prototype, "followingTags", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => FollowingTag_1.FollowingTag, followingTag => followingTag.followingUser),
+    typeorm_1.OneToMany((type) => FollowingTag_1.FollowingTag, (followingTag) => followingTag.followingUser),
     __metadata("design:type", Array)
 ], User.prototype, "followerTags", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => UserSuggestion_1.UserSuggestion, userSuggestion => userSuggestion.user),
+    typeorm_1.OneToMany((type) => UserSuggestion_1.UserSuggestion, (userSuggestion) => userSuggestion.user),
     __metadata("design:type", Array)
 ], User.prototype, "userSuggestions", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => UserSuggestion_1.UserSuggestion, userSuggestion => userSuggestion.suggestedUser),
+    typeorm_1.OneToMany((type) => UserSuggestion_1.UserSuggestion, (userSuggestion) => userSuggestion.suggestedUser),
     __metadata("design:type", Array)
 ], User.prototype, "suggestedBy", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => Notification_1.Notification, notification => notification.user),
+    typeorm_1.OneToMany((type) => Notification_1.Notification, (notification) => notification.user),
     __metadata("design:type", Array)
 ], User.prototype, "notifications", void 0);
 __decorate([
-    typeorm_1.OneToMany(type => Notification_1.Notification, notification => notification.follower),
+    typeorm_1.OneToMany((type) => Notification_1.Notification, (notification) => notification.follower),
     __metadata("design:type", Array)
 ], User.prototype, "followingNotifications", void 0);
 User = __decorate([

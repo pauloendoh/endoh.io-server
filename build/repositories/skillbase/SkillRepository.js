@@ -12,7 +12,8 @@ let SkillRepository = class SkillRepository extends typeorm_1.Repository {
     async getAllFromUser(userId) {
         return this.createQueryBuilder("skill")
             .where({ userId: userId })
-            .leftJoinAndSelect('skill.dependencies', 'dependencies')
+            .leftJoinAndSelect("skill.dependencies", "dependencies")
+            .leftJoinAndSelect("skill.expectations", "expectations")
             .orderBy("skill.isPriority", "DESC")
             .addOrderBy("skill.goalLevel", "DESC")
             .addOrderBy("skill.currentLevel", "DESC")
@@ -29,7 +30,7 @@ let SkillRepository = class SkillRepository extends typeorm_1.Repository {
         return this.createQueryBuilder("skill")
             .where({ userId: userId })
             .andWhere("skill.name ilike :text", { text: `%${text}%` })
-            .leftJoinAndSelect('skill.dependencies', 'dependencies')
+            .leftJoinAndSelect("skill.dependencies", "dependencies")
             .orderBy("skill.isPriority", "DESC")
             .addOrderBy("skill.goalLevel", "DESC")
             .addOrderBy("skill.currentLevel", "DESC")
