@@ -11,6 +11,7 @@ export default class SkillRepository extends Repository<Skill> {
       .orderBy("skill.isPriority", "DESC")
       .addOrderBy("skill.goalLevel", "DESC")
       .addOrderBy("skill.currentLevel", "DESC")
+      .addOrderBy("expectations.index", "ASC")
       .getMany()
   }
 
@@ -27,6 +28,7 @@ export default class SkillRepository extends Repository<Skill> {
       .where({ userId: userId })
       .andWhere("skill.name ilike :text", { text: `%${text}%` })
       .leftJoinAndSelect("skill.dependencies", "dependencies")
+      .leftJoinAndSelect("skill.expectations", "expectations")
       .orderBy("skill.isPriority", "DESC")
       .addOrderBy("skill.goalLevel", "DESC")
       .addOrderBy("skill.currentLevel", "DESC")

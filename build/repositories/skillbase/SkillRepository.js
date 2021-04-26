@@ -17,6 +17,7 @@ let SkillRepository = class SkillRepository extends typeorm_1.Repository {
             .orderBy("skill.isPriority", "DESC")
             .addOrderBy("skill.goalLevel", "DESC")
             .addOrderBy("skill.currentLevel", "DESC")
+            .addOrderBy("expectations.index", "ASC")
             .getMany();
     }
     async deleteIdsFromUser(ids, userId) {
@@ -31,6 +32,7 @@ let SkillRepository = class SkillRepository extends typeorm_1.Repository {
             .where({ userId: userId })
             .andWhere("skill.name ilike :text", { text: `%${text}%` })
             .leftJoinAndSelect("skill.dependencies", "dependencies")
+            .leftJoinAndSelect("skill.expectations", "expectations")
             .orderBy("skill.isPriority", "DESC")
             .addOrderBy("skill.goalLevel", "DESC")
             .addOrderBy("skill.currentLevel", "DESC")
