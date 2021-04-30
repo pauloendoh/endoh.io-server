@@ -20,7 +20,8 @@ export async function scrapeLolRates() {
     await scrapeOpgg(page)
     await scrapeLolGraphs(page)
   } catch (err) {
-    await browser.close()
     myConsoleError(err.message)
   }
+
+  await browser.close()
 }

@@ -18,8 +18,8 @@ async function scrapeLolRates() {
         await scrapeLolGraphs_1.scrapeLolGraphs(page);
     }
     catch (err) {
-        await browser.close();
         myConsoleError_1.myConsoleError(err.message);
     }
+    await browser.close();
 }
 exports.scrapeLolRates = scrapeLolRates;
