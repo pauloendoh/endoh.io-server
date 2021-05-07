@@ -94,6 +94,22 @@ __decorate([
     __metadata("design:type", String)
 ], LolRate.prototype, "blitzUpdatedAt", void 0);
 __decorate([
+    typeorm_1.Column("double precision", { nullable: true }),
+    __metadata("design:type", Number)
+], LolRate.prototype, "uggPick", void 0);
+__decorate([
+    typeorm_1.Column("double precision", { nullable: true }),
+    __metadata("design:type", Number)
+], LolRate.prototype, "uggWin", void 0);
+__decorate([
+    typeorm_1.Column("double precision", { nullable: true }),
+    __metadata("design:type", Number)
+], LolRate.prototype, "uggAvg", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", String)
+], LolRate.prototype, "uggUpdatedAt", void 0);
+__decorate([
     typeorm_1.CreateDateColumn(),
     __metadata("design:type", String)
 ], LolRate.prototype, "createdAt", void 0);

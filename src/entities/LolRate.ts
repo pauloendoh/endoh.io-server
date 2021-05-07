@@ -68,6 +68,18 @@ export class LolRate {
   @Column({ nullable: true })
   blitzUpdatedAt: string
 
+  @Column("double precision", { nullable: true })
+  uggPick: number
+
+  @Column("double precision", { nullable: true })
+  uggWin: number
+
+  @Column("double precision", { nullable: true })
+  uggAvg: number
+
+  @Column({ nullable: true })
+  uggUpdatedAt: string
+
   @CreateDateColumn()
   createdAt: string
 

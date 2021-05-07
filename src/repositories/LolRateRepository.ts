@@ -23,11 +23,13 @@ export default class LolRateRepository extends Repository<LolRate> {
                            "opggWin",
                            "lolgraphsPick",
                            "lolgraphsWin",
-                           ("opggPick" + "lolgraphsPick")/2 as "avgPick",
-                           ("opggWin" + "lolgraphsWin")/2 as "avgWin"
+						               "uggPick",
+						               "uggWin",
+                           ("opggPick" + "lolgraphsPick" + "uggPick")/3 as "avgPick",
+                           ("opggWin" + "lolgraphsWin" + "uggWin")/3 as "avgWin"
                       from "lol_rate") as avgs
-	         where  "avgWin" > 0
-             order by "avgAvg" desc 
+	          where  "avgWin" > 0
+         order by "avgAvg" desc 
         `)
     } catch (err) {}
   }
@@ -35,7 +37,8 @@ export default class LolRateRepository extends Repository<LolRate> {
   async getUpdatedAt(): Promise<LolRateUpdatedAtDto> {
     return this.query(`
             select "opggUpdatedAt",
-                   "lolgraphsUpdatedAt"
+                   "lolgraphsUpdatedAt",
+                   "uggUpdatedAt"
               from "lol_rate"
              limit 1
         `)
@@ -124,6 +127,41 @@ export default class LolRateRepository extends Repository<LolRate> {
             lolgraphsWin,
             lolgraphsAvg,
             lolgraphsUpdatedAt: new Date().toISOString(),
+          })
+          .where("championName = :championName", { championName })
+          .andWhere("role = :role", { role })
+          .execute()
+      }
+    } catch (err) {
+      myConsoleError(err.message)
+    }
+  }
+
+  async saveUgg(results: ScrapeResult[]) {
+    try {
+      // resetting all from op.gg
+      await this.createQueryBuilder()
+        .update()
+        .set({
+          uggPick: null,
+          uggWin: null,
+          uggAvg: null,
+          uggUpdatedAt: new Date().toISOString(),
+        })
+        .execute()
+
+      for (const { role, championName, pickRate, winRate } of results) {
+        const uggPick = Number(pickRate.trim().replace(/%/g, ""))
+        const uggWin = Number(winRate.trim().replace(/%/g, ""))
+        const uggAvg = Number((uggPick + uggWin) / 2)
+
+        await this.createQueryBuilder()
+          .update()
+          .set({
+            uggPick,
+            uggWin,
+            uggAvg,
+            uggUpdatedAt: new Date().toISOString(),
           })
           .where("championName = :championName", { championName })
           .andWhere("role = :role", { role })

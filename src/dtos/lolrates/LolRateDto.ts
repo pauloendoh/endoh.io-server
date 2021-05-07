@@ -7,6 +7,8 @@ export interface LolRateDto {
   opggWin: number
   lolgraphsPick: number
   lolgraphsWin: number
+  uggPick: number
+  uggWin: number
   avgPick: number
   avgWin: number
 }

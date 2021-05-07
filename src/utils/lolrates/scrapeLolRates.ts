@@ -3,6 +3,7 @@ import { myConsoleError } from "../myConsoleError"
 import { scrapeChampions } from "./scrapeLolRates/scrapeChampions"
 import { scrapeOpgg } from "./scrapeLolRates/scrapeOpgg"
 import { scrapeLolGraphs } from "./scrapeLolRates/scrapeLolGraphs"
+import { scrapeUgg } from "./scrapeLolRates/scrapeUgg"
 
 export async function scrapeLolRates() {
   const browser = await pup.launch({
@@ -15,10 +16,12 @@ export async function scrapeLolRates() {
     await page.setUserAgent(
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
     )
+    await page.setViewport({ width: 1000, height: 1000 })
 
     await scrapeChampions(page)
     await scrapeOpgg(page)
     await scrapeLolGraphs(page)
+    await scrapeUgg(page)
   } catch (err) {
     myConsoleError(err.message)
   }
