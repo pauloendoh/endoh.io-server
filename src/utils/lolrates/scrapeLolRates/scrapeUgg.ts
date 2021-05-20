@@ -73,7 +73,6 @@ export async function scrapeUgg(page: pup.Page) {
           })
         }
 
-        // console.log(trs)
         return objects
       }, role)
 
@@ -81,7 +80,6 @@ export async function scrapeUgg(page: pup.Page) {
     }
 
     await getCustomRepository(LolRateRepository).saveUgg(results)
-    console.log(results)
 
     myConsoleSuccess("Finished scrapeUgg")
   } catch (err) {

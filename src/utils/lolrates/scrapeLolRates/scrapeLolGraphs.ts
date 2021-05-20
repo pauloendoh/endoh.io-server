@@ -15,7 +15,7 @@ export async function scrapeLolGraphs(page: pup.Page) {
 
     await page.waitForSelector(".data_table.with_sortable_column tbody")
 
-    page.on("console", (msg) => console.log("PAGE LOG:", msg.text()))
+    // page.on("console", (msg) => console.log("PAGE LOG:", msg.text()))
 
     const results = await page.evaluate(async () => {
       function delay(time) {
@@ -57,7 +57,6 @@ export async function scrapeLolGraphs(page: pup.Page) {
         roleButton.click()
         await delay(2000)
 
-        // console.log(1)
         const trs = Array.from(
           document.querySelectorAll(".data_table.with_sortable_column tbody tr")
         )
@@ -66,11 +65,8 @@ export async function scrapeLolGraphs(page: pup.Page) {
             continue
 
           const tds = tr.querySelectorAll("td")
-          // console.log(2)
           const championName = tds[1].querySelector(".name").textContent.trim()
-          // console.log(3)
           const pickRate = tds[2].querySelector(".progressBarTxt").textContent
-          // console.log(4)
           const winRate = tds[3].querySelector(".progressBarTxt").textContent
 
           results.push({ role, championName, pickRate, winRate })

@@ -61,13 +61,11 @@ async function scrapeUgg(page) {
                         role,
                     });
                 }
-                // console.log(trs)
                 return objects;
             }, role);
             results.push(...roleResults);
         }
         await typeorm_1.getCustomRepository(LolRateRepository_1.default).saveUgg(results);
-        console.log(results);
         myConsoleSuccess_1.myConsoleSuccess("Finished scrapeUgg");
     }
     catch (err) {

@@ -21,18 +21,19 @@ const createUserSuggestionsForAll_1 = require("./utils/user/createUserSuggestion
 const scrapeLolRates_1 = require("./utils/lolrates/scrapeLolRates");
 require("./utils/passport-setup");
 require(`dotenv`).config();
-// It must use 'require' to work properly. 
-const ormconfig = require('../ormconfig');
-// PE 2/3 
+// It must use 'require' to work properly.
+const ormconfig = require("../ormconfig");
+// PE 2/3
 myConsoleSuccess_1.myConsoleSuccess("Connecting with ormconfig");
-typeorm_1.createConnection(ormconfig).then(async (connection) => {
+typeorm_1.createConnection(ormconfig)
+    .then(async (connection) => {
     myConsoleSuccess_1.myConsoleSuccess("Connected!");
     const app = express();
     app.use(cors());
-    app.use('/auth/google/login', cors({ credentials: true, origin: process.env.CLIENT_BASE_URL }));
-    // For testing 
-    app.get('/', (req, res) => res.json('nice?'));
-    // https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0 
+    app.use("/auth/google/login", cors({ credentials: true, origin: process.env.CLIENT_BASE_URL }));
+    // For testing
+    app.get("/", (req, res) => res.json("nice?"));
+    // https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0
     app.use(express.urlencoded({ extended: false }));
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
     app.use(express.json());
@@ -40,26 +41,27 @@ typeorm_1.createConnection(ormconfig).then(async (connection) => {
     app.use(cookieSession({
         name: "endoh_google_session",
         keys: [PASSPORT_KEYS_1.PASSPORT_KEYS.COOKIE_KEY],
-        maxAge: 15 * 60 * 1000 // 15 min
+        maxAge: 15 * 60 * 1000,
     }));
     app.use(cookieParser());
     // initialize passport
     app.use(passport.initialize());
-    // deserialize cookie from the browser and adds to req.user 
+    // deserialize cookie from the browser and adds to req.user
     app.use(passport.session());
     // Automatically connect with /routes folder and subfolders
-    console.log("Memory usage: " + ((process_1.memoryUsage().rss / 1024) / 1024) + "MB");
+    myConsoleSuccess_1.myConsoleSuccess("Memory usage: " + process_1.memoryUsage().rss / 1024 / 1024 + "MB");
     myConsoleSuccess_1.myConsoleSuccess("Setting up routes");
     fs.readdirSync(`${__dirname}/routes`).forEach(async (fileOrFolderName) => {
-        if (fileOrFolderName.endsWith('.ts') || fileOrFolderName.endsWith('.js')) {
-            const routeName = fileOrFolderName.split('Route')[0];
+        if (fileOrFolderName.endsWith(".ts") ||
+            fileOrFolderName.endsWith(".js")) {
+            const routeName = fileOrFolderName.split("Route")[0];
             const module = await Promise.resolve().then(() => require(`${__dirname}/routes/${fileOrFolderName}`));
             app.use(`/${routeName}`, module.default);
         }
         else {
             // subroutes from subfolders
             fs.readdirSync(`${__dirname}/routes/${fileOrFolderName}`).forEach(async (fileName) => {
-                const routeName = fileName.split('Route')[0];
+                const routeName = fileName.split("Route")[0];
                 const module = await Promise.resolve().then(() => require(`${__dirname}/routes/${fileOrFolderName}/${fileName}`));
                 app.use(`/${fileOrFolderName}/${routeName}`, module.default);
             });
@@ -69,12 +71,12 @@ typeorm_1.createConnection(ormconfig).then(async (connection) => {
     myConsoleSuccess_1.myConsoleSuccess("Trying to access port " + port);
     app.listen(port, async () => {
         myConsoleSuccess_1.myConsoleSuccess("Listening to port " + port);
-        // scrape lolrates every 1h 
+        // scrape lolrates every 1h
         scrapeLolRates_1.scrapeLolRates();
         setInterval(async () => {
             scrapeLolRates_1.scrapeLolRates();
         }, 60 * 1000 * 60);
-        myConsoleSuccess_1.myConsoleSuccess('Pinging every 15 min at https://endohio-server.herokuapp.com/');
+        myConsoleSuccess_1.myConsoleSuccess("Pinging every 15 min at https://endohio-server.herokuapp.com/");
         createPreferencesForAll_1.createPreferencesForAll();
         createProfileForAll_1.createProfileForUsers();
         createUserSuggestionsForAll_1.createUserSuggestionsForAll();
@@ -82,12 +84,12 @@ typeorm_1.createConnection(ormconfig).then(async (connection) => {
         setInterval(async () => {
             createUserSuggestionsForAll_1.createUserSuggestionsForAll();
         }, 60 * 1000 * 60);
-        // Ping every15 min to avoid Heroku's server sleep 
+        // Ping every15 min to avoid Heroku's server sleep
         // Maybe split into different file?
         setInterval(async () => {
-            node_fetch_1.default('https://endohio-server.herokuapp.com/')
-                .then(res => res.json())
-                .then(json => myConsoleSuccess_1.myConsoleSuccess('GET OK https://endohio-server.herokuapp.com/'));
+            node_fetch_1.default("https://endohio-server.herokuapp.com/")
+                .then((res) => res.json())
+                .then((json) => myConsoleSuccess_1.myConsoleSuccess("GET OK https://endohio-server.herokuapp.com/"));
             try {
                 const userRepo = typeorm_1.getCustomRepository(UserRepository_1.default);
                 const deleted = await userRepo.deleteExpiredTempUsers();
@@ -98,4 +100,5 @@ typeorm_1.createConnection(ormconfig).then(async (connection) => {
             }
         }, 60 * 1000 * 15);
     });
-}).catch(error => myConsoleError_1.myConsoleError(error));
+})
+    .catch((error) => myConsoleError_1.myConsoleError(error));

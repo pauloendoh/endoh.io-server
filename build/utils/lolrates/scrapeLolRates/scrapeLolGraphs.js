@@ -11,7 +11,7 @@ async function scrapeLolGraphs(page) {
         await page.goto("http://www.leagueofgraphs.com/champions/builds/by-winrate");
         await page.screenshot({ path: __dirname + "/scrapeLolGraphs.png" });
         await page.waitForSelector(".data_table.with_sortable_column tbody");
-        page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
+        // page.on("console", (msg) => console.log("PAGE LOG:", msg.text()))
         const results = await page.evaluate(async () => {
             function delay(time) {
                 return new Promise(function (resolve) {
@@ -45,17 +45,13 @@ async function scrapeLolGraphs(page) {
                 const roleButton = document.querySelector(`[data-filters-fixed="${dataFilterFixed}"]`);
                 roleButton.click();
                 await delay(2000);
-                // console.log(1)
                 const trs = Array.from(document.querySelectorAll(".data_table.with_sortable_column tbody tr"));
                 for (const tr of trs) {
                     if (tr.textContent.includes("KDA") || !tr.querySelector(".name"))
                         continue;
                     const tds = tr.querySelectorAll("td");
-                    // console.log(2)
                     const championName = tds[1].querySelector(".name").textContent.trim();
-                    // console.log(3)
                     const pickRate = tds[2].querySelector(".progressBarTxt").textContent;
-                    // console.log(4)
                     const winRate = tds[3].querySelector(".progressBarTxt").textContent;
                     results.push({ role, championName, pickRate, winRate });
                 }

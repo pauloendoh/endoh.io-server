@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const luxon_1 = require("luxon");
 const dotenv = require("dotenv");
 const express_1 = require("express");
 const node_fetch_1 = require("node-fetch");
@@ -17,35 +18,78 @@ const myConsoleError_1 = require("../utils/myConsoleError");
 dotenv.config();
 const utilsRoute = express_1.Router();
 const userRepo = typeorm_1.getCustomRepository(UserRepository_1.default);
-utilsRoute.get('/link-preview', authMiddleware_1.default, async (req, res) => {
-    const url = req.query['url'];
+// PE 1/3 - Utilizar promises
+utilsRoute.get("/link-preview", authMiddleware_1.default, async (req, res) => {
+    const url = req.query["url"];
     if (!isValidUrl_1.isValidUrl(url)) {
-        return res.status(400).json(new ErrorMessage_1.MyErrorsResponse('URL is not valid', 'url'));
+        return res
+            .status(400)
+            .json(new ErrorMessage_1.MyErrorsResponse("URL is not valid", "url"));
     }
     try {
-        node_fetch_1.default('http://api.linkpreview.net/?key=' + process.env.LINK_PREVIEW_KEY + '&q=' + url)
-            .then(res => res.json())
-            .then(json => {
-            const linkPreview = json;
-            return res.status(200).json(linkPreview);
+        let durationStr = "00:00h";
+        if (url.includes("youtube.com")) {
+            const videoId = new URLSearchParams(url.split("?")[1]).get("v");
+            await node_fetch_1.default(`https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=AIzaSyBpGqGaNU1tJq2Z3rs1GeFwW5FyWiAvUZ0`)
+                .then((res) => res.json())
+                .then((json) => {
+                console.log(json);
+                const durationObj = luxon_1.Duration.fromISO(json.items[0].contentDetails.duration).toObject();
+                durationStr = "";
+                if (durationObj.hours) {
+                    if (durationObj.hours < 10) {
+                        durationStr += "0" + durationObj.hours;
+                    }
+                    else {
+                        durationStr += durationObj.hours;
+                    }
+                }
+                else {
+                    durationStr += "00";
+                }
+                if (durationObj.minutes) {
+                    if (durationObj.minutes < 10) {
+                        durationStr += ":0" + durationObj.minutes + "h";
+                    }
+                    else {
+                        durationStr += ":" + durationObj.minutes + "h";
+                    }
+                }
+                else {
+                    durationStr += ":00h";
+                }
+                return durationStr;
+            });
+        }
+        const linkPreview = await node_fetch_1.default("http://api.linkpreview.net/?key=" +
+            process.env.LINK_PREVIEW_KEY +
+            "&q=" +
+            url)
+            .then((res) => res.json())
+            .then((json) => {
+            return json;
         });
+        linkPreview.duration = durationStr;
+        return res.status(200).json(linkPreview);
     }
     catch (err) {
         myConsoleError_1.myConsoleError(err.message);
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
 });
-utilsRoute.post('/passwordResetEmail', async (req, res) => {
+utilsRoute.post("/passwordResetEmail", async (req, res) => {
     try {
         const { email } = req.body;
         if (!isValidEmail_1.isValidEmail(email)) {
-            return res.sendStatus(400).json(new ErrorMessage_1.MyErrorsResponse("This is not an email lol"));
+            return res
+                .sendStatus(400)
+                .json(new ErrorMessage_1.MyErrorsResponse("This is not an email lol"));
         }
         const registeredUser = await userRepo.findOne({ email });
         if (!registeredUser) {
             return res.sendStatus(200);
         }
-        // sending email 
+        // sending email
         sendPasswordResetEmail_1.sendPasswordResetEmail(registeredUser);
         return res.sendStatus(200);
     }
@@ -54,8 +98,8 @@ utilsRoute.post('/passwordResetEmail', async (req, res) => {
         return res.sendStatus(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
 });
-//  PE 2/3 
-utilsRoute.get('/search', authMiddleware_1.default, async (req, res) => {
+//  PE 2/3
+utilsRoute.get("/search", authMiddleware_1.default, async (req, res) => {
     const query = req.query.q;
     const resourcesRepo = typeorm_1.getCustomRepository(ResourceRepository_1.default);
     const userRepo = typeorm_1.getCustomRepository(UserRepository_1.default);
@@ -64,7 +108,7 @@ utilsRoute.get('/search', authMiddleware_1.default, async (req, res) => {
         const results = {
             resources: await resourcesRepo.getResourcesByText(req.user, query),
             users: await userRepo.getUsersByText(query),
-            skills: await skillsRepo.getByText(req.user.id, query)
+            skills: await skillsRepo.getByText(req.user.id, query),
         };
         return res.status(200).json(results);
     }
@@ -73,7 +117,7 @@ utilsRoute.get('/search', authMiddleware_1.default, async (req, res) => {
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
 });
-utilsRoute.get('/notifications', authMiddleware_1.default, async (req, res) => {
+utilsRoute.get("/notifications", authMiddleware_1.default, async (req, res) => {
     const repo = typeorm_1.getCustomRepository(NotificationRepository_1.default);
     try {
         const notifications = await repo.getNotifications(req.user.id);
@@ -84,7 +128,7 @@ utilsRoute.get('/notifications', authMiddleware_1.default, async (req, res) => {
         return res.status(400).json(new ErrorMessage_1.MyErrorsResponse(err.message));
     }
 });
-utilsRoute.post('/notifications/seeAll', authMiddleware_1.default, async (req, res) => {
+utilsRoute.post("/notifications/seeAll", authMiddleware_1.default, async (req, res) => {
     const notRepo = typeorm_1.getCustomRepository(NotificationRepository_1.default);
     try {
         await notRepo
