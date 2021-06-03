@@ -18,6 +18,7 @@ import { MyErrorsResponse } from "../utils/ErrorMessage"
 import { isValidUrl } from "../utils/isValidUrl"
 import { MyAuthRequest } from "../utils/MyAuthRequest"
 import { myConsoleError } from "../utils/myConsoleError"
+import { YOUTUBE_API_KEY } from "../config/config"
 dotenv.config()
 
 const utilsRoute = Router()
@@ -42,7 +43,7 @@ utilsRoute.get(
       if (url.includes("youtube.com")) {
         const videoId = new URLSearchParams(url.split("?")[1]).get("v")
         await fetch(
-          `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=AIzaSyBpGqGaNU1tJq2Z3rs1GeFwW5FyWiAvUZ0`
+          `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${YOUTUBE_API_KEY}`
         )
           .then((res) => res.json())
           .then((json) => {

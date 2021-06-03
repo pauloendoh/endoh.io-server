@@ -15,6 +15,7 @@ const sendPasswordResetEmail_1 = require("../utils/email/sendPasswordResetEmail"
 const ErrorMessage_1 = require("../utils/ErrorMessage");
 const isValidUrl_1 = require("../utils/isValidUrl");
 const myConsoleError_1 = require("../utils/myConsoleError");
+const config_1 = require("../config/config");
 dotenv.config();
 const utilsRoute = express_1.Router();
 const userRepo = typeorm_1.getCustomRepository(UserRepository_1.default);
@@ -30,7 +31,7 @@ utilsRoute.get("/link-preview", authMiddleware_1.default, async (req, res) => {
         let durationStr = "00:00h";
         if (url.includes("youtube.com")) {
             const videoId = new URLSearchParams(url.split("?")[1]).get("v");
-            await node_fetch_1.default(`https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=AIzaSyBpGqGaNU1tJq2Z3rs1GeFwW5FyWiAvUZ0`)
+            await node_fetch_1.default(`https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${config_1.YOUTUBE_API_KEY}`)
                 .then((res) => res.json())
                 .then((json) => {
                 console.log(json);
