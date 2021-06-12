@@ -20,8 +20,9 @@ const createUserSuggestionsForUser = async (user) => {
             await typeorm_1.getRepository(UserSuggestion_1.UserSuggestion).save({
                 user: user,
                 suggestedUserId: mostFollowedUser.user.userId,
-                description: mostFollowedUser.count > 1 ?
-                    'Followed by ' + mostFollowedUser.count + 'users you know' : "Followed by 1 user you know"
+                description: mostFollowedUser.count > 1
+                    ? "Followed by " + mostFollowedUser.count + " users you know"
+                    : "Followed by 1 user you know",
             });
         }
         // from users YOU DO NOT follow
@@ -30,8 +31,9 @@ const createUserSuggestionsForUser = async (user) => {
             await typeorm_1.getRepository(UserSuggestion_1.UserSuggestion).save({
                 user: user,
                 suggestedUserId: mostFollowedUser.user.userId,
-                description: mostFollowedUser.count > 1 ?
-                    'Followed by ' + mostFollowedUser.count + 'users' : "Followed by 1 user"
+                description: mostFollowedUser.count > 1
+                    ? "Followed by " + mostFollowedUser.count + " users"
+                    : "Followed by 1 user",
             });
         }
     }

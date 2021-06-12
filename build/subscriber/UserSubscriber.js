@@ -31,11 +31,11 @@ let UserSubscriber = class UserSubscriber {
             await event.manager.getRepository(UserPreference_1.UserPreference).save(preference);
             const profile = new Profile_1.Profile();
             profile.user = event.entity;
+            await event.manager.getRepository(Profile_1.Profile).save(profile);
             // I added this timeout because the event.entity (user).id was not commited yet :/
             setTimeout(async () => {
                 await createUserSuggestionsForUser_1.default(event.entity);
             }, 1000);
-            await event.manager.getRepository(Profile_1.Profile).save(profile);
         }
         catch (e) {
             myConsoleError_1.myConsoleError(e.message);

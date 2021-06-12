@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const Doc_1 = require("./define/Doc");
+const Note_1 = require("./define/Note");
 const FollowingTag_1 = require("./feed/FollowingTag");
 const Notification_1 = require("./feed/Notification");
 const Profile_1 = require("./feed/Profile");
@@ -128,6 +130,14 @@ __decorate([
     typeorm_1.OneToMany((type) => Notification_1.Notification, (notification) => notification.follower),
     __metadata("design:type", Array)
 ], User.prototype, "followingNotifications", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Doc_1.Doc, (doc) => doc.user),
+    __metadata("design:type", Array)
+], User.prototype, "docs", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Note_1.Note, (note) => note.user),
+    __metadata("design:type", Array)
+], User.prototype, "notes", void 0);
 User = __decorate([
     typeorm_1.Entity()
 ], User);

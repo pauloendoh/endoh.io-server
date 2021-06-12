@@ -11,6 +11,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
+import { Doc } from "./define/Doc"
+import { Note } from "./define/Note"
 import { FollowingTag } from "./feed/FollowingTag"
 import { Notification } from "./feed/Notification"
 import { Profile } from "./feed/Profile"
@@ -115,4 +117,11 @@ export class User {
 
   @OneToMany((type) => Notification, (notification) => notification.follower)
   followingNotifications: Notification[]
+
+  // Define
+  @OneToMany(() => Doc, (doc) => doc.user)
+  docs: Doc[]
+
+  @OneToMany(() => Note, (note) => note.user)
+  notes: Note[]
 }
