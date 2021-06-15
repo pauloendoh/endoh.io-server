@@ -4,6 +4,7 @@ const typeorm_1 = require("typeorm");
 const UserSuggestion_1 = require("../../../../entities/feed/UserSuggestion");
 const FollowingTagRepository_1 = require("../../../../repositories/feed/FollowingTagRepository");
 const myConsoleError_1 = require("../../../myConsoleError");
+// PE 1/3 - deixar dentro do userSuggestionRepository
 const createUserSuggestionsForUser = async (user) => {
     try {
         const followingTagRepo = typeorm_1.getCustomRepository(FollowingTagRepository_1.default);

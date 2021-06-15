@@ -9,14 +9,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const Tag_1 = require("../../entities/relearn/Tag");
 let TagRepository = class TagRepository extends typeorm_1.Repository {
-    // PE 2/3 
+    // PE 2/3
     async getAllTagsFromUser(user) {
-        return this
-            .createQueryBuilder("tag")
+        return this.createQueryBuilder("tag")
             .where({ user })
-            .leftJoinAndSelect('tag.resources', 'resources')
+            .leftJoinAndSelect("tag.resources", "resources")
             .orderBy("tag.createdAt", "ASC")
             .getMany();
+    }
+    async createTagsForNewUser(user) {
+        const tag1 = await this.save({
+            user,
+            name: "[Example] Programming",
+            color: "#14aaf5",
+        });
+        const tag2 = await this.save({
+            user,
+            name: "[Example] Soft Skillls",
+            color: "#6accbc",
+            isPrivate: true,
+        });
+        return [tag1, tag2];
     }
 };
 TagRepository = __decorate([

@@ -15,6 +15,9 @@ let DocRepository = class DocRepository extends typeorm_1.Repository {
             .orderBy("doc.title", "ASC")
             .getMany();
     }
+    async createDocForNewUser(user) {
+        return this.save({ user, title: "[Example] The Little Prince" });
+    }
 };
 DocRepository = __decorate([
     typeorm_1.EntityRepository(Doc_1.Doc)

@@ -48,11 +48,11 @@ __decorate([
     __metadata("design:type", String)
 ], Note.prototype, "description", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: '' }),
     __metadata("design:type", String)
 ], Note.prototype, "question", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: 1 }),
     __metadata("design:type", Number)
 ], Note.prototype, "weight", void 0);
 __decorate([

@@ -1,61 +1,65 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { User } from '../User';
-import { Tag } from './Tag';
-
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm"
+import { User } from "../User"
+import { Tag } from "./Tag"
 
 @Entity()
 export class Resource {
+  @PrimaryGeneratedColumn()
+  id: number
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @ManyToOne((type) => User, (user) => user.expenses, { onDelete: "CASCADE" })
+  user: User
 
-    @ManyToOne(type => User, user => user.expenses, { onDelete: "CASCADE" })
-    user: User;
+  @Column()
+  userId: number
 
-    @Column()
-    userId: number
+  @Column({ default: "" })
+  title: string
 
-    @Column()
-    title: string;
+  @Column({ default: "" })
+  url: string
 
-    @Column()
-    url: string;
+  @Column({ default: "" })
+  thumbnail: string
 
-    @Column()
-    thumbnail: string;
+  @Column({ default: "00:00h" })
+  estimatedTime: string
 
-    @Column()
-    estimatedTime: string;
+  @Column({ default: "" })
+  dueDate: string
 
-    @Column()
-    dueDate: string;
+  @Column({ nullable: true })
+  rating: number
 
-    @Column({ nullable: true })
-    rating: number
+  @Column({ default: "" })
+  completedAt: string
 
-    @Column({ default: "" })
-    completedAt: string
+  @Column({ nullable: true })
+  position: number
 
-    @Column({ nullable: true })
-    position: number
+  @Column({ default: "" })
+  publicReview: string
 
-    
-    @Column({ default: "" })
-    publicReview: string
+  @Column({ default: "" })
+  privateNote: string
 
-    @Column({ default: "" })
-    privateNote: string
+  @CreateDateColumn()
+  createdAt: string
 
-    @CreateDateColumn()
-    createdAt: string
+  @UpdateDateColumn()
+  updatedAt: string
 
-    @UpdateDateColumn()
-    updatedAt: string
+  @ManyToOne((type) => Tag, (tag) => tag.resources, { onDelete: "CASCADE" })
+  tag: Tag
 
-    @ManyToOne(type => Tag, tag => tag.resources, { onDelete: 'CASCADE' })
-    tag: Tag
-
-    @Column({ nullable: true })
-    tagId: number
-
+  @Column({ nullable: true })
+  tagId: number
 }

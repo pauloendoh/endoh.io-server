@@ -32,13 +32,14 @@ export class Note {
   @Column()
   index: number
 
+  // required
   @Column()
   description: string
 
-  @Column()
+  @Column({default: ''})
   question: string
 
-  @Column()
+  @Column({default: 1})
   weight: number
 
   @CreateDateColumn()

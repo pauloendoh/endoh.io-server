@@ -38,6 +38,25 @@ let SkillRepository = class SkillRepository extends typeorm_1.Repository {
             .addOrderBy("skill.currentLevel", "DESC")
             .getMany();
     }
+    async createSkillsForNewUser(user, programmingTag) {
+        const skills = [];
+        skills.push(await this.save({
+            user,
+            tag: programmingTag,
+            isPriority: true,
+            name: "[Example] JavaScript",
+            currentLevel: 3,
+            goalLevel: 5,
+        }));
+        skills.push(await this.save({
+            user,
+            isPriority: false,
+            name: "[Example] League of Legends",
+            currentLevel: 6,
+            goalLevel: 7,
+        }));
+        return skills;
+    }
 };
 SkillRepository = __decorate([
     typeorm_1.EntityRepository(Skill_1.Skill)

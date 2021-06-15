@@ -4,6 +4,7 @@ import { User } from "../../../../entities/User"
 import FollowingTagRepository from "../../../../repositories/feed/FollowingTagRepository"
 import { myConsoleError } from "../../../myConsoleError"
 
+// PE 1/3 - deixar dentro do userSuggestionRepository
 const createUserSuggestionsForUser = async (user: User) => {
   try {
     const followingTagRepo = getCustomRepository(FollowingTagRepository)

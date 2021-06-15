@@ -6,6 +6,7 @@ const User_1 = require("../../../entities/User");
 const myConsoleError_1 = require("../../myConsoleError");
 const myConsoleSuccess_1 = require("../../myConsoleSuccess");
 const createUserSuggestionsForUser_1 = require("./createUserSuggestionsForUser/createUserSuggestionsForUser");
+// PE 1/3 - deixar dentro do userSuggestionRepository
 const createUserSuggestionsForAll = async () => {
     try {
         myConsoleSuccess_1.myConsoleSuccess("running createUserSuggestionsForAll()");

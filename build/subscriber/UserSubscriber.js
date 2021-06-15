@@ -11,8 +11,14 @@ const typeorm_1 = require("typeorm");
 const Profile_1 = require("../entities/feed/Profile");
 const User_1 = require("../entities/User");
 const UserPreference_1 = require("../entities/UserPreference");
+const DocRepository_1 = require("../repositories/define/DocRepository");
+const NoteRepository_1 = require("../repositories/define/NoteRepository");
+const UserSuggestionRepository_1 = require("../repositories/feed/UserSuggestionRepository");
+const ResourceRepository_1 = require("../repositories/relearn/ResourceRepository");
+const TagRepository_1 = require("../repositories/relearn/TagRepository");
+const SkillExpectationRepository_1 = require("../repositories/skillbase/SkillExpectationRepository");
+const SkillRepository_1 = require("../repositories/skillbase/SkillRepository");
 const myConsoleError_1 = require("../utils/myConsoleError");
-const createUserSuggestionsForUser_1 = require("../utils/user/createUserSuggestionsForAll/createUserSuggestionsForUser/createUserSuggestionsForUser");
 let UserSubscriber = class UserSubscriber {
     /**
      * Indicates that this subscriber only listen to Post events.
@@ -32,10 +38,34 @@ let UserSubscriber = class UserSubscriber {
             const profile = new Profile_1.Profile();
             profile.user = event.entity;
             await event.manager.getRepository(Profile_1.Profile).save(profile);
-            // I added this timeout because the event.entity (user).id was not commited yet :/
-            setTimeout(async () => {
-                await createUserSuggestionsForUser_1.default(event.entity);
-            }, 1000);
+            // Create user suggestions
+            await event.manager
+                .getCustomRepository(UserSuggestionRepository_1.default)
+                .createUserSuggestionsForUser(event.entity);
+            // Create user tags
+            const tags = await event.manager
+                .getCustomRepository(TagRepository_1.default)
+                .createTagsForNewUser(event.entity);
+            // Create resources
+            await event.manager
+                .getCustomRepository(ResourceRepository_1.default)
+                .createResourcesForNewUser(event.entity, tags);
+            // Create skill to Programming tag
+            const skills = await event.manager
+                .getCustomRepository(SkillRepository_1.default)
+                .createSkillsForNewUser(event.entity, tags[0]);
+            // Create skill expectations
+            await event.manager
+                .getCustomRepository(SkillExpectationRepository_1.default)
+                .createExpectationsForNewUser(event.entity, skills);
+            // Create little prince doc
+            const doc = await event.manager
+                .getCustomRepository(DocRepository_1.default)
+                .createDocForNewUser(event.entity);
+            // Create little prince notes
+            await event.manager
+                .getCustomRepository(NoteRepository_1.default)
+                .createNotesForNewUser(event.entity, doc);
         }
         catch (e) {
             myConsoleError_1.myConsoleError(e.message);

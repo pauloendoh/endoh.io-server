@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Resource.prototype, "id", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => User_1.User, user => user.expenses, { onDelete: "CASCADE" }),
+    typeorm_1.ManyToOne((type) => User_1.User, (user) => user.expenses, { onDelete: "CASCADE" }),
     __metadata("design:type", User_1.User)
 ], Resource.prototype, "user", void 0);
 __decorate([
@@ -28,23 +28,23 @@ __decorate([
     __metadata("design:type", Number)
 ], Resource.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: "" }),
     __metadata("design:type", String)
 ], Resource.prototype, "title", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: "" }),
     __metadata("design:type", String)
 ], Resource.prototype, "url", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: "" }),
     __metadata("design:type", String)
 ], Resource.prototype, "thumbnail", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: "00:00h" }),
     __metadata("design:type", String)
 ], Resource.prototype, "estimatedTime", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: "" }),
     __metadata("design:type", String)
 ], Resource.prototype, "dueDate", void 0);
 __decorate([
@@ -76,7 +76,7 @@ __decorate([
     __metadata("design:type", String)
 ], Resource.prototype, "updatedAt", void 0);
 __decorate([
-    typeorm_1.ManyToOne(type => Tag_1.Tag, tag => tag.resources, { onDelete: 'CASCADE' }),
+    typeorm_1.ManyToOne((type) => Tag_1.Tag, (tag) => tag.resources, { onDelete: "CASCADE" }),
     __metadata("design:type", Tag_1.Tag)
 ], Resource.prototype, "tag", void 0);
 __decorate([
