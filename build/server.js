@@ -34,7 +34,7 @@ typeorm_1.createConnection(ormconfig)
     // For testing
     app.get("/", (req, res) => res.json("nice?"));
     // https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0
-    app.use(express.urlencoded({ extended: false }));
+    app.use(express.urlencoded({ extended: false, limit: '50mb' }));
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
     app.use(express.json());
     // passport https://gist.githubusercontent.com/leannezhang/8069d56a779f2b86da40dfd17c9e3efe/raw/d896c190174c8494e34592c9b1000fc058172d1d/index.js

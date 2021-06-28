@@ -17,6 +17,7 @@ import { memoryUsage } from "process"
 import { createProfileForUsers } from "./utils/user/createProfileForAll"
 import { createUserSuggestionsForAll } from "./utils/user/createUserSuggestionsForAll/createUserSuggestionsForAll"
 import { scrapeLolRates } from "./utils/lolrates/scrapeLolRates"
+import bodyParser = require('body-parser')
 require("./utils/passport-setup")
 require(`dotenv`).config()
 
@@ -39,7 +40,7 @@ createConnection(ormconfig)
     app.get("/", (req, res) => res.json("nice?"))
 
     // https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0
-    app.use(express.urlencoded({ extended: false }))
+    app.use(express.urlencoded({ extended: false, limit: '50mb' }))
 
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
     app.use(express.json())
