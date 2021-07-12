@@ -20,20 +20,14 @@ const SkillExpectationRepository_1 = require("../repositories/skillbase/SkillExp
 const SkillRepository_1 = require("../repositories/skillbase/SkillRepository");
 const myConsoleError_1 = require("../utils/myConsoleError");
 let UserSubscriber = class UserSubscriber {
-    /**
-     * Indicates that this subscriber only listen to Post events.
-     */
     listenTo() {
         return User_1.User;
     }
-    /**
-     * Called before post insertion.
-     */
     async afterInsert(event) {
         try {
-            // create default preference
             const preference = new UserPreference_1.UserPreference();
             preference.user = event.entity;
+            // YOU HAVE TO USE event.manger.getRepository in order to make timely changes
             await event.manager.getRepository(UserPreference_1.UserPreference).save(preference);
             const profile = new Profile_1.Profile();
             profile.user = event.entity;

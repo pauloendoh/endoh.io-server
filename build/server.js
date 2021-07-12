@@ -36,7 +36,8 @@ typeorm_1.createConnection(ormconfig)
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
     app.use(express.json({ limit: '50mb' }));
     // https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0
-    app.use(express.urlencoded({ limit: '50mb' }));
+    // https://stackoverflow.com/questions/25471856/express-throws-error-as-body-parser-deprecated-undefined-extended
+    app.use(express.urlencoded({ limit: '50mb', extended: true }));
     // passport https://gist.githubusercontent.com/leannezhang/8069d56a779f2b86da40dfd17c9e3efe/raw/d896c190174c8494e34592c9b1000fc058172d1d/index.js
     app.use(cookieSession({
         name: "endoh_google_session",

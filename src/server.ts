@@ -43,7 +43,8 @@ createConnection(ormconfig)
      app.use(express.json({limit: '50mb'}))
 
     // https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0
-    app.use(express.urlencoded({ limit: '50mb' }))
+    // https://stackoverflow.com/questions/25471856/express-throws-error-as-body-parser-deprecated-undefined-extended
+    app.use(express.urlencoded({ limit: '50mb', extended: true }))
 
    
 

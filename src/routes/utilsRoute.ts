@@ -43,7 +43,7 @@ utilsRoute.get(
       if (url.includes("youtube.com")) {
         const videoId = new URLSearchParams(url.split("?")[1]).get("v")
         await fetch(
-          `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${YOUTUBE_API_KEY}`
+          `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails%2Cstatistics&id=${videoId}&key=${YOUTUBE_API_KEY}`
         )
           .then((res) => res.json())
           .then((json) => {

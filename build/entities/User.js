@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const Decision_1 = require("./BigDecisions/Decision");
+const DecisionTable_1 = require("./BigDecisions/DecisionTable");
+const DecisionTableItem_1 = require("./BigDecisions/DecisionTableItem");
 const Doc_1 = require("./define/Doc");
 const Note_1 = require("./define/Note");
 const FollowingTag_1 = require("./feed/FollowingTag");
@@ -138,6 +141,18 @@ __decorate([
     typeorm_1.OneToMany(() => Note_1.Note, (note) => note.user),
     __metadata("design:type", Array)
 ], User.prototype, "notes", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => Decision_1.Decision, (decision) => decision.user),
+    __metadata("design:type", Array)
+], User.prototype, "decisions", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => DecisionTable_1.DecisionTable, (table) => table.user),
+    __metadata("design:type", Array)
+], User.prototype, "decisionTables", void 0);
+__decorate([
+    typeorm_1.OneToMany(() => DecisionTableItem_1.DecisionTableItem, (item) => item.user),
+    __metadata("design:type", Array)
+], User.prototype, "decisionTableItems", void 0);
 User = __decorate([
     typeorm_1.Entity()
 ], User);

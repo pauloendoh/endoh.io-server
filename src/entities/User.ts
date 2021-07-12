@@ -1,3 +1,4 @@
+
 import {
   AfterInsert,
   BeforeInsert,
@@ -11,6 +12,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
+import { Decision } from './BigDecisions/Decision'
+import { DecisionTable } from './BigDecisions/DecisionTable'
+import { DecisionTableItem } from './BigDecisions/DecisionTableItem'
 import { Doc } from "./define/Doc"
 import { Note } from "./define/Note"
 import { FollowingTag } from "./feed/FollowingTag"
@@ -124,4 +128,14 @@ export class User {
 
   @OneToMany(() => Note, (note) => note.user)
   notes: Note[]
+
+  // BigDecisions
+  @OneToMany(() => Decision, (decision) => decision.user)
+  decisions: Decision[]
+
+  @OneToMany(() => DecisionTable, (table) => table.user)
+  decisionTables: DecisionTable[]
+
+  @OneToMany(() => DecisionTableItem, (item) => item.user)
+  decisionTableItems: DecisionTableItem[]
 }

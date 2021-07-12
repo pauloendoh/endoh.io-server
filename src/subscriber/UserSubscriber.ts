@@ -18,22 +18,18 @@ import createUserSuggestionsForUser from "../utils/user/createUserSuggestionsFor
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<User> {
-  /**
-   * Indicates that this subscriber only listen to Post events.
-   */
+
   listenTo() {
     return User
   }
 
-  /**
-   * Called before post insertion.
-   */
   async afterInsert(event: InsertEvent<User>) {
     try {
-      // create default preference
+  
       const preference = new UserPreference()
       preference.user = event.entity
 
+      // YOU HAVE TO USE event.manger.getRepository in order to make timely changes
       await event.manager.getRepository(UserPreference).save(preference)
 
       const profile = new Profile()

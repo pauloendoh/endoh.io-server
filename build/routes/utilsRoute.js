@@ -31,7 +31,7 @@ utilsRoute.get("/link-preview", authMiddleware_1.default, async (req, res) => {
         let durationStr = "00:00h";
         if (url.includes("youtube.com")) {
             const videoId = new URLSearchParams(url.split("?")[1]).get("v");
-            await node_fetch_1.default(`https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${config_1.YOUTUBE_API_KEY}`)
+            await node_fetch_1.default(`https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails%2Cstatistics&id=${videoId}&key=${config_1.YOUTUBE_API_KEY}`)
                 .then((res) => res.json())
                 .then((json) => {
                 console.log(json);
