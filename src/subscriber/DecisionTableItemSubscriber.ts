@@ -3,6 +3,7 @@ import {
   EventSubscriber,
   InsertEvent,
 } from "typeorm"
+import { DecisionTable } from "../entities/BigDecisions/DecisionTable"
 import { DecisionTableItem } from "../entities/BigDecisions/DecisionTableItem"
 import { myConsoleError } from "../utils/myConsoleError"
 
@@ -25,6 +26,20 @@ export class DecisionTableItemSubscriber
       // event.entity.index = decision.tables.length - 1
       // const thisRepo = event.manager.getRepository(DecisionTable)
       // await thisRepo.save(event.entity)
+
+      const tableRepo = event.manager.getRepository(DecisionTable)
+      const table = await tableRepo.findOne({
+        where: { id: event.entity.decisionTableId },
+        relations: ["items"],
+      })
+
+      // since it's after an insert, you gotta disconsider this same item
+      event.entity.index  = table.items.length - 1
+
+      const repo = event.manager.getRepository(DecisionTableItem)
+      await repo.save(event.entity) 
+      
+
     } catch (e) {
       myConsoleError(e.message)
     }

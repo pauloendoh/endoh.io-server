@@ -20,7 +20,7 @@ import { scrapeLolRates } from "./utils/lolrates/scrapeLolRates"
 import bodyParser = require('body-parser')
 require("./utils/passport-setup")
 require(`dotenv`).config()
-
+const env = process.env
 // It must use 'require' to work properly.
 const ormconfig = require("../ormconfig")
 

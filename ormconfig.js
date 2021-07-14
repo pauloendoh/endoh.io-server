@@ -58,4 +58,12 @@ if (process.env.NODE_ENV === 'production') {
    }
 }
 
+if (process.env.NODE_ENV === 'test') {
+   ormconfig = {...ormconfig,
+      database: "endoh.io-test",
+      synchronize: true,
+      dropSchema: true,
+   }
+}
+
 module.exports = ormconfig

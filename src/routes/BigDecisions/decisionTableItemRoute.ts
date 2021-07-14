@@ -1,9 +1,9 @@
 import { Router } from "express"
 import { getCustomRepository, getRepository } from "typeorm"
 import { Decision } from "../../entities/BigDecisions/Decision"
-import { DecisionTableItem } from '../../entities/BigDecisions/DecisionTableItem'
+import { DecisionTableItem } from "../../entities/BigDecisions/DecisionTableItem"
 import authMiddleware from "../../middlewares/authMiddleware"
-import DecisionRepository from '../../repositories/BigDecisions/DecisionRepository'
+import DecisionRepository from "../../repositories/BigDecisions/DecisionRepository"
 import { MyErrorsResponse } from "../../utils/ErrorMessage"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
 import { myConsoleError } from "../../utils/myConsoleError"
@@ -40,9 +40,10 @@ itemRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
             new MyErrorsResponse(`Doc doesn't exist or user doesn't own it.`)
           )
       }
+    } else {
+      sentItem.userId = req.user.id
     }
 
-    sentItem.userId = req.user.id
     const saved = await itemRepo.save(sentItem)
 
     // const allDecisions = await itemRepo.getAllFromUser(req.user.id)

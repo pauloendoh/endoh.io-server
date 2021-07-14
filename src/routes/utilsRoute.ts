@@ -47,7 +47,6 @@ utilsRoute.get(
         )
           .then((res) => res.json())
           .then((json) => {
-            console.log(json)
             const durationObj = Duration.fromISO(
               json.items[0].contentDetails.duration
             ).toObject()
