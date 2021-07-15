@@ -3,9 +3,11 @@ import {
   EventSubscriber,
   getCustomRepository,
   InsertEvent,
+  RemoveEvent,
 } from "typeorm"
 import { DecisionTable } from "../entities/BigDecisions/DecisionTable"
 import DecisionRepository from "../repositories/BigDecisions/DecisionRepository"
+import DecisionTableRepository from '../repositories/BigDecisions/DecisionTableRepository'
 import { myConsoleError } from "../utils/myConsoleError"
 
 @EventSubscriber()
@@ -33,4 +35,16 @@ export class DecisionTableSubscriber
       myConsoleError(e.message)
     }
   }
+
+  async afterRemove(event: RemoveEvent<DecisionTable>){
+    try{
+      const repo = event.manager.getCustomRepository(DecisionTableRepository)
+      const ok = await repo.normalizeTablesPositions(event.entity.decisionId)
+return 
+    }catch (e) {
+      myConsoleError(e.message)
+    }
+  }
+
+
 }

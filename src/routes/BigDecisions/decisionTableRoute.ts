@@ -35,25 +35,26 @@ tableRoute.delete("/:id", authMiddleware, async (req: MyAuthRequest, res) => {
   }
 })
 
-tableRoute.put("/", authMiddleware, async (req: MyAuthRequest, res) => {
+tableRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
   try {
-    const sentTable = plainToClass(DecisionTable, req.body)
+    const sent = plainToClass(DecisionTable, req.body)
 
-    const found = await repo.findOne({
-      where: { id: sentTable.id, userId: req.user.id },
-    })
+    if (sent.id) {
+      const found = await repo.findOne({
+        where: { id: sent.id, userId: req.user.id },
+      })
 
-    if (!found) {
-      return res
-        .status(400)
-        .json(new MyErrorsResponse(`Doesn't exist or user doesn't own it.`))
+      if (!found) {
+        return res
+          .status(400)
+          .json(new MyErrorsResponse(`Doesn't exist or user doesn't own it.`))
+      }
     }
 
-    await repo.save(sentTable)
+    sent.userId = req.user.id
+    const saved = await repo.save(sent)
 
-    const fullDecision = await decisionRepo.getFullDecision(
-      sentTable.decisionId
-    )
+    const fullDecision = await decisionRepo.getFullDecision(saved.decisionId)
     return res.status(200).json(fullDecision)
   } catch (err) {
     myConsoleError(err.message)
