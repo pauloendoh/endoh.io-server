@@ -10,7 +10,7 @@ export default class DecisionRepository extends Repository<Decision> {
       .leftJoinAndSelect("table.items", "item")
       .orderBy("decision.isPriority", "DESC")
       .addOrderBy("decision.updatedAt", "DESC")
-      .addOrderBy("table.index", "ASC")
+      .addOrderBy("table.createdAt", "ASC")
       .addOrderBy("item.index", "ASC")
       .getMany()
   }
@@ -22,7 +22,7 @@ export default class DecisionRepository extends Repository<Decision> {
       .leftJoinAndSelect("table.items", "item")
       .orderBy("decision.isPriority", "DESC")
       .addOrderBy("decision.updatedAt", "DESC")
-      .addOrderBy("table.index", "ASC")
+      .addOrderBy("table.createdAt", "ASC")
       .addOrderBy("item.index", "ASC")
       .getOne()
   }

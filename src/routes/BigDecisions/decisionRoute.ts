@@ -1,8 +1,8 @@
 import { Router } from "express"
-import { getCustomRepository, getRepository } from "typeorm"
+import { getCustomRepository } from "typeorm"
 import { Decision } from "../../entities/BigDecisions/Decision"
 import authMiddleware from "../../middlewares/authMiddleware"
-import DecisionRepository from '../../repositories/BigDecisions/DecisionRepository'
+import DecisionRepository from "../../repositories/BigDecisions/DecisionRepository"
 import { MyErrorsResponse } from "../../utils/ErrorMessage"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
 import { myConsoleError } from "../../utils/myConsoleError"
@@ -42,8 +42,8 @@ decisionRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
     }
 
     sentDecision.userId = req.user.id
-     const saved = await decisionRepo.save(sentDecision)
-     const fullSaved = await decisionRepo.getFullDecision(saved.id)
+    const saved = await decisionRepo.save(sentDecision)
+    const fullSaved = await decisionRepo.getFullDecision(saved.id)
 
     // const allDecisions = await decisionRepo.getAllFromUser(req.user.id)
     return res.status(200).json(fullSaved)
@@ -52,5 +52,34 @@ decisionRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
     return res.status(400).json(new MyErrorsResponse(err.message))
   }
 })
+
+decisionRoute.delete(
+  "/:id",
+  authMiddleware,
+  async (req: MyAuthRequest, res) => {
+    const decisionId = parseFloat(req.params.id)
+
+    try {
+      const decision = await decisionRepo.findOne({
+        where: { id: decisionId, userId: req.user.id },
+      })
+
+      if (!decision) {
+        return res
+          .status(400)
+          .json(
+            new MyErrorsResponse(`Doc doesn't exist or user doesn't own it.`)
+          )
+      }
+
+      await decisionRepo.remove(decision)
+      return res.status(200).json()
+
+    } catch (err) {
+      myConsoleError(err.message)
+      return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+  }
+)
 
 export default decisionRoute
