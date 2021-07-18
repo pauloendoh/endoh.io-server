@@ -4,6 +4,9 @@ require('dotenv').config()
 // isso serve apenas para executar as migrations em produção!
 // Roda durante o typeorm migration:run
 
+// can't change to .json because of process.env variables and 
+// you can't have separated files because CLI commands uses ormconfig.js at root 
+
 
 // if dev mode
 let ormconfig = {
