@@ -4,7 +4,7 @@ import createExampleDecision from '../../utils/domain/BigDecisions/createExample
 import createOrmConn from '../../utils/typeOrm/createOrmConn'
 import createExampleUser from '../../utils/user/createExampleUser'
 
-beforeAll(async ()=>{
+beforeEach(async ()=>{
     // wipes database 
     await createOrmConn()
 })
