@@ -62,4 +62,39 @@ tableRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
   }
 })
 
+tableRoute.post(
+  "/sortProblemsByWeight",
+  authMiddleware,
+  async (req: MyAuthRequest, res) => {
+    try {
+      const { tableId: decisionTableId, order } = req.body as {
+        tableId: number
+        order: "asc" | "desc"
+      }
+
+      // ownership
+      const table = await repo.findOne({
+        where: { id: decisionTableId, userId: req.user.id },
+      })
+
+      if (!table) {
+        return res
+          .status(400)
+          .json(new MyErrorsResponse(`Doesn't exist or user doesn't own it.`))
+      }
+
+      // sorting by order
+      if (order !== "asc" && order !== "desc")
+        return res.status(400).json(new MyErrorsResponse(`Invalid order`))
+      await repo.sortProblemsByWeight(table.id, order)
+
+      const fullDecision = await decisionRepo.getFullDecision(table.decisionId)
+      return res.status(200).json(fullDecision)
+    } catch (err) {
+      myConsoleError(err.message)
+      return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+  }
+)
+
 export default tableRoute

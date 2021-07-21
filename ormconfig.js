@@ -20,7 +20,7 @@ let ormconfig = {
       __dirname + "/src/entities/**/*.ts",
    ],
    synchronize: false,
-   logging: false,
+
    migrations: [
       __dirname + "/src/migrations/**/*.ts",
    ],
@@ -32,6 +32,8 @@ let ormconfig = {
       "migrationsDir": "src/migrations",
       "subscribersDir": "src/subscriber",
    },
+
+   logging: false,
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -62,7 +64,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 if (process.env.NODE_ENV === 'test') {
-   ormconfig = {...ormconfig,
+   ormconfig = {
+      ...ormconfig,
       database: "endoh.io-test",
       synchronize: true,
       dropSchema: true,

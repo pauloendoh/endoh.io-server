@@ -1,8 +1,10 @@
 import {
+  AfterInsert,
   BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
+  getRepository,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -38,7 +40,7 @@ export class DecisionTable {
   @Column()
   title: string
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   index: number
 
   @CreateDateColumn()
@@ -47,5 +49,5 @@ export class DecisionTable {
   @UpdateDateColumn()
   updatedAt: string
 
-
+ 
 }

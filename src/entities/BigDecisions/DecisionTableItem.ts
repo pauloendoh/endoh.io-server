@@ -1,7 +1,9 @@
 import {
+  AfterInsert,
   Column,
   CreateDateColumn,
   Entity,
+  getRepository,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -29,7 +31,7 @@ export class DecisionTableItem {
   decisionTableId: number
 
   // END OF RELATIONS
-  @Column({nullable: true})
+  @Column({ nullable: true })
   index: number
 
   @Column()
@@ -38,7 +40,7 @@ export class DecisionTableItem {
   @Column()
   solution: string
 
-  @Column({ nullable: true })
+  @Column({ default: 1 })
   weight: number
 
   @CreateDateColumn()
