@@ -25,7 +25,7 @@ let ormconfig = {
       __dirname + "/src/migrations/**/*.ts",
    ],
    subscribers: [
-      __dirname + "/src/subscriber/**/*.ts",
+      __dirname + "/src/subscriber/**/*Subscriber.ts",
    ],
    cli: {
       "entitiesDir": "src/entities",
@@ -33,12 +33,12 @@ let ormconfig = {
       "subscribersDir": "src/subscriber",
    },
 
-   logging: false,
+   logging: ["error"],
 }
 
 if (process.env.NODE_ENV === 'production') {
    ormconfig = {
-      type: "postgres",
+      ...ormconfig,
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
@@ -47,13 +47,11 @@ if (process.env.NODE_ENV === 'production') {
       entities: [
          __dirname + "/build/entities/**/*.js"
       ],
-      synchronize: false,
-      logging: false,
       migrations: [
          __dirname + "/build/migrations/**/*.js",
       ],
       subscribers: [
-         __dirname + "/build/subscriber/**/*.js",
+         __dirname + "/build/subscriber/**/*Subscriber.js",
       ],
       cli: {
          "entitiesDir": __dirname + "build/src/entities",

@@ -41,7 +41,7 @@ export class DecisionTableSubscriber
         problem: "",
         solution: "",
         weight: 1
-      })
+      }) 
     } catch (e) {
       myConsoleError(e.message)
     }

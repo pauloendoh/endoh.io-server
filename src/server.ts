@@ -101,9 +101,7 @@ createConnection(ormconfig)
         scrapeLolRates()
       }, 60 * 1000 * 60)
 
-      myConsoleSuccess(
-        "Pinging every 15 min at https://endohio-server.herokuapp.com/"
-      )
+ 
 
       createPreferencesForAll()
       createProfileForUsers()
@@ -114,7 +112,10 @@ createConnection(ormconfig)
         createUserSuggestionsForAll()
       }, 60 * 1000 * 60)
 
-      // Ping every15 min to avoid Heroku's server sleep
+     
+
+      // PE 1/3 - Ping every15 min to avoid Heroku's server sleep
+      // also, lolrates
       // Maybe split into different file?
       setInterval(async () => {
         fetch("https://endohio-server.herokuapp.com/")
@@ -122,6 +123,13 @@ createConnection(ormconfig)
           .then((json) =>
             myConsoleSuccess("GET OK https://endohio-server.herokuapp.com/")
           )
+
+          fetch("https://lolrates.vercel.app/")
+          .then((res) => res.text())
+          .then((text) =>
+            myConsoleSuccess("GET OK https://lolrates.vercel.app/")
+          )
+
 
         try {
           const userRepo = getCustomRepository(UserRepository)

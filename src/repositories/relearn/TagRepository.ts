@@ -22,7 +22,7 @@ export default class TagRepository extends Repository<Tag> {
 
     const tag2 = await this.save({
       user,
-      name: "[Example] Soft Skillls",
+      name: "[Example] Soft Skills",
       color: "#6accbc",
       isPrivate: true,
     })
