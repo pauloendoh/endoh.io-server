@@ -19,7 +19,7 @@ let ormconfig = {
    entities: [
       __dirname + "/src/entities/**/*.ts",
    ],
-   synchronize: false,
+   synchronize: false, // set as 'true' if you're syncronizing for the first time
 
    migrations: [
       __dirname + "/src/migrations/**/*.ts",
