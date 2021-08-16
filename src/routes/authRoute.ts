@@ -20,6 +20,7 @@ import UserRepository from '../repositories/UserRepository';
 import { MyErrorsResponse } from '../utils/ErrorMessage';
 import { MyAuthRequest } from '../utils/MyAuthRequest';
 import { myConsoleError } from '../utils/myConsoleError';
+import { sleep } from '../utils/sleep';
 import { addMinutes } from '../utils/time/addMinutes';
 import validateUserFields from '../utils/validateUser';
 require('../utils/passport-setup')
@@ -129,6 +130,18 @@ authRoute.post('/login', async (req: Request, res: Response) => {
                     throw err
                 return res.json(new AuthUserGetDto(user, token, expireDate))
             })
+
+    } catch (err) {
+        myConsoleError(err.message)
+        return res.status(400).json(new MyErrorsResponse(err.message))
+    }
+})
+
+// Get user info by sending a JWT on the request header
+authRoute.get('/me', authMiddleware, async ({ user }: MyAuthRequest, res) => {
+    try {
+        // await sleep(2500)
+        return res.json(new AuthUserGetDto(user, null, null))
 
     } catch (err) {
         myConsoleError(err.message)
