@@ -21,6 +21,7 @@ import { FollowingTag } from "./feed/FollowingTag"
 import { Notification } from "./feed/Notification"
 import { Profile } from "./feed/Profile"
 import { UserSuggestion } from "./feed/UserSuggestion"
+import { Player } from "./LolRates/Player"
 import Category from "./monerate/Category"
 import { Expense } from "./monerate/Expense"
 import Place from "./monerate/Place"
@@ -138,4 +139,8 @@ export class User {
 
   @OneToMany(() => DecisionTableItem, (item) => item.user)
   decisionTableItems: DecisionTableItem[]
+
+  // lolrates
+  @OneToMany((type) => Player, (player) => player.user)
+  players: Player[]
 }

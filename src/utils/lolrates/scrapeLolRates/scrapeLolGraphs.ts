@@ -1,6 +1,6 @@
 import * as pup from "puppeteer"
 import { getCustomRepository } from "typeorm"
-import LolRateRepository from "../../../repositories/LolRateRepository"
+import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 import { myConsoleError } from "../../myConsoleError"
 import { myConsoleSuccess } from "../../myConsoleSuccess"
 import { LolRoles } from "../lolRoles"

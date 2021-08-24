@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { getConnection, getCustomRepository } from "typeorm"
-import LolRateRepository from "../repositories/LolRateRepository"
+import LolRateRepository from "../repositories/lolrates/LolRateRepository"
 import { MyErrorsResponse } from "../utils/ErrorMessage"
 import { myConsoleError } from "../utils/myConsoleError"
 
