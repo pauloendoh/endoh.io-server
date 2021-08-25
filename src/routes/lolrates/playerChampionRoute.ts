@@ -47,4 +47,25 @@ playerChampionRoute.get(
   }
 );
 
+playerChampionRoute.delete(
+  "/:id",
+  authMiddleware,
+  async (req: MyAuthRequest, res) => {
+    try {
+      const { id } = req.params as { id: string };
+      const pChampionId = Number(id);
+      const found = await playerChampionRepo.findOneOrFail({
+        where: { userId: req.user.id, id: pChampionId },
+      });
+
+      await playerChampionRepo.delete(found)
+
+      return res.status(200).json();
+    } catch (err) {
+      myConsoleError(err.message);
+      return res.status(400).json(new MyErrorsResponse(err.message));
+    }
+  }
+);
+
 export default playerChampionRoute;
