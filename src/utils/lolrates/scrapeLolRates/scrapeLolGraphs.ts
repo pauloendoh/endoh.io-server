@@ -3,7 +3,7 @@ import { getCustomRepository } from "typeorm"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 import { myConsoleError } from "../../myConsoleError"
 import { myConsoleSuccess } from "../../myConsoleSuccess"
-import { LolRoles } from "../lolRoles"
+import { RoleTypes } from "../../../types/domain/lolates/RoleTypes"
 import { IOpggResult } from "./scrapeOpgg"
 
 export async function scrapeLolGraphs(page: pup.Page) {
@@ -24,7 +24,7 @@ export async function scrapeLolGraphs(page: pup.Page) {
         })
       }
 
-      const roles: { dataFilterFixed: string; role: LolRoles }[] = [
+      const roles: { dataFilterFixed: string; role: RoleTypes }[] = [
         {
           dataFilterFixed: "roles=top",
           role: "TOP",

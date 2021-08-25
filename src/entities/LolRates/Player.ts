@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
 import { User } from "../User";
+import { PlayerChampion } from "./PlayerChampion";
 
 @Entity()
 export class Player {
@@ -14,13 +16,20 @@ export class Player {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.players, { onDelete: "CASCADE" })
-  user: User
+  user: User;
 
   @Column()
-  userId: number
+  userId: number;
 
   @Column()
   name: string;
+
+  // relations
+  @OneToMany(
+    (type) => PlayerChampion,
+    (playerChampion) => playerChampion.player
+  )
+  champions: PlayerChampion[];
 
   @CreateDateColumn()
   createdAt: string;

@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from "typeorm";
+import { PlayerChampion } from "./PlayerChampion";
 
 @Entity()
 export class Champion {
@@ -22,4 +24,11 @@ export class Champion {
 
   @UpdateDateColumn()
   updatedAt: string;
+
+  // relations
+  @OneToMany(
+    (type) => PlayerChampion,
+    (playerChampion) => playerChampion.champion
+  )
+  playerChampions: PlayerChampion[];
 }

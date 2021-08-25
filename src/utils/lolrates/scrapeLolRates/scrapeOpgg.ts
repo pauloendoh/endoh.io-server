@@ -2,7 +2,7 @@ import * as pup from "puppeteer"
 import { getCustomRepository } from "typeorm"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 import { myConsoleError } from "../../myConsoleError"
-import { LolRoles } from "../lolRoles"
+import { RoleTypes } from "../../../types/domain/lolates/RoleTypes"
 
 export interface IOpggResult {
   role: string
@@ -20,7 +20,7 @@ export async function scrapeOpgg(page: pup.Page) {
     )
 
     const results = await page.evaluate(() => {
-      function getRoleByTBodyIndex(index: number): LolRoles {
+      function getRoleByTBodyIndex(index: number): RoleTypes {
         switch (index) {
           case 0:
             return "TOP"

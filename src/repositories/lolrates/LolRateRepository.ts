@@ -6,7 +6,7 @@ import {
 import { LolRateUpdatedAtDto } from "../../dtos/lolrates/LolRateUpdatedAtDto";
 import { Champion } from "../../entities/LolRates/Champion";
 import { LolRate } from "../../entities/LolRates/LolRate";
-import { LolRoles } from "../../utils/lolrates/lolRoles";
+import { RoleTypes } from "../../types/domain/lolates/RoleTypes";
 import { IChampion } from "../../utils/lolrates/scrapeLolRates/scrapeChampions";
 import { IOpggResult as ScrapeResult } from "../../utils/lolrates/scrapeLolRates/scrapeOpgg";
 import { myConsoleError } from "../../utils/myConsoleError";
@@ -58,7 +58,7 @@ export default class LolRateRepository extends Repository<LolRate> {
         });
 
         if (!exists) {
-          const roles: LolRoles[] = ["TOP", "JUNGLE", "MID", "BOT", "SUP"];
+          const roles: RoleTypes[] = ["TOP", "JUNGLE", "MID", "BOT", "SUP"];
           for (const role of roles) {
             await this.save({ championName, iconUrl, role });
           }

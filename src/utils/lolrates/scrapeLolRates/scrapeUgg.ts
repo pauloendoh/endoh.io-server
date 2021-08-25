@@ -3,10 +3,10 @@ import { getCustomRepository } from "typeorm"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 import { myConsoleError } from "../../myConsoleError"
 import { myConsoleSuccess } from "../../myConsoleSuccess"
-import { LolRoles } from "../lolRoles"
+import { RoleTypes } from "../../../types/domain/lolates/RoleTypes"
 import { IOpggResult } from "./scrapeOpgg"
 
-const roles: { url: string; role: LolRoles }[] = [
+const roles: { url: string; role: RoleTypes }[] = [
   {
     url: "https://u.gg/lol/top-lane-tier-list",
     role: "TOP",
