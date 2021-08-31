@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { ChampionRadar } from "./ChampionRadar";
 import { PlayerChampion } from "./PlayerChampion";
 
 @Entity()
@@ -31,4 +32,10 @@ export class Champion {
     (playerChampion) => playerChampion.champion
   )
   playerChampions: PlayerChampion[];
+
+  @OneToMany(
+    (type) => ChampionRadar,
+    (cRadar) => cRadar.champion
+  )
+  championRadars: ChampionRadar[];
 }

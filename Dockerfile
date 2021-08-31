@@ -10,7 +10,7 @@ COPY . .
 
 ENV PORT=3000
 
-EXPOSE 3000 5432
+EXPOSE 3000 5431
 
 CMD ["npm", "run", "dev"]
 

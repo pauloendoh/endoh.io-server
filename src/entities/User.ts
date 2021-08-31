@@ -21,6 +21,7 @@ import { FollowingTag } from "./feed/FollowingTag"
 import { Notification } from "./feed/Notification"
 import { Profile } from "./feed/Profile"
 import { UserSuggestion } from "./feed/UserSuggestion"
+import { ChampionRadar } from "./LolRates/ChampionRadar"
 import { Player } from "./LolRates/Player"
 import Category from "./monerate/Category"
 import { Expense } from "./monerate/Expense"
@@ -143,4 +144,7 @@ export class User {
   // lolrates
   @OneToMany((type) => Player, (player) => player.user)
   players: Player[]
+
+  @OneToMany((type) => ChampionRadar, (cRadar) => cRadar.user)
+  championRadars: ChampionRadar[]
 }
