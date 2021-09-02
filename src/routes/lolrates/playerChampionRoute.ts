@@ -20,8 +20,24 @@ playerChampionRoute.post(
       const sentPlayerChampion = plainToClass(PlayerChampion, req.body);
       sentPlayerChampion.userId = req.user.id;
 
-      const saved = await playerChampionRepo.save(sentPlayerChampion);
+      const found = await playerChampionRepo.findOne({
+        where: {
+          playerId: sentPlayerChampion.playerId,
+          championId: sentPlayerChampion.championId,
+          role: sentPlayerChampion.role,
+          userId: req.user.id,
+        },
+      });
 
+      if (found) {
+        const saved = await playerChampionRepo.save({
+          ...found,
+          skillLevel: sentPlayerChampion.skillLevel,
+        });
+        return res.status(200).json(saved);
+      }
+
+      const saved = await playerChampionRepo.save(sentPlayerChampion);
       return res.status(200).json(saved);
     } catch (err) {
       myConsoleError(err.message);
@@ -29,6 +45,7 @@ playerChampionRoute.post(
     }
   }
 );
+
 
 playerChampionRoute.get(
   "/",
@@ -58,7 +75,7 @@ playerChampionRoute.delete(
         where: { userId: req.user.id, id: pChampionId },
       });
 
-      await playerChampionRepo.delete(found)
+      await playerChampionRepo.delete(found);
 
       return res.status(200).json();
     } catch (err) {

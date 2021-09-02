@@ -51,7 +51,7 @@ championRadarRoute.put("/", authMiddleware, async (req: MyAuthRequest, res) => {
     if (!found)
       return res
         .status(400)
-        .json(new MyErrorsResponse("Now owner or not exists"));
+        .json(new MyErrorsResponse("Not owner or not exists"));
 
     const saved = await radarRepo.save(sentRadar);
 
