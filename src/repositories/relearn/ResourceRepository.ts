@@ -1,7 +1,7 @@
-import { EntityRepository, getManager, Repository } from "typeorm"
-import { Resource } from "../../entities/relearn/Resource"
-import { Tag } from "../../entities/relearn/Tag"
-import { User } from "../../entities/User"
+import { EntityRepository, getManager, Repository } from "typeorm";
+import { Resource } from "../../entities/relearn/Resource";
+import { Tag } from "../../entities/relearn/Tag";
+import { User } from "../../entities/User";
 
 @EntityRepository(Resource)
 export default class ResourceRepository extends Repository<Resource> {
@@ -11,7 +11,7 @@ export default class ResourceRepository extends Repository<Resource> {
       .where({ user })
       .leftJoinAndSelect("resource.tag", "tag")
       .orderBy("resource.position", "ASC")
-      .getMany()
+      .getMany();
   }
 
   // PE 2/3
@@ -26,7 +26,7 @@ export default class ResourceRepository extends Repository<Resource> {
         .andWhere("resource.rating > 0")
         .andWhere('resource."tagId" is not null')
         .orderBy("resource.completedAt", "DESC")
-        .getMany()
+        .getMany();
     } else {
       return this.createQueryBuilder("resource")
         .leftJoinAndSelect("resource.tag", "tag")
@@ -35,31 +35,31 @@ export default class ResourceRepository extends Repository<Resource> {
         .andWhere('resource."tagId" is not null')
         .andWhere('tag."isPrivate" is false') // get only the public resources (from public tags, that is)
         .orderBy("resource.completedAt", "DESC")
-        .getMany()
+        .getMany();
     }
   }
 
   async getLastPosition(tag: Tag, user: User): Promise<number> {
-    let lastResource: Resource
+    let lastResource: Resource;
     if (tag) {
       lastResource = await this.createQueryBuilder("resource")
         .where({ tag })
         .andWhere("resource.position IS NOT NULL")
         .orderBy("resource.position", "DESC")
-        .getOne()
+        .getOne();
     } else {
       lastResource = await this.createQueryBuilder("resource")
         .where({ user })
         .andWhere("resource.tagId IS NULL")
         .andWhere("resource.position IS NOT NULL")
         .orderBy("resource.position", "DESC")
-        .getOne()
+        .getOne();
     }
 
     if (lastResource?.position >= 0) {
-      return lastResource.position + 1
+      return lastResource.position + 1;
     }
-    return 0
+    return 0;
   }
 
   // reduce by 1
@@ -76,7 +76,7 @@ export default class ResourceRepository extends Repository<Resource> {
                  WHERE "tagId" = $1 
                    AND "position" >= $2`,
         [tag.id, startingPosition]
-      )
+      );
     } else {
       await getManager().query(
         `
@@ -86,7 +86,7 @@ export default class ResourceRepository extends Repository<Resource> {
                    AND "userId" = $1 
                    AND "position" >= $2`,
         [user.id, startingPosition]
-      )
+      );
     }
   }
 
@@ -104,7 +104,7 @@ export default class ResourceRepository extends Repository<Resource> {
                  WHERE "tagId" = $1 
                    AND "position" >= $2`,
         [tagId, startingPosition]
-      )
+      );
     } else {
       await getManager().query(
         `
@@ -114,7 +114,7 @@ export default class ResourceRepository extends Repository<Resource> {
                    AND "userId" = $1 
                    AND "position" >= $2`,
         [user.id, startingPosition]
-      )
+      );
     }
   }
 
@@ -122,22 +122,22 @@ export default class ResourceRepository extends Repository<Resource> {
   async getResourcesByText(user: User, text: string): Promise<Resource[]> {
     return this.createQueryBuilder("resource")
       .where({ user })
-      .andWhere("resource.title ilike :text or resource.url like :text", {
+      .andWhere("(resource.title ilike :text or resource.url like :text)", {
         text: `%${text}%`,
       })
       .leftJoinAndSelect("resource.tag", "tag")
       .orderBy("resource.position", "ASC")
-      .getMany()
+      .getMany();
   }
 
   async createResourcesForNewUser(
     user: User,
     tags: Tag[]
   ): Promise<Resource[]> {
-    const programmingTag = tags[0]
-    const softSkillsTag = tags[1]
+    const programmingTag = tags[0];
+    const softSkillsTag = tags[1];
 
-    const resources: Resource[] = []
+    const resources: Resource[] = [];
     resources.push(
       await this.save({
         user,
@@ -149,7 +149,7 @@ export default class ResourceRepository extends Repository<Resource> {
         estimatedTime: "00:00h",
         position: 0,
       })
-    )
+    );
 
     resources.push(
       await this.save({
@@ -161,7 +161,7 @@ export default class ResourceRepository extends Repository<Resource> {
         estimatedTime: "00:10h",
         position: 1,
       })
-    )
+    );
 
     resources.push(
       await this.save({
@@ -172,7 +172,7 @@ export default class ResourceRepository extends Repository<Resource> {
         position: 2,
         privateNote: `1. Think about your website \n2. Prototype your website using Figma \n3. Program your site with HTML, CSS and JS`,
       })
-    )
+    );
 
     resources.push(
       await this.save({
@@ -184,8 +184,8 @@ export default class ResourceRepository extends Repository<Resource> {
         estimatedTime: "00:03h",
         position: 0,
       })
-    )
+    );
 
-    return resources
+    return resources;
   }
 }

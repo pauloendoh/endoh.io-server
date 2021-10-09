@@ -1,16 +1,15 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { User } from './User';
-
+import { Column, Entity, ManyToOne } from "typeorm";
+import { CreatedBaseEntity } from "../types/CreatedBaseEntity";
+import { User } from "./User";
 
 @Entity()
-export class Test {
+export class Test extends CreatedBaseEntity {
+  @Column({ default: "" })
+  name: string;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @ManyToOne((type) => User, (user) => user.tests)
+  user: User;
 
-    @Column({ default: '' })
-    name: string
-
-    @Column({ default: '' })
-    color: string
+  @Column({ default: "" })
+  color: string;
 }

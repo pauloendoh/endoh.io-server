@@ -1,3 +1,5 @@
+import autoroutes from 'express-automatic-routes'
+
 import * as cors from "cors"
 import * as express from "express"
 import * as fs from "fs"
@@ -88,6 +90,9 @@ createConnection(ormconfig)
         )
       }
     })
+
+    // AUTO ROUTES
+    autoroutes(app, {dir: './auto-routes'})
 
     const port = process.env.PORT || 3000
     myConsoleSuccess("Trying to access port " + port)
