@@ -1,7 +1,15 @@
-import { EntityRepository, getManager, Repository } from "typeorm";
+import {
+  EntityRepository,
+  getCustomRepository,
+  getManager,
+  Repository,
+} from "typeorm";
 import { Resource } from "../../entities/relearn/Resource";
 import { Tag } from "../../entities/relearn/Tag";
 import { User } from "../../entities/User";
+
+export const getResourceRepository = () =>
+  getCustomRepository(ResourceRepository);
 
 @EntityRepository(Resource)
 export default class ResourceRepository extends Repository<Resource> {

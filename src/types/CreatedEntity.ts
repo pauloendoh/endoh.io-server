@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   PrimaryGeneratedColumn,
@@ -7,11 +6,11 @@ import {
 } from "typeorm";
 import { User } from "../entities/User";
 
-export abstract class CreatedBaseEntity extends BaseEntity {
+export abstract class CreatedEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  abstract user: User;
+  abstract user: User; // forces implementation
 
   @Column()
   userId: number;
@@ -22,7 +21,7 @@ export abstract class CreatedBaseEntity extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: string;
 
-  static checkOwnershipAsync(userId: number, entityId: number) {
-    return this.findOne({ where: { userId, id: entityId } });
-  }
+  // static checkOwnershipAsync(userId: number, entityId: number) {
+  //   return this.findOne({ where: { userId, id: entityId } });
+  // }
 }

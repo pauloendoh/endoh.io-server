@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne } from "typeorm";
-import { CreatedBaseEntity } from "../types/CreatedBaseEntity";
+import { CreatedEntity } from "../types/CreatedEntity";
 import { User } from "./User";
 
 @Entity()
-export class Test extends CreatedBaseEntity {
+export class Test extends CreatedEntity {
   @Column({ default: "" })
   name: string;
 
