@@ -1,5 +1,6 @@
 import {
   EntityRepository,
+  FindConditions,
   getCustomRepository,
   getManager,
   Repository,
@@ -20,6 +21,10 @@ export default class ResourceRepository extends Repository<Resource> {
       .leftJoinAndSelect("resource.tag", "tag")
       .orderBy("resource.position", "ASC")
       .getMany();
+  }
+
+  async findOneRelationsId(where: FindConditions<Resource>) {
+    return this.findOne({ where, relations: ["tag"] });
   }
 
   // PE 2/3

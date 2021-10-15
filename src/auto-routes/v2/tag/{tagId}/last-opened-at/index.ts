@@ -25,8 +25,12 @@ export default function tagLastOpenedAtRoute(expressApp: Application) {
 
           found.lastOpenedAt = new Date().toISOString();
           const saved = await getTagRepository().save(found);
+          const savedFull = await getTagRepository().getFullTagFromUser(
+            saved.id,
+            req.user.id
+          );
 
-          return res.json(saved);
+          return res.json(savedFull);
         } catch (err) {
           myConsoleError(err.message);
           return res.status(400).json(new MyErrorsResponse(err.message));

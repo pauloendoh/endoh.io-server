@@ -15,6 +15,14 @@ export default class TagRepository extends Repository<Tag> {
       .getMany();
   }
 
+  async getFullTagFromUser(tagId: number, userId: number) {
+    return this.createQueryBuilder("tag")
+      .where({ id: tagId, userId })
+      .leftJoinAndSelect("tag.resources", "resources")
+      .orderBy("tag.createdAt", "ASC")
+      .getOne();
+  }
+
   async createTagsForNewUser(user: User): Promise<Tag[]> {
     const tag1 = await this.save({
       user,
