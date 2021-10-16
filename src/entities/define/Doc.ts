@@ -6,32 +6,35 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm"
-import { User } from "../User"
-import { Note } from "./Note"
+} from "typeorm";
+import { User } from "../User";
+import { Note } from "./Note";
 
 @Entity()
 export class Doc {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @ManyToOne((type) => User, (user) => user.docs, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: User;
   @Column()
-  userId: number
+  userId: number;
 
   @OneToMany(() => Note, (note) => note.doc)
-  notes: Note[]
+  notes: Note[];
 
   // END OF RELATIONS
   @Column()
-  title: string
+  title: string;
 
   @CreateDateColumn()
-  createdAt: string
+  createdAt: string;
 
   @UpdateDateColumn()
-  updatedAt: string
+  updatedAt: string;
+
+  @Column({ type: "timestamp without time zone", nullable: true })
+  lastOpenedAt: string;
 }
