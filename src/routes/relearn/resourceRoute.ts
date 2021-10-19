@@ -24,6 +24,11 @@ resourceRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
     //   ).createSavedResourceNotification(user.id, sentResource.fromResourceId)
     // }
 
+    if (sentResource.tag === null)
+      return res
+        .status(400)
+        .json(new MyErrorsResponse(`Resource must have a tag.`));
+
     // If updating
     if (sentResource.id) {
       const previousResource = await resourceRepo.findOne(
