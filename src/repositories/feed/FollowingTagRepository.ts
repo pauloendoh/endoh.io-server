@@ -1,16 +1,19 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { FeedResourceDto } from '../../dtos/feed/FeedResourceDto';
-import { FollowerDto } from '../../dtos/feed/FollowerDto';
-import { FollowingUserDto } from '../../dtos/feed/FollowingUserDto';
-import { MostFollowedUser } from '../../dtos/feed/MostFollowedUser';
-import { FollowingTag } from '../../entities/feed/FollowingTag';
-import { User } from '../../entities/User';
+import { EntityRepository, getCustomRepository, Repository } from "typeorm";
+import { FeedResourceDto } from "../../dtos/feed/FeedResourceDto";
+import { FollowerDto } from "../../dtos/feed/FollowerDto";
+import { FollowingUserDto } from "../../dtos/feed/FollowingUserDto";
+import { MostFollowedUser } from "../../dtos/feed/MostFollowedUser";
+import { FollowingTag } from "../../entities/feed/FollowingTag";
+import { User } from "../../entities/User";
+
+export const getFollowingTagRepo = () =>
+  getCustomRepository(FollowingTagRepository);
 
 @EntityRepository(FollowingTag)
-export default class FollowingTagRepository extends Repository<FollowingTag>{
-
+export default class FollowingTagRepository extends Repository<FollowingTag> {
   async getFollowingUsers(follower: User): Promise<FollowingUserDto[]> {
-    return this.query(`
+    return this.query(
+      `
         SELECT json_build_object('userId', FUS.id,
                                  'username', FUS.username,
                                  'fullName', PRO."fullName",
@@ -25,11 +28,14 @@ export default class FollowingTagRepository extends Repository<FollowingTag>{
          WHERE FTG."followerId" = $1
       GROUP BY FUS.id,
 	  		   PRO."fullName",
-			   PRO."pictureUrl"`, [follower.id])
+			   PRO."pictureUrl"`,
+      [follower.id]
+    );
   }
 
   async getFollowers(user: User): Promise<FollowerDto[]> {
-    return this.query(`
+    return this.query(
+      `
         SELECT json_build_object('userId', FUS.id,
                                  'username', FUS.username,
                                  'fullName', PRO."fullName",
@@ -44,11 +50,17 @@ export default class FollowingTagRepository extends Repository<FollowingTag>{
          WHERE FTG."followingUserId" = $1
       GROUP BY FUS.id,
 	  		   PRO."fullName",
-			   PRO."pictureUrl"`, [user.id])
+			   PRO."pictureUrl"`,
+      [user.id]
+    );
   }
 
-  async getMostFollowedUsersByUsersYouFollow(you: User, returnUpTo: number = 40): Promise<MostFollowedUser[]> {
-    return this.query(`
+  async getMostFollowedUsersByUsersYouFollow(
+    you: User,
+    returnUpTo: number = 40
+  ): Promise<MostFollowedUser[]> {
+    return this.query(
+      `
         select (select json_build_object('userId', "user".id, 'username', "user".username) 
                   from "user" where "id" = "followingUserId") as user,
 	             count("followingUserId")                       as "count" 
@@ -67,11 +79,17 @@ export default class FollowingTagRepository extends Repository<FollowingTag>{
                                             and "followingUserId" != $1
 	    group by "followingUserId" order by "count" desc
 	    limit $2
-  `, [you.id, returnUpTo])
+  `,
+      [you.id, returnUpTo]
+    );
   }
 
-  async getMostFollowedUsersByUsersYouDONTFollow(you: User, returnUpTo: number = 10): Promise<MostFollowedUser[]> {
-    return this.query(`
+  async getMostFollowedUsersByUsersYouDONTFollow(
+    you: User,
+    returnUpTo: number = 10
+  ): Promise<MostFollowedUser[]> {
+    return this.query(
+      `
         select (select json_build_object('userId', "user".id, 'username', "user".username)
 	                from "user" 
                  where "id" = "followingUserId") as user, 
@@ -84,11 +102,14 @@ export default class FollowingTagRepository extends Repository<FollowingTag>{
       group by "followingUserId" 
 			order by count("followingUserId") desc
 				 limit $2
-  `, [you.id, returnUpTo])
+  `,
+      [you.id, returnUpTo]
+    );
   }
 
-  async getFeedResources(user: User): Promise<FeedResourceDto[]> {
-    return this.query(`
+  async findFeedResources(user: User): Promise<FeedResourceDto[]> {
+    return this.query(
+      `
     select reso."id", 
   		     reso."title", 
   		     reso."url",
@@ -113,6 +134,8 @@ inner join "resource"	   reso	on reso."tagId" = ftag."tagId"
 	   where "followerId" = $1
 	     and reso."rating" > 0
   order by reso."completedAt" desc
-  `, [user.id])
+  `,
+      [user.id]
+    );
   }
 }
