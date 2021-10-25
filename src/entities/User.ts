@@ -22,6 +22,8 @@ import Category from "./monerate/Category";
 import { Expense } from "./monerate/Expense";
 import Place from "./monerate/Place";
 import { UserToken } from "./OAuthToken";
+import { DragContainer } from "./playground/DragContainer";
+import { DragItem } from "./playground/DragItem";
 import { Tag } from "./relearn/Tag";
 import { Skill } from "./skillbase/Skill";
 import { SkillExpectation } from "./skillbase/SkillExpectation";
@@ -146,4 +148,10 @@ export class User {
 
   @OneToMany((type) => Test, (test) => test.user)
   tests: Test[];
+
+  @OneToMany((type) => DragContainer, (dragContainer) => dragContainer.user)
+  dragContainers: DragContainer[];
+
+  @OneToMany((type) => DragItem, (dragItem) => dragItem.user)
+  dragItems: DragItem[];
 }
