@@ -41,7 +41,7 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
       // Create user tags
       const tags = await event.manager
         .getCustomRepository(TagRepository)
-        .createTagsForNewUser(event.entity);
+        .createExampleTagsForNewUser(event.entity);
 
       // Create resources
       await event.manager

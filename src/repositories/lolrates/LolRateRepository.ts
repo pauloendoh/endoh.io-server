@@ -1,16 +1,12 @@
-import {
-  EntityRepository,
-  getRepository,
-  Repository
-} from "typeorm";
-import { LolRateUpdatedAtDto } from "../../dtos/lolrates/LolRateUpdatedAtDto";
+import { EntityRepository, getRepository, Repository } from "typeorm";
+import { LolRateDto } from "../../dtos/lolrates/LolRateDto";
+import { WinratesUpdatedAtDTO } from "../../dtos/lolrates/WinratesUpdatedAtDTO";
 import { Champion } from "../../entities/LolRates/Champion";
 import { LolRate } from "../../entities/LolRates/LolRate";
 import { RoleTypes } from "../../types/domain/lolates/RoleTypes";
 import { IChampion } from "../../utils/lolrates/scrapeLolRates/scrapeChampions";
 import { IOpggResult as ScrapeResult } from "../../utils/lolrates/scrapeLolRates/scrapeOpgg";
 import { myConsoleError } from "../../utils/myConsoleError";
-import { LolRateDto } from "../../dtos/lolrates/LolRateDto";
 
 @EntityRepository(LolRate)
 export default class LolRateRepository extends Repository<LolRate> {
@@ -37,7 +33,7 @@ export default class LolRateRepository extends Repository<LolRate> {
     } catch (err) {}
   }
 
-  async getUpdatedAt(): Promise<LolRateUpdatedAtDto> {
+  async getUpdatedAt(): Promise<WinratesUpdatedAtDTO> {
     return this.query(`
             select "opggUpdatedAt",
                    "lolgraphsUpdatedAt",

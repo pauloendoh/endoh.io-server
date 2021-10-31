@@ -6,7 +6,7 @@ export const getTagRepository = () => getCustomRepository(TagRepository);
 
 @EntityRepository(Tag)
 export default class TagRepository extends Repository<Tag> {
-  // PE 2/3
+  // PE 2/3 - rename to findAllTagsFromUser
   async getAllTagsFromUser(user: User): Promise<Tag[]> {
     return this.createQueryBuilder("tag")
       .where({ user })
@@ -23,20 +23,20 @@ export default class TagRepository extends Repository<Tag> {
       .getOne();
   }
 
-  async createTagsForNewUser(user: User): Promise<Tag[]> {
-    const tag1 = await this.save({
+  async createExampleTagsForNewUser(user: User): Promise<Tag[]> {
+    const exampleTag1 = await this.save({
       user,
       name: "[Example] Programming",
       color: "#14aaf5",
     });
 
-    const tag2 = await this.save({
+    const exampleTag2 = await this.save({
       user,
       name: "[Example] Soft Skills",
       color: "#6accbc",
       isPrivate: true,
     });
 
-    return [tag1, tag2];
+    return [exampleTag1, exampleTag2];
   }
 }

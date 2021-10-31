@@ -2,13 +2,12 @@ import * as cors from "cors";
 import * as express from "express";
 import autoroutes from "express-automatic-routes";
 import * as fs from "fs";
-import fetch from "node-fetch";
 import { memoryUsage } from "process";
 // Why did I import this for?
 import "reflect-metadata";
-import { createConnection, getCustomRepository } from "typeorm";
+import { createConnection } from "typeorm";
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
-import UserRepository from "./repositories/UserRepository";
+import executeEvery15Min from "./routines/executeEvery15Min";
 import { scrapeLolRates } from "./utils/lolrates/scrapeLolRates";
 import { myConsoleError } from "./utils/myConsoleError";
 import { myConsoleSuccess } from "./utils/myConsoleSuccess";
@@ -113,31 +112,7 @@ createConnection(ormconfig)
         createUserSuggestionsForAll();
       }, 60 * 1000 * 60);
 
-      // PE 1/3 - Ping every15 min to avoid Heroku's server sleep
-      // also, lolrates
-      // Maybe split into different file?
-      setInterval(async () => {
-        fetch("https://endohio-server.herokuapp.com/")
-          .then((res) => res.json())
-          .then((json) =>
-            myConsoleSuccess("GET OK https://endohio-server.herokuapp.com/")
-          );
-
-        fetch("https://lolrates.vercel.app/")
-          .then((res) => res.text())
-          .then((text) =>
-            myConsoleSuccess("GET OK https://lolrates.vercel.app/")
-          );
-
-        try {
-          const userRepo = getCustomRepository(UserRepository);
-
-          const deleted = await userRepo.deleteExpiredTempUsers();
-          myConsoleSuccess("Deleting expired temp users");
-        } catch (e) {
-          myConsoleError(e.message);
-        }
-      }, 60 * 1000 * 15);
+      executeEvery15Min();
     });
   })
   .catch((error) => myConsoleError(error));

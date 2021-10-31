@@ -1,7 +1,7 @@
 import { Application, Response } from "express";
 import { Resource } from "express-automatic-routes";
 import authMiddleware from "../../../../middlewares/authMiddleware";
-import { INewDragContainerPosition } from "../../../../types/domain/playground/drag-container/INewDragItemPosition copy";
+import { INewDragContainerPosition } from "../../../../types/domain/playground/drag-container/INewDragContainerPosition";
 import { saveContainerPositions } from "../../../../utils/domain/playground/drag-item/saveContainerPositions";
 import { MyErrorsResponse } from "../../../../utils/ErrorMessage";
 import { MyAuthRequest } from "../../../../utils/MyAuthRequest";

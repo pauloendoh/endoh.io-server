@@ -1,8 +1,14 @@
-import { EntityRepository, getCustomRepository, Repository } from "typeorm";
+import {
+  EntityRepository,
+  getCustomRepository,
+  getManager,
+  Repository,
+} from "typeorm";
 import { FeedResourceDto } from "../../dtos/feed/FeedResourceDto";
 import { FollowerDto } from "../../dtos/feed/FollowerDto";
 import { FollowingUserDto } from "../../dtos/feed/FollowingUserDto";
 import { MostFollowedUser } from "../../dtos/feed/MostFollowedUser";
+import { TagFollowPostDto } from "../../dtos/feed/TagFollowPostDto";
 import { FollowingTag } from "../../entities/feed/FollowingTag";
 import { User } from "../../entities/User";
 
@@ -137,5 +143,46 @@ inner join "resource"	   reso	on reso."tagId" = ftag."tagId"
   `,
       [user.id]
     );
+  }
+
+  async saveTagFollows(
+    followerId: number,
+    tagOwnerId: number,
+    tagFollows: TagFollowPostDto[]
+  ) {
+    const toNotify = await getManager().transaction(async (manager) => {
+      const tagFollowsToNotify: TagFollowPostDto[] = [];
+
+      const repo = manager.getCustomRepository(FollowingTagRepository);
+
+      for (const tagFollow of tagFollows) {
+        if (tagFollow.isFollowing) {
+          const alreadyFollowing = await repo.findOne({
+            followerId,
+            tagId: tagFollow.tagId,
+          });
+
+          if (!alreadyFollowing) {
+            await repo.save({
+              followerId,
+              // infelizmente, mapeei mal os DTOs e as entidades, então isso daqui é required
+              followingUserId: tagOwnerId,
+              tagId: tagFollow.tagId,
+            });
+            tagFollowsToNotify.push(tagFollow);
+          }
+        } else {
+          await repo.delete({
+            followerId,
+
+            tagId: tagFollow.tagId,
+          });
+        }
+      }
+
+      return tagFollowsToNotify;
+    });
+
+    return toNotify;
   }
 }

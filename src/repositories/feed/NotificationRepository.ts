@@ -1,78 +1,90 @@
-import { EntityRepository, getCustomRepository, getRepository, Repository } from 'typeorm';
-import { FollowTagDto } from '../../dtos/feed/FollowTagDto';
-import { NotificationDto } from '../../dtos/utils/NotificationDto';
-import { Notification } from '../../entities/feed/Notification';
-import { Profile } from '../../entities/feed/Profile';
-import { User } from '../../entities/User';
-import ResourceRepository from '../relearn/ResourceRepository';
-import TagRepository from '../relearn/TagRepository';
-import UserRepository from '../UserRepository';
+import {
+  EntityRepository,
+  getCustomRepository,
+  getRepository,
+  Repository,
+} from "typeorm";
+import { TagFollowPostDto } from "../../dtos/feed/TagFollowPostDto";
+import { NotificationDto } from "../../dtos/utils/NotificationDto";
+import { Notification } from "../../entities/feed/Notification";
+import { Profile } from "../../entities/feed/Profile";
+import { User } from "../../entities/User";
+import ResourceRepository from "../relearn/ResourceRepository";
+import TagRepository from "../relearn/TagRepository";
+import UserRepository from "../UserRepository";
 
 @EntityRepository(Notification)
-export default class NotificationRepository extends Repository<Notification>{
+export default class NotificationRepository extends Repository<Notification> {
+  async createFollowingNotification(
+    follower: User,
+    followedUser: User,
+    followingTags: TagFollowPostDto[]
+  ): Promise<Notification> {
+    const followerProfile = await getRepository(Profile).findOne({
+      where: { userId: follower.id },
+    });
 
-  async createFollowingNotification(follower: User, followedUser: User, followingTags: FollowTagDto[]): Promise<Notification> {
-
-    const followerProfile = await getRepository(Profile)
-      .findOne({ where: { userId: follower.id } })
-
-    const tagRepo = getCustomRepository(TagRepository)
+    const tagRepo = getCustomRepository(TagRepository);
 
     // building message
     let message = `${follower.username} is following you in `;
     let index = 0;
     for (const followingTag of followingTags) {
-      const tag = await tagRepo.findOne({ where: { id: followingTag.tagId } })
+      const tag = await tagRepo.findOne({ where: { id: followingTag.tagId } });
 
-      if (followingTags.length === 1) { // if only one
-        message += `"${tag.name}"`
-      } else if (index === followingTags.length - 1) { // if last one
-        message += `and "${tag.name}"`
-      } else { // if not last one
-        message += `"${tag.name}", `
+      if (followingTags.length === 1) {
+        // if only one
+        message += `"${tag.name}"`;
+      } else if (index === followingTags.length - 1) {
+        // if last one
+        message += `and "${tag.name}"`;
+      } else {
+        // if not last one
+        message += `"${tag.name}", `;
       }
 
-      index++
+      index++;
     }
 
-    // remove any previous notification of this type from the follower 
-    this.delete({ type: "follow", userId: followedUser.id, followerId: follower.id })
+    // remove any previous notification of this type from the follower
+    this.delete({
+      type: "follow",
+      userId: followedUser.id,
+      followerId: follower.id,
+    });
     return this.save({
       type: "follow",
       userId: followedUser.id,
       message: message,
       followerId: follower.id,
-    })
+    });
   }
 
-
-  async createSavedResourceNotification(saverId: number, resourceId: number): Promise<Notification> {
+  async createSavedResourceNotification(
+    saverId: number,
+    resourceId: number
+  ): Promise<Notification> {
     try {
-      const resourceRepo = getCustomRepository(ResourceRepository)
-      const userRepo = getCustomRepository(UserRepository)
+      const resourceRepo = getCustomRepository(ResourceRepository);
+      const userRepo = getCustomRepository(UserRepository);
 
-      const resource = await resourceRepo.findOne({ id: resourceId })
-      const owner = await userRepo.findOne({ id: resource.userId })
+      const resource = await resourceRepo.findOne({ id: resourceId });
+      const owner = await userRepo.findOne({ id: resource.userId });
 
-      const saver = await userRepo.findOne({ id: saverId })
+      const saver = await userRepo.findOne({ id: saverId });
 
       return this.save({
         type: "userSavedYourResource",
         userId: owner.id,
         message: `${saver.username} saved your resource: ${resource.title}`,
         followerId: saverId,
-      })
-
-    } catch (err) {
-
-    }
-
+      });
+    } catch (err) {}
   }
 
-
-
   async getNotifications(userId: number): Promise<NotificationDto[]> {
-    return this.query(`
+    return this.query(
+      `
     select ntf."id",
 		   ntf."seen",
 		   ntf."message",
@@ -85,8 +97,8 @@ export default class NotificationRepository extends Repository<Notification>{
 inner join "user"			usu on usu."id" = ntf."followerId"
 inner join "profile"		pro on pro."userId" = ntf."followerId"
      where ntf."userId" = $1
-  order by ntf."createdAt" desc`, [userId])
+  order by ntf."createdAt" desc`,
+      [userId]
+    );
   }
-
 }
-

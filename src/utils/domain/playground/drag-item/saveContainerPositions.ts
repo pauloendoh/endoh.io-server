@@ -1,6 +1,6 @@
 import { getManager } from "typeorm";
 import DragContainerRepository from "../../../../repositories/playground/DragContainerRepository";
-import { INewDragContainerPosition } from "../../../../types/domain/playground/drag-container/INewDragItemPosition copy";
+import { INewDragContainerPosition } from "../../../../types/domain/playground/drag-container/INewDragContainerPosition";
 
 export const saveContainerPositions = async (
   newPositions: INewDragContainerPosition[]

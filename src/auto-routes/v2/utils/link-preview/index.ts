@@ -12,7 +12,6 @@ import { isValidUrl } from "../../../../utils/isValidUrl";
 import { MyAuthRequest } from "../../../../utils/MyAuthRequest";
 import { myConsoleError } from "../../../../utils/myConsoleError";
 
-// PE 1/3 - Utilizar promises
 export default function tagLastOpenedAtRoute(expressApp: Application) {
   return <Resource>{
     get: {
