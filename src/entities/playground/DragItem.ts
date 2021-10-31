@@ -13,6 +13,9 @@ export class DragItem extends CreatedEntity {
   })
   container: DragContainer;
 
+  @Column()
+  containerId: number;
+
   @Column({ default: "" })
   name: string;
 

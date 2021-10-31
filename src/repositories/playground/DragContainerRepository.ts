@@ -12,4 +12,11 @@ export default class DragContainerRepository extends Repository<DragContainer> {
       relations: ["dragItems" as keyof DragContainer],
     });
   }
+
+  async findAllFullFromUserId(userId: number) {
+    return this.find({
+      where: { userId },
+      relations: ["dragItems" as keyof DragContainer],
+    });
+  }
 }

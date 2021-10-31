@@ -1,53 +1,48 @@
 import {
-  AfterInsert,
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm"
-import { User } from "../User"
-import { Decision } from "./Decision"
-import { DecisionTableItem } from "./DecisionTableItem"
+} from "typeorm";
+import { User } from "../User";
+import { Decision } from "./Decision";
+import { DecisionTableItem } from "./DecisionTableItem";
 
 @Entity()
 export class DecisionTable {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @ManyToOne((type) => User, (user) => user.decisionTables, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: User;
   @Column()
-  userId: number
+  userId: number;
 
   @ManyToOne((type) => Decision, (decision) => decision.tables, {
     onDelete: "CASCADE",
   })
-  decision: Decision
+  decision: Decision;
   @Column()
-  decisionId: number
+  decisionId: number;
 
   @OneToMany(() => DecisionTableItem, (item) => item.decisionTable)
-  items: DecisionTableItem[]
+  items: DecisionTableItem[];
 
   // END OF RELATIONS
   @Column()
-  title: string
+  title: string;
 
   @Column({ nullable: true })
-  index: number
+  index: number;
 
   @CreateDateColumn()
-  createdAt: string
+  createdAt: string;
 
   @UpdateDateColumn()
-  updatedAt: string
-
- 
+  updatedAt: string;
 }
