@@ -1,21 +1,16 @@
-import { getRepository } from "typeorm"
-import { User } from "../../../entities/User"
-import { myConsoleError } from "../../myConsoleError"
-import { myConsoleSuccess } from "../../myConsoleSuccess"
-import createUserSuggestionsForUser from "./createUserSuggestionsForUser/createUserSuggestionsForUser"
+import { getRepository } from "typeorm";
+import { User } from "../../../entities/User";
+import { getUserSuggestionRepo } from "../../../repositories/feed/UserSuggestionRepository";
+import { myConsoleError } from "../../myConsoleError";
 
-// PE 1/3 - deixar dentro do userSuggestionRepository
 export const createUserSuggestionsForAll = async () => {
   try {
-    myConsoleSuccess("running createUserSuggestionsForAll()")
-
-    // for each user
-    const allUsers = await getRepository(User).find()
+    const allUsers = await getRepository(User).find();
+    const suggestionRepo = getUserSuggestionRepo();
     for (const user of allUsers) {
-      createUserSuggestionsForUser(user)
+      await suggestionRepo.createUserSuggestionsForUser(user);
     }
-    myConsoleSuccess("success createUserSuggestionsForAll()")
   } catch (e) {
-    myConsoleError("error createUserSuggestionsForAll(): " + e.message)
+    myConsoleError("error createUserSuggestionsForAll(): " + e.message);
   }
-}
+};
