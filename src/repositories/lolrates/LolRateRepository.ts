@@ -10,7 +10,7 @@ import { myConsoleError } from "../../utils/myConsoleError";
 
 @EntityRepository(LolRate)
 export default class LolRateRepository extends Repository<LolRate> {
-  async getRates(): Promise<LolRateDto[]> {
+  async findWinrates(): Promise<LolRateDto[]> {
     try {
       return this.query(`
            select avgs.*,
