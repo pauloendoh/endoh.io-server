@@ -4,7 +4,9 @@ import { Resource } from "express-automatic-routes";
 import { getRepository, getTreeRepository } from "typeorm";
 import { Folder } from "../../../entities/playground/file-system/Folder";
 import authMiddleware from "../../../middlewares/authMiddleware";
+import findFoldersFromUser from "../../../utils/domain/playground/file-system/findFoldersFromUser";
 import { MyErrorsResponse } from "../../../utils/ErrorMessage";
+import { NotFoundErrorResponse } from "../../../utils/errors/NotFoundErrorResponse";
 import { MyAuthRequest } from "../../../utils/MyAuthRequest";
 import { myConsoleError } from "../../../utils/myConsoleError";
 
@@ -28,12 +30,40 @@ export default function folderRoute(expressApp: Application) {
           const folderRepo = getTreeRepository(Folder);
           await folderRepo.save(sent);
 
-          const allFolders = await folderRepo.findTrees({
-            relations: ["files" as keyof Folder],
+          const userFolders = await findFoldersFromUser(req.user.id);
+
+          return res.json(userFolders);
+        } catch (err) {
+          myConsoleError(err.message);
+          return res.status(400).json(new MyErrorsResponse(err.message));
+        }
+      },
+    },
+
+    put: {
+      middleware: authMiddleware,
+      handler: async (req: MyAuthRequest, res: Response) => {
+        try {
+          const sent = req.body as Folder;
+
+          const found = await getTreeRepository(Folder).findOne({
+            userId: req.user.id,
+            id: sent.id,
           });
-          const userFolders = allFolders.filter(
-            (folder) => folder.userId === req.user.id
-          );
+
+          if (!found) return res.json(401).json(new NotFoundErrorResponse());
+
+          sent.userId = req.user.id;
+          if (sent.parentFolderId) {
+            const parentFolder = await getRepository(Folder).findOne({
+              where: { id: sent.parentFolderId },
+            });
+            sent.parentFolder = parentFolder;
+          }
+
+          await getTreeRepository(Folder).save(sent);
+
+          const userFolders = await findFoldersFromUser(req.user.id);
 
           return res.json(userFolders);
         } catch (err) {
@@ -47,15 +77,28 @@ export default function folderRoute(expressApp: Application) {
       middleware: authMiddleware,
       handler: async (req: MyAuthRequest, res: Response) => {
         try {
-          const folderRepo = getTreeRepository(Folder);
+          const userFolders = await findFoldersFromUser(req.user.id);
+          return res.json(userFolders);
+        } catch (err) {
+          myConsoleError(err.message);
+          return res.status(400).json(new MyErrorsResponse(err.message));
+        }
+      },
+    },
 
-          const allFolders = await folderRepo.findTrees({
-            relations: ["files" as keyof Folder],
+    delete: {
+      middleware: authMiddleware,
+      handler: async (req: MyAuthRequest, res: Response) => {
+        try {
+          const sent = req.body as Folder;
+          const { affected } = await getTreeRepository(Folder).delete({
+            userId: req.user.id,
+            id: sent.id,
           });
-          const userFolders = allFolders.filter(
-            (folder) => folder.userId === req.user.id
-          );
+          if (affected === 0)
+            return res.status(400).json(new NotFoundErrorResponse());
 
+          const userFolders = await findFoldersFromUser(req.user.id);
           return res.json(userFolders);
         } catch (err) {
           myConsoleError(err.message);
