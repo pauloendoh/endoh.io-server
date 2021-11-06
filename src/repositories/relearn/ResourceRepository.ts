@@ -33,6 +33,7 @@ export default class ResourceRepository extends Repository<Resource> {
     allResources: boolean
   ): Promise<Resource[]> {
     if (allResources) {
+      // request user is owner
       return this.createQueryBuilder("resource")
         .leftJoinAndSelect("resource.tag", "tag")
         .where({ user })
@@ -41,7 +42,7 @@ export default class ResourceRepository extends Repository<Resource> {
         .orderBy("resource.completedAt", "DESC")
         .getMany();
     } else {
-      return this.createQueryBuilder("resource")
+      const resources = await this.createQueryBuilder("resource")
         .leftJoinAndSelect("resource.tag", "tag")
         .where({ user })
         .andWhere("resource.rating > 0")
@@ -49,6 +50,12 @@ export default class ResourceRepository extends Repository<Resource> {
         .andWhere('tag."isPrivate" is false') // get only the public resources (from public tags, that is)
         .orderBy("resource.completedAt", "DESC")
         .getMany();
+
+      // remover o campo privateNote se usuario não for dono
+      return resources.map((resource) => ({
+        ...resource,
+        privateNote: undefined,
+      }));
     }
   }
 
