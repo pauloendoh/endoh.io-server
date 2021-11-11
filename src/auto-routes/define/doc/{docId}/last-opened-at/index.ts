@@ -1,13 +1,13 @@
 import { Application, Response } from "express";
 import { Resource } from "express-automatic-routes";
-import { Doc } from "../../../../../../entities/define/Doc";
-import authMiddleware from "../../../../../../middlewares/authMiddleware";
-import { getDocRepository } from "../../../../../../repositories/define/DocRepository";
-import checkOwnershipAsync from "../../../../../../utils/domain/checkOwnership";
-import { MyErrorsResponse } from "../../../../../../utils/ErrorMessage";
-import { NotFoundErrorResponse } from "../../../../../../utils/errors/NotFoundErrorResponse";
-import { MyAuthRequest } from "../../../../../../utils/MyAuthRequest";
-import { myConsoleError } from "../../../../../../utils/myConsoleError";
+import { Doc } from "../../../../../entities/define/Doc";
+import authMiddleware from "../../../../../middlewares/authMiddleware";
+import { getDocRepository } from "../../../../../repositories/define/DocRepository";
+import checkOwnershipAsync from "../../../../../utils/domain/checkOwnership";
+import { MyErrorsResponse } from "../../../../../utils/ErrorMessage";
+import { NotFoundErrorResponse } from "../../../../../utils/errors/NotFoundErrorResponse";
+import { MyAuthRequest } from "../../../../../utils/MyAuthRequest";
+import { myConsoleError } from "../../../../../utils/myConsoleError";
 
 export default function docLastOpenedAtRoute(expressApp: Application) {
   return <Resource>{
