@@ -62,8 +62,8 @@
     "migrate": "ts-node node_modules/typeorm/cli.js migration:run",
     "revertMigration": "ts-node node_modules/typeorm/cli.js migration:revert",
     "test-server": "set NODE_ENV=test&&  nodemon",
-    "test": "set NODE_ENV=test&& jest",
-    "test:watch": "set NODE_ENV=test&& jest --watchAll"
+    "test": "set NODE_ENV=test&& jest --detectOpenHandles",
+    "test:watch": "set NODE_ENV=test&& jest --watchAll --detectOpenHandles"
   },
   "nodemonConfig": {
     "ignore": [
