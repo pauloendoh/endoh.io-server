@@ -64,9 +64,6 @@ export class Skill {
   currentLevel: number;
 
   @Column({ nullable: true })
-  currentGoal: number;
-
-  @Column({ nullable: true })
   goalLevel: number;
 
   @CreateDateColumn()
