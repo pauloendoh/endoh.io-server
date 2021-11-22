@@ -23,11 +23,13 @@ export default class UserSuggestionRepository extends Repository<UserSuggestion>
       inner join "user" 				    usu on usu.id = sug."suggestedUserId"
       inner join "profile"			    pro on pro."userId" = usu."id"
            where sug."userId" = $1
+             and sug."suggestedUserId" != $1
         order by sug."id"`,
       [forUser.id]
     );
   }
 
+  // PE 1/3 - to be honest... I shouldn't need a suggestion table, do I?
   createUserSuggestionsForUser = async (user: User) => {
     try {
       const followingTagRepo = getCustomRepository(FollowingTagRepository);

@@ -26,6 +26,7 @@ import { DragContainer } from "./playground/DragContainer";
 import { DragItem } from "./playground/DragItem";
 import { File } from "./playground/file-system/File";
 import { Folder } from "./playground/file-system/Folder";
+import { Friend } from "./playground/Friend";
 import { Tag } from "./relearn/Tag";
 import { Skill } from "./skillbase/Skill";
 import { SkillExpectation } from "./skillbase/SkillExpectation";
@@ -162,4 +163,7 @@ export class User {
 
   @OneToMany((type) => File, (file) => file.user)
   files: File[];
+
+  @OneToMany((type) => Friend, (friend) => friend.user)
+  friends: Friend[];
 }
