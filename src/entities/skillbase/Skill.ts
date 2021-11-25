@@ -66,6 +66,9 @@ export class Skill {
   @Column({ nullable: true })
   goalLevel: number;
 
+  @Column({ default: false })
+  isPublic: boolean;
+
   @CreateDateColumn()
   createdAt: string;
 

@@ -12,6 +12,7 @@ import FollowingTagRepository, {
 } from "../repositories/feed/FollowingTagRepository";
 import NotificationRepository from "../repositories/feed/NotificationRepository";
 import ResourceRepository from "../repositories/relearn/ResourceRepository";
+import { getSkillRepository } from "../repositories/skillbase/SkillRepository";
 import UserRepository from "../repositories/UserRepository";
 import { MyErrorsResponse } from "../utils/ErrorMessage";
 import { MyAuthRequest } from "../utils/MyAuthRequest";
@@ -71,11 +72,11 @@ userRoute.get(
         });
       }
 
-      // following users
       userInfo.followingUsers = await followingTagsRepo.getFollowingUsers(user);
-
-      // following users
       userInfo.followers = await followingTagsRepo.getFollowers(user);
+
+      userInfo.publicSkills =
+        await getSkillRepository().findPublicSkillsFromUser(user.id);
 
       return res.json(userInfo);
     } catch (err) {

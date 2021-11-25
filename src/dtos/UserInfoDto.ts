@@ -1,30 +1,34 @@
-import { Profile } from '../entities/feed/Profile';
-import { Resource } from '../entities/relearn/Resource';
-import { Tag } from '../entities/relearn/Tag';
-import { FollowerDto } from './feed/FollowerDto';
-import { FollowingUserDto } from './feed/FollowingUserDto';
+import { Profile } from "../entities/feed/Profile";
+import { Resource } from "../entities/relearn/Resource";
+import { Tag } from "../entities/relearn/Tag";
+import { Skill } from "../entities/skillbase/Skill";
+import { FollowerDto } from "./feed/FollowerDto";
+import { FollowingUserDto } from "./feed/FollowingUserDto";
 
 export interface UserInfoDto {
-    profile: Profile,
-    resources: Resource[],
+  profile: Profile;
+  resources: Resource[];
 
-    publicLists: Tag[],
-    privateLists: Tag[],
+  publicLists: Tag[];
+  privateLists: Tag[];
 
-    followingUsers: FollowingUserDto[],
-    followers: FollowerDto[],
+  followingUsers: FollowingUserDto[];
+  followers: FollowerDto[];
+
+  publicSkills: Skill[];
 }
 
-export const newUserInfo = (): UserInfoDto => (
-    {
-        profile: null,
-        resources: [],
+export const newUserInfo = (partial?: Partial<UserInfoDto>): UserInfoDto => ({
+  profile: null,
+  resources: [],
 
-        publicLists: [],
-        privateLists: [],
+  publicLists: [],
+  privateLists: [],
 
-        followingUsers: [],
-        followers: [],
-    }
+  followingUsers: [],
+  followers: [],
 
-)
+  publicSkills: [],
+
+  ...partial,
+});

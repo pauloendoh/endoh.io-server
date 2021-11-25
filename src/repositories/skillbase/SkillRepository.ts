@@ -1,7 +1,9 @@
-import { EntityRepository, Repository } from "typeorm"
-import { Tag } from "../../entities/relearn/Tag"
-import { Skill } from "../../entities/skillbase/Skill"
-import { User } from "../../entities/User"
+import { EntityRepository, getCustomRepository, Repository } from "typeorm";
+import { Tag } from "../../entities/relearn/Tag";
+import { Skill } from "../../entities/skillbase/Skill";
+import { User } from "../../entities/User";
+
+export const getSkillRepository = () => getCustomRepository(SkillRepository);
 
 @EntityRepository(Skill)
 export default class SkillRepository extends Repository<Skill> {
@@ -14,7 +16,14 @@ export default class SkillRepository extends Repository<Skill> {
       .addOrderBy("skill.goalLevel", "DESC")
       .addOrderBy("skill.currentLevel", "DESC")
       .addOrderBy("expectations.index", "ASC")
-      .getMany()
+      .getMany();
+  }
+
+  async findPublicSkillsFromUser(userId: number) {
+    return this.find({
+      where: { isPublic: true, userId },
+      relations: ["expectations"],
+    });
   }
 
   async deleteIdsFromUser(ids: number[], userId: number) {
@@ -22,7 +31,7 @@ export default class SkillRepository extends Repository<Skill> {
       .delete()
       .where({ userId: userId })
       .andWhere("skill.id IN (:...ids)", { ids: [...ids] })
-      .execute()
+      .execute();
   }
 
   async getByText(userId: number, text: string): Promise<Skill[]> {
@@ -34,32 +43,35 @@ export default class SkillRepository extends Repository<Skill> {
       .orderBy("skill.isPriority", "DESC")
       .addOrderBy("skill.goalLevel", "DESC")
       .addOrderBy("skill.currentLevel", "DESC")
-      .getMany()
+      .getMany();
   }
 
-  async createSkillsForNewUser(user: User, programmingTag: Tag): Promise<Skill[]> {
-    const skills: Skill[] = []
+  async createSkillsForNewUser(
+    user: User,
+    programmingTag: Tag
+  ): Promise<Skill[]> {
+    const skills: Skill[] = [];
     skills.push(
       await this.save({
         user,
         tag: programmingTag,
         isPriority: true,
-        name: "[Example] JavaScript", 
+        name: "[Example] JavaScript",
         currentLevel: 3,
         goalLevel: 5,
       })
-    )
+    );
 
     skills.push(
       await this.save({
         user,
         isPriority: false,
-        name: "[Example] League of Legends", 
+        name: "[Example] League of Legends",
         currentLevel: 6,
         goalLevel: 7,
       })
-    )
+    );
 
-    return skills
+    return skills;
   }
 }
