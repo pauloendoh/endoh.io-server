@@ -8,6 +8,7 @@ import {
 import { Resource } from "../../entities/relearn/Resource";
 import { Tag } from "../../entities/relearn/Tag";
 import { User } from "../../entities/User";
+import { myConsoleSuccess } from "../../utils/myConsoleSuccess";
 
 export const getResourceRepository = () =>
   getCustomRepository(ResourceRepository);
@@ -207,5 +208,16 @@ export default class ResourceRepository extends Repository<Resource> {
     );
 
     return resources;
+  }
+
+  // This is used when the drag and drop gets messed up
+  async resetRatingsWhereCompletedAtIsNull(): Promise<void> {
+    await getManager().query(
+      `UPDATE resource r 
+          SET rating = null 
+        WHERE "completedAt" = '' 
+          AND rating > 0`
+    );
+    myConsoleSuccess("resetRatingsWhereCompletedAtIsNull() completed");
   }
 }

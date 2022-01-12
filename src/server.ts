@@ -8,12 +8,11 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
 import executeEvery15Min from "./routines/executeEvery15Min";
-import { scrapeLolRates } from "./utils/lolrates/scrapeLolRates";
+import executeEveryHour from "./routines/executeEveryHour";
 import { myConsoleError } from "./utils/myConsoleError";
 import { myConsoleSuccess } from "./utils/myConsoleSuccess";
 import { createPreferencesForAll } from "./utils/user/createPreferencesForAll";
 import { createProfileForUsers } from "./utils/user/createProfileForAll";
-import { createUserSuggestionsForAll } from "./utils/user/createUserSuggestionsForAll/createUserSuggestionsForAll";
 
 import cookieSession = require("cookie-session");
 import cookieParser = require("cookie-parser"); // parse cookie header
@@ -38,7 +37,11 @@ createConnection(ormconfig)
     );
 
     // For testing
-    app.get("/", (req, res) => res.json("nice?"));
+    app.get("/", (req, res) => {
+      res.statusMessage = "lmao";
+
+      res.status(404).json("nice?");
+    });
 
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
     app.use(express.json({ limit: "50mb" }));
@@ -97,22 +100,11 @@ createConnection(ormconfig)
     app.listen(port, async () => {
       myConsoleSuccess("Listening to port " + port);
 
-      // scrape lolrates every 1h
-      scrapeLolRates();
-      setInterval(async () => {
-        scrapeLolRates();
-      }, 60 * 1000 * 60);
-
       createPreferencesForAll();
       createProfileForUsers();
 
-      createUserSuggestionsForAll();
-      // renovar sugestões de usuários a cada 1h
-      setInterval(async () => {
-        createUserSuggestionsForAll();
-      }, 60 * 1000 * 60);
-
       executeEvery15Min();
+      executeEveryHour();
     });
   })
   .catch((error) => myConsoleError(error));
