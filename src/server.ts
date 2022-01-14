@@ -6,6 +6,7 @@ import { memoryUsage } from "process";
 // Why did I import this for?
 import "reflect-metadata";
 import { createConnection } from "typeorm";
+import { pagination } from "typeorm-pagination";
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
 import executeEvery15Min from "./routines/executeEvery15Min";
 import executeEveryHour from "./routines/executeEveryHour";
@@ -31,6 +32,9 @@ createConnection(ormconfig)
     myConsoleSuccess("Connected!");
     const app = express();
     app.use(cors());
+
+    app.use(pagination);
+
     app.use(
       "/auth/google/login",
       cors({ credentials: true, origin: process.env.CLIENT_BASE_URL })

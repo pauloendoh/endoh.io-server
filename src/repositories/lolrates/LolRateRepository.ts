@@ -33,6 +33,15 @@ export default class LolRateRepository extends Repository<LolRate> {
     } catch (err) {}
   }
 
+  async findWinratesPaginated() {
+    try {
+      return this.createQueryBuilder()
+        .select("lolRates")
+        .from(LolRate, "lolRates")
+        .paginate();
+    } catch (err) {}
+  }
+
   async getUpdatedAt(): Promise<WinratesUpdatedAtDTO> {
     return this.query(`
             select "opggUpdatedAt",
