@@ -143,9 +143,13 @@ export default class ResourceRepository extends Repository<Resource> {
   async getResourcesByText(user: User, text: string): Promise<Resource[]> {
     return this.createQueryBuilder("resource")
       .where({ user })
-      .andWhere("(resource.title ilike :text or resource.url like :text)", {
-        text: `%${text}%`,
-      })
+      .andWhere(
+        `(unaccent(resource.title) ilike unaccent(:text) 
+               or unaccent(resource.url) ilike unaccent(:text))`,
+        {
+          text: `%${text}%`,
+        }
+      )
       .leftJoinAndSelect("resource.tag", "tag")
       .orderBy("resource.position", "ASC")
       .getMany();
