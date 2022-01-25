@@ -145,13 +145,16 @@ export default class ResourceRepository extends Repository<Resource> {
       .where({ user })
       .andWhere(
         `(unaccent(resource.title) ilike unaccent(:text) 
-               or unaccent(resource.url) ilike unaccent(:text))`,
+               or unaccent(resource.url) ilike unaccent(:text)
+               or unaccent(resource."publicReview") ilike unaccent(:text) 
+               or unaccent(resource."privateNote") ilike unaccent(:text))`,
         {
           text: `%${text}%`,
         }
       )
       .leftJoinAndSelect("resource.tag", "tag")
       .orderBy("resource.position", "ASC")
+
       .getMany();
   }
 
