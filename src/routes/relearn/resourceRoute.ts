@@ -93,7 +93,7 @@ resourceRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
     }
 
     await resourceRepo.save(sentResource);
-    const resources = await resourceRepo.getAllResourcesFromUser(user);
+    const resources = await resourceRepo.findAllResourcesFromUser(user);
     return res.status(200).json(resources);
   } catch (err) {
     myConsoleError(err.message);
@@ -108,7 +108,7 @@ resourceRoute.get("/", authMiddleware, async (req: MyAuthRequest, res) => {
   const user = req.user;
 
   try {
-    const resources = await resourceRepo.getAllResourcesFromUser(user);
+    const resources = await resourceRepo.findAllResourcesFromUser(user);
     return res.json(resources);
   } catch (err) {
     myConsoleError(err.message);
@@ -212,7 +212,7 @@ resourceRoute.post(
         });
 
         // retorna todos os resources
-        const resources = await resourceRepo.getAllResourcesFromUser(user);
+        const resources = await resourceRepo.findAllResourcesFromUser(user);
         return res.status(200).json(resources);
       } else {
         return res

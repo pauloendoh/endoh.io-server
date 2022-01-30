@@ -3,6 +3,7 @@ import {
   FindConditions,
   getCustomRepository,
   getManager,
+  In,
   Repository,
 } from "typeorm";
 import { Resource } from "../../entities/relearn/Resource";
@@ -16,7 +17,7 @@ export const getResourceRepository = () =>
 @EntityRepository(Resource)
 export default class ResourceRepository extends Repository<Resource> {
   // PE 2/3
-  async getAllResourcesFromUser(user: User): Promise<Resource[]> {
+  async findAllResourcesFromUser(user: User): Promise<Resource[]> {
     return this.createQueryBuilder("resource")
       .where({ user })
       .leftJoinAndSelect("resource.tag", "tag")
@@ -226,5 +227,22 @@ export default class ResourceRepository extends Repository<Resource> {
           AND rating > 0`
     );
     myConsoleSuccess("resetRatingsWhereCompletedAtIsNull() completed");
+  }
+
+  async moveResourcesToTag(
+    resourceIds: number[],
+    tagId: number,
+    userId: number
+  ) {
+    return this.createQueryBuilder()
+      .update()
+      .set({
+        tagId,
+      })
+      .where({
+        id: In(resourceIds),
+        userId: userId,
+      })
+      .execute();
   }
 }
