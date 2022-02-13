@@ -74,6 +74,7 @@ createConnection(ormconfig)
     myConsoleSuccess("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB");
     myConsoleSuccess("Setting up routes");
     fs.readdirSync(`${__dirname}/routes`).forEach(async (fileOrFolderName) => {
+      if (fileOrFolderName.endsWith(".js.map")) return;
       if (
         fileOrFolderName.endsWith(".ts") ||
         fileOrFolderName.endsWith(".js")
