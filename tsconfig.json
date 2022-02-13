@@ -3,11 +3,10 @@
     "target": "es2020", // what is this
     "module": "commonjs", // what is this
     "moduleResolution": "node", // what is thisss
-    "noEmit": true, // don't generate js.map files
     "outDir": "./build",
     "declaration": false, // don't generate d.ts files
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true, // do i still need this?
-    "sourceMap": true // don't generate js.map files
+    "sourceMap": false // don't generate js.map files
   }
 }
