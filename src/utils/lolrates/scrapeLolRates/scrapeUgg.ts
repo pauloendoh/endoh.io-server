@@ -35,7 +35,7 @@ export async function scrapeUgg(page: pup.Page) {
 
     const results: IOpggResult[] = [];
     for (const { url, role } of roles) {
-      await page.goto(url);
+      await page.goto(url, { waitUntil: "load", timeout: 0 });
       await page.waitForSelector(".content-section");
       await page.waitForSelector(".pickrate");
 
