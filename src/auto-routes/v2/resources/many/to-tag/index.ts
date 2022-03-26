@@ -1,10 +1,10 @@
 import { Application, Response } from "express";
 import { Resource } from "express-automatic-routes";
-import authMiddleware from "../../../../middlewares/authMiddleware";
-import { getResourceRepository } from "../../../../repositories/relearn/ResourceRepository";
-import { MyErrorsResponse } from "../../../../utils/ErrorMessage";
-import { MyAuthRequest } from "../../../../utils/MyAuthRequest";
-import { myConsoleError } from "../../../../utils/myConsoleError";
+import authMiddleware from "../../../../../middlewares/authMiddleware";
+import { getResourceRepository } from "../../../../../repositories/relearn/ResourceRepository";
+import { MyErrorsResponse } from "../../../../../utils/ErrorMessage";
+import { MyAuthRequest } from "../../../../../utils/MyAuthRequest";
+import { myConsoleError } from "../../../../../utils/myConsoleError";
 
 interface IResourcesToTagId {
   resourceIds: number[];
