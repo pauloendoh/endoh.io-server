@@ -147,21 +147,23 @@ export default class ResourceRepository extends Repository<Resource> {
     let query = this.createQueryBuilder("resource").where({ user });
 
     // multi word search
-    for (const word of words) {
-      query.andWhere(
-        `(unaccent(resource.title) ilike unaccent(:text) 
-                 or unaccent(resource.url) ilike unaccent(:text)
-                 or unaccent(resource."publicReview") ilike unaccent(:text) 
-                 or unaccent(resource."privateNote") ilike unaccent(:text))`,
+    words.forEach((word, index) => {
+      query = query.andWhere(
+        `(unaccent(resource.title) ilike unaccent(:text${index}) 
+                 or unaccent(resource.url) ilike unaccent(:text${index})
+                 or unaccent(resource."publicReview") ilike unaccent(:text${index}) 
+                 or unaccent(resource."privateNote") ilike unaccent(:text${index}))`,
         {
-          text: `%${word}%`,
+          [`text${index}`]: `%${word}%`,
         }
       );
-    }
+    });
 
-    query
+    query = query
       .leftJoinAndSelect("resource.tag", "tag")
       .orderBy("resource.position", "ASC");
+
+    console.log(query.getQueryAndParameters());
 
     return query.getMany();
   }
