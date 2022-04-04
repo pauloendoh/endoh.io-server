@@ -142,21 +142,28 @@ export default class ResourceRepository extends Repository<Resource> {
 
   // PE 2/3
   async getResourcesByText(user: User, text: string): Promise<Resource[]> {
-    return this.createQueryBuilder("resource")
-      .where({ user })
-      .andWhere(
-        `(unaccent(resource.title) ilike unaccent(:text) 
-               or unaccent(resource.url) ilike unaccent(:text)
-               or unaccent(resource."publicReview") ilike unaccent(:text) 
-               or unaccent(resource."privateNote") ilike unaccent(:text))`,
-        {
-          text: `%${text}%`,
-        }
-      )
-      .leftJoinAndSelect("resource.tag", "tag")
-      .orderBy("resource.position", "ASC")
+    const words = text.split(" ");
 
-      .getMany();
+    let query = this.createQueryBuilder("resource").where({ user });
+
+    // multi word search
+    for (const word of words) {
+      query.andWhere(
+        `(unaccent(resource.title) ilike unaccent(:text) 
+                 or unaccent(resource.url) ilike unaccent(:text)
+                 or unaccent(resource."publicReview") ilike unaccent(:text) 
+                 or unaccent(resource."privateNote") ilike unaccent(:text))`,
+        {
+          text: `%${word}%`,
+        }
+      );
+    }
+
+    query
+      .leftJoinAndSelect("resource.tag", "tag")
+      .orderBy("resource.position", "ASC");
+
+    return query.getMany();
   }
 
   async createResourcesForNewUser(
