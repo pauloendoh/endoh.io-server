@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { Tag } from "../relearn/Tag";
 import { User } from "../User";
+import { Label } from "./Label";
 import { SkillExpectation } from "./SkillExpectation";
 import { SkillProgress } from "./SkillProgress";
 
@@ -43,6 +44,10 @@ export class Skill {
 
   @ManyToMany((type) => Skill, (skill) => skill.dependencies)
   childDependencies: Skill[];
+
+  @ManyToMany((type) => Label)
+  @JoinTable()
+  labels: Label[];
 
   @ManyToOne((type) => Tag, (tag) => tag.skills, { onDelete: "SET NULL" })
   tag: Tag;

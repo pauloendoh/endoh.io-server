@@ -28,6 +28,7 @@ import { File } from "./playground/file-system/File";
 import { Folder } from "./playground/file-system/Folder";
 import { Friend } from "./playground/Friend";
 import { Tag } from "./relearn/Tag";
+import { Label } from "./skillbase/Label";
 import { Skill } from "./skillbase/Skill";
 import { SkillExpectation } from "./skillbase/SkillExpectation";
 import { SkillProgress } from "./skillbase/SkillProgress";
@@ -90,6 +91,9 @@ export class User {
   // Skillbase
   @OneToMany((type) => Skill, (skill) => skill.user)
   skills: Skill[];
+
+  @OneToMany((type) => Label, (label) => label.user)
+  labels: Label[];
 
   @OneToMany(
     (type) => SkillExpectation,

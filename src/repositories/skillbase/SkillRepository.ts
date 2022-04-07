@@ -12,10 +12,12 @@ export default class SkillRepository extends Repository<Skill> {
       .where({ userId: userId })
       .leftJoinAndSelect("skill.dependencies", "dependencies")
       .leftJoinAndSelect("skill.expectations", "expectations")
+      .leftJoinAndSelect("skill.labels", "labels")
       .orderBy("skill.isPriority", "DESC")
       .addOrderBy("skill.goalLevel", "DESC")
       .addOrderBy("skill.currentLevel", "DESC")
       .addOrderBy("expectations.index", "ASC")
+      .addOrderBy("labels.id", "ASC")
       .getMany();
   }
 

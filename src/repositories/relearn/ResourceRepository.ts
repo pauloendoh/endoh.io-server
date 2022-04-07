@@ -148,6 +148,7 @@ export default class ResourceRepository extends Repository<Resource> {
 
     // multi word search
     words.forEach((word, index) => {
+      // https://github.com/typeorm/typeorm/issues/3119
       query = query.andWhere(
         `(unaccent(resource.title) ilike unaccent(:text${index}) 
                  or unaccent(resource.url) ilike unaccent(:text${index})
