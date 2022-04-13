@@ -5,46 +5,49 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm"
-import { User } from "../User"
-import { Skill } from "./Skill"
+} from "typeorm";
+import { User } from "../User";
+import { Skill } from "./Skill";
 
 @Entity()
 export class SkillExpectation {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @ManyToOne((type) => User, (user) => user.skillExpectations, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: User;
   @Column()
-  userId: number
+  userId: number;
 
   @ManyToOne((type) => Skill, (skill) => skill.expectations, {
     onDelete: "CASCADE",
   })
-  skill: Skill
+  skill: Skill;
   @Column({ nullable: true })
-  skillId: number
+  skillId: number;
 
   // END OF RELATIONS
 
   @Column()
-  level: number
+  level: number;
 
   @Column()
-  index: number
+  index: number;
 
   @Column()
-  description: string
+  description: string;
 
   @Column()
-  checked: boolean
+  checked: boolean;
+
+  @Column({ default: false })
+  isCurrentGoal: boolean;
 
   @CreateDateColumn()
-  createdAt: string
+  createdAt: string;
 
   @UpdateDateColumn()
-  updatedAt: string
+  updatedAt: string;
 }
