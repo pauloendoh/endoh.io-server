@@ -70,7 +70,9 @@ export default function skillLabelRoute(expressApp: Application) {
           });
 
           // remove label from skill
-          foundSkill.labels.splice(foundSkill.labels.indexOf(foundLabel), 1);
+          foundSkill.labels = foundSkill.labels.filter(
+            (label) => label.id !== foundLabel.id
+          );
           const savedSkill = await getRepository(Skill).save(foundSkill);
 
           return res.json(savedSkill);
