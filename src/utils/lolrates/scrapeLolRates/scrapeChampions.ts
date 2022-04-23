@@ -23,6 +23,12 @@ export async function scrapeChampions(page: pup.Page) {
       for (const container of containers) {
         const iconUrl = container.querySelector("img").getAttribute("src");
         const name = container.querySelector("span").textContent;
+
+        // 23/apr 2022 - it was returning fallback images
+        // like https://blitz-cdn-plain.blitz.gg/blitz/ui/img/fallback.svg
+        // and it was causing repeated champions
+        if (iconUrl.includes("fallback")) continue;
+
         champions.push({ name, iconUrl });
       }
 

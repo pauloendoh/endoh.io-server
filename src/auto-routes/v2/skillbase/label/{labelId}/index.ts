@@ -14,17 +14,21 @@ export default function labelIdRoute(expressApp: Application) {
       handler: async (req: MyAuthRequest, res: Response) => {
         try {
           const labelId = Number(req.params.labelId);
-          const foundLabel = await getRepository(Label).findOne({
-            where: { id: labelId, userId: req.user.id },
+          const label = await getRepository(Label).findOne({
+            where: {
+              id: labelId,
+              userId: req.user.id,
+            },
           });
 
-          if (!foundLabel)
+          if (!label)
             return res
-              .status(400)
+              .status(404)
               .json(new MyErrorsResponse("Label not found"));
 
-          await getRepository(Label).remove(foundLabel);
-          return res.status(200).json(foundLabel);
+          // delete label and return skill
+          await getRepository(Label).delete(label);
+          return res.status(200).json(label);
         } catch (err) {
           myConsoleError(err.message);
           return res.status(400).json(new MyErrorsResponse(err.message));

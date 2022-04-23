@@ -2,9 +2,11 @@ import * as cors from "cors";
 import * as express from "express";
 import autoroutes from "express-automatic-routes";
 import * as fs from "fs";
+import { createServer } from "http";
 import { memoryUsage } from "process";
 // Why did I import this for?
 import "reflect-metadata";
+import { Server } from "socket.io";
 import { createConnection } from "typeorm";
 import { pagination } from "typeorm-pagination";
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
@@ -14,7 +16,6 @@ import { myConsoleError } from "./utils/myConsoleError";
 import { myConsoleSuccess } from "./utils/myConsoleSuccess";
 import { createPreferencesForAll } from "./utils/user/createPreferencesForAll";
 import { createProfileForUsers } from "./utils/user/createProfileForAll";
-
 import cookieSession = require("cookie-session");
 import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport");
@@ -109,6 +110,28 @@ createConnection(ormconfig)
 
       executeEvery15Min();
       executeEveryHour();
+    });
+
+    // SOCKET.IO
+    const server = createServer(app);
+
+    const io = new Server(server, {
+      cors: {
+        origin: "*",
+      },
+    });
+
+    io.on("connection", (socket) => {
+      console.log("a user has connected");
+
+      socket.on("message", (data) => {
+        console.log({ data });
+        socket.broadcast.emit("message", data);
+      });
+    });
+
+    server.listen(3001, () => {
+      console.log("listening on *:3001");
     });
   })
   .catch((error) => myConsoleError(error));
