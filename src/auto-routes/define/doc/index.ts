@@ -35,7 +35,7 @@ export default function docRoute(expressApp: Application) {
               where: { id: sentDoc.id, userId: user.id },
             });
 
-            if (!doc) {
+            if (!doc)
               return res
                 .status(400)
                 .json(
@@ -43,19 +43,18 @@ export default function docRoute(expressApp: Application) {
                     `Doc doesn't exist or user doesn't own it.`
                   )
                 );
-            }
 
             doc.title = sentDoc.title;
             const savedDoc = await getDocRepository().save(doc);
             return res.status(200).json(savedDoc);
-          } else {
-            const newDoc = new Doc();
-            newDoc.title = sentDoc.title;
-            newDoc.userId = user.id;
-
-            const savedDoc = await getDocRepository().save(newDoc);
-            return res.status(200).json(savedDoc);
           }
+
+          const newDoc = new Doc();
+          newDoc.title = sentDoc.title;
+          newDoc.userId = user.id;
+
+          const savedDoc = await getDocRepository().save(newDoc);
+          return res.status(200).json(savedDoc);
         } catch (err) {
           myConsoleError(err.message);
           return res.status(400).json(new MyErrorsResponse(err.message));

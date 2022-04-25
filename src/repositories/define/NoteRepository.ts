@@ -77,4 +77,19 @@ export default class NoteRepository extends Repository<Note> {
 
     return notes;
   }
+
+  async removeEmptyNotesFromDocId(docId: number, userId: number) {
+    await this.createQueryBuilder()
+      .delete()
+      .where("docId = :docId", { docId })
+      .andWhere("userId = :userId", { userId })
+      .andWhere("trim(description) = ''")
+      .andWhere("trim(question) = ''")
+      .execute();
+
+    // normalize indexes
+    const notes = await this.find({ where: { docId, userId } });
+    const newNotes = notes.map((note, index) => ({ ...note, index }));
+    await this.save(newNotes);
+  }
 }
