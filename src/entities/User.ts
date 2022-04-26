@@ -31,6 +31,7 @@ import { Tag } from "./relearn/Tag";
 import { Label } from "./skillbase/Label";
 import { Skill } from "./skillbase/Skill";
 import { SkillExpectation } from "./skillbase/SkillExpectation";
+import { SkillHistory } from "./skillbase/SkillHistory";
 import { SkillProgress } from "./skillbase/SkillProgress";
 import { Test } from "./Test";
 import { UserPreference } from "./UserPreference";
@@ -91,6 +92,9 @@ export class User {
   // Skillbase
   @OneToMany((type) => Skill, (skill) => skill.user)
   skills: Skill[];
+
+  @OneToMany(() => SkillHistory, (skillHistory) => skillHistory.user)
+  skillHistories: SkillHistory[];
 
   @OneToMany((type) => Label, (label) => label.user)
   labels: Label[];

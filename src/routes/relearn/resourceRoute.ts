@@ -17,13 +17,6 @@ resourceRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
     const resourceRepo = getCustomRepository(ResourceRepository);
     const user = req.user;
 
-    // If user saved from another user // TODO
-    // if (sentResource.fromResourceId) {
-    //   getCustomRepository(
-    //     NotificationRepository
-    //   ).createSavedResourceNotification(user.id, sentResource.fromResourceId)
-    // }
-
     if (sentResource.tag === null)
       return res
         .status(400)
@@ -43,7 +36,14 @@ resourceRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
           .json(new MyErrorsResponse(`User doesn't own this resource.`));
       }
 
-      // Maybe it would be better to create a specific route for that...
+      // if updating a rating
+      if (
+        previousResource.rating !== sentResource.rating &&
+        sentResource.rating > 0
+      )
+        sentResource.completedAt = new Date().toISOString();
+
+      // PE 1/3 - Maybe it would be better to create a specific route for that...
       // If adding a rating
       if (!previousResource.rating && sentResource.rating > 0) {
         await resourceRepo.reducePosition(
