@@ -162,9 +162,8 @@ export default class ResourceRepository extends Repository<Resource> {
 
     query = query
       .leftJoinAndSelect("resource.tag", "tag")
-      .orderBy("resource.position", "ASC");
-
-    console.log(query.getQueryAndParameters());
+      .orderBy("resource.rating", "DESC")
+      .addOrderBy("resource.completedAt", "DESC");
 
     return query.getMany();
   }
