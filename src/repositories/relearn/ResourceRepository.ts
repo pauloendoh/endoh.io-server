@@ -254,4 +254,17 @@ export default class ResourceRepository extends Repository<Resource> {
       })
       .execute();
   }
+
+  async fullTextSearch(userId: number, query: string) {
+    const resources = await this.createQueryBuilder()
+      .select()
+      .where("document_with_weights @@ plainto_tsquery(:query)", { query })
+      .andWhere('"userId" = :userId', { userId })
+      .orderBy(
+        "ts_rank(document_with_weights, plainto_tsquery(:query))",
+        "DESC"
+      )
+      .getMany();
+    return resources;
+  }
 }

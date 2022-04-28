@@ -63,6 +63,7 @@
     "dev": "nodemon",
     "build": "tsc",
     "makeMigrations": "ts-node node_modules/typeorm/cli.js migration:generate -n Migration",
+    "makeEmptyMigration": "ts-node node_modules/typeorm/cli.js migration:create -n Migration",
     "migrate": "ts-node node_modules/typeorm/cli.js migration:run",
     "revertMigration": "ts-node node_modules/typeorm/cli.js migration:revert",
     "test-server": "set NODE_ENV=test&&  nodemon",

@@ -61,4 +61,7 @@ export class Resource {
 
   @Column({ nullable: true })
   tagId: number;
+
+  @Column("tsvector", { select: false, nullable: true })
+  document_with_weights: any;
 }
