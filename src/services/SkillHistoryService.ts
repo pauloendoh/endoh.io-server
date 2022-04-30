@@ -46,7 +46,7 @@ export default class SkillHistoryService {
   async findHistoryMonthsFromUser(userId: number) {
     const months = await this.historyRepo
       .createQueryBuilder()
-      .select("to_char(\"createdAt\", 'YYYY-MM') as month")
+      .select("to_char(\"createdAt\", 'YYYY-MM-dd') as month")
       .distinct()
       .where('"userId" = :userId', { userId })
       .orderBy("month", "DESC")
@@ -75,7 +75,7 @@ export default class SkillHistoryService {
       sh."skillId" = s.id
     WHERE
       s."userId" = $1
-      AND to_char(sh."createdAt", 'YYYY-MM') = $2
+      AND to_char(sh."createdAt", 'YYYY-MM-dd') = $2
       AND COALESCE(s."currentLevel", 0) != COALESCE(sh."currentLevel", 0)
     ORDER BY
       "levelImprovement" DESC NULLS LAST`,

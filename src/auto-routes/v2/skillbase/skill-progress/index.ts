@@ -13,7 +13,7 @@ export default function progressMonthsRoute(expressApp: Application) {
       handler: async (req: MyAuthRequest, res: Response) => {
         try {
           const { from: fromYearMonth } = req.query as { from: string };
-          if (fromYearMonth?.length !== 7) return res.json([]);
+          if (fromYearMonth?.length !== 10) return res.json([]);
 
           const service = new SkillHistoryService();
           const progresses = await service.findProgressFrom(
