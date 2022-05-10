@@ -4,6 +4,7 @@ import autoroutes from "express-automatic-routes";
 import * as fs from "fs";
 import { createServer } from "http";
 import { memoryUsage } from "process";
+import * as Redis from "redis";
 // Why did I import this for?
 import "reflect-metadata";
 import { Server } from "socket.io";
@@ -26,10 +27,15 @@ const env = process.env;
 // It must use 'require' to work properly.
 const ormconfig = require("../ormconfig");
 
+const redisClient = Redis.createClient();
+
+const DEFAULT_EXPIRATION = 3600;
+
 // PE 2/3
 myConsoleSuccess("Connecting with ormconfig");
 createConnection(ormconfig)
   .then(async (connection) => {
+    // await redisClient.connect();
     myConsoleSuccess("Connected!");
     const app = express();
     app.use(cors());
@@ -42,10 +48,29 @@ createConnection(ormconfig)
     );
 
     // For testing
-    app.get("/", (req, res) => {
+    app.get("/", async (req, res) => {
       res.statusMessage = "lmao";
 
-      res.status(404).json("nice?");
+      redisClient
+        .get("photos")
+        .then((photos) => {
+          if (photos) {
+            console.log("CACHE HIT");
+            return res.json(JSON.parse(photos));
+          } else {
+            console.log("CACHE MISS");
+            redisClient.setEx(
+              "photos",
+              DEFAULT_EXPIRATION,
+              JSON.stringify([
+                { id: 1, name: "photo1" },
+                { id: 2, name: "photo2" },
+              ])
+            );
+            return res.status(200).json("nice?");
+          }
+        })
+        .catch((err) => console.error(err.message));
     });
 
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
@@ -126,7 +151,8 @@ createConnection(ormconfig)
 
       socket.on("message", (data) => {
         console.log({ data });
-        socket.broadcast.emit("message", data);
+        io.emit("message", data);
+        // socket.broadcast.emit("message", data);
       });
     });
 

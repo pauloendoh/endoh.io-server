@@ -48,6 +48,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.6.0",
     "puppeteer": "^8.0.0",
+    "redis": "^4.1.0",
     "reflect-metadata": "^0.1.10",
     "socket.io": "^4.4.1",
     "sqlite3": "^5.0.2",
