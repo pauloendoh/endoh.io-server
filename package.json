@@ -21,10 +21,12 @@
     "@types/uuid": "^8.3.1",
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
-    "ts-jest": "^26.5.6"
+    "ts-jest": "^26.5.6",
+    "ts-node-dev": "^1.1.8"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
+    "avsc": "^5.7.4",
     "aws-sdk": "^2.867.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
@@ -39,6 +41,7 @@
     "express-automatic-routes": "^1.1.0",
     "express-openid-connect": "^2.6.0",
     "jsonwebtoken": "^8.5.1",
+    "kafkajs": "^2.0.0",
     "luxon": "^1.27.0",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
@@ -60,6 +63,8 @@
   },
   "scripts": {
     "start": "typeorm migration:run && node build/server.js",
+    "start:producer": "ts-node-dev --transpile-only --respawn --inspect=4322 --project tsconfig.json src/kafka-test/producer.ts",
+    "start:consumer": "ts-node-dev --transpile-only --respawn src/kafka-test/consumer.ts",
     "watch": "node --inspect=5757 -r ts-node/register  ./src/server.ts ",
     "dev": "nodemon",
     "build": "tsc",
@@ -69,7 +74,8 @@
     "revertMigration": "ts-node node_modules/typeorm/cli.js migration:revert",
     "test-server": "set NODE_ENV=test&&  nodemon",
     "test": "set NODE_ENV=test&& jest --detectOpenHandles",
-    "test:watch": "set NODE_ENV=test&& jest --watchAll --detectOpenHandles"
+    "test:watch": "set NODE_ENV=test&& jest --watchAll --detectOpenHandles",
+    "runKafka": "docker compose up"
   },
   "nodemonConfig": {
     "ignore": [
