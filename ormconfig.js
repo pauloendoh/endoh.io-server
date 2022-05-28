@@ -6,7 +6,7 @@ require("dotenv").config();
 // can't change to .json because of process.env variables and
 // you can't have separated files because CLI commands uses ormconfig.js at root
 
-// if dev mode
+// if dev mode...
 let ormconfig = {
   type: "postgres",
   host: "localhost",
