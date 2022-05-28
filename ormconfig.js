@@ -10,7 +10,7 @@ require("dotenv").config();
 let ormconfig = {
   type: "postgres",
   host: "localhost",
-  port: 5431,
+  port: 5432,
   username: "postgres",
   password: "password",
   database: "endoh.io",
