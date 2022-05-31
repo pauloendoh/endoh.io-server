@@ -51,6 +51,10 @@ createConnection(ormconfig)
     app.get("/", async (req, res) => {
       res.statusMessage = "lmao";
 
+      res.status(404).json("nice?");
+    });
+
+    app.get("/redis", async (req, res) => {
       redisClient
         .get("photos")
         .then((photos) => {
