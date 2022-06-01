@@ -5,21 +5,21 @@ services:
     ports:
       - "3000:3000"
       - "5757:5757"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    depends_on:
+    volumes: #
+      - ./node_modules:/app/node_modules
+
+    depends_on: # only starts after these services
       - postgres
       - zookeeper
       - kafka
-    restart: always
+    restart: always # restart after crash?
     environment:
       - IS_DOCKER=true
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
-  # postgres
+
   postgres:
     # mdillon/postgis is postgres + PostGIS (only). if you need additional
     # extensions, it's probably time to create a purpose-built image with all

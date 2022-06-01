@@ -8,15 +8,18 @@ import * as Redis from "redis";
 // Why did I import this for?
 import "reflect-metadata";
 import { Server } from "socket.io";
+import * as swagger from "swagger-express-ts";
 import { createConnection } from "typeorm";
 import { pagination } from "typeorm-pagination";
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
+import { CarController } from "./controllers/CarController";
 import executeEvery15Min from "./routines/executeEvery15Min";
 import executeEveryHour from "./routines/executeEveryHour";
 import { myConsoleError } from "./utils/myConsoleError";
 import { myConsoleSuccess } from "./utils/myConsoleSuccess";
 import { createPreferencesForAll } from "./utils/user/createPreferencesForAll";
 import { createProfileForUsers } from "./utils/user/createProfileForAll";
+
 import cookieSession = require("cookie-session");
 import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport");
@@ -99,6 +102,46 @@ createConnection(ormconfig)
 
     // deserialize cookie from the browser and adds to req.user
     app.use(passport.session());
+
+    app.use("/api-docs/swagger", express.static("swagger"));
+    app.use(
+      "/api-docs/swagger/assets",
+      express.static("node_modules/swagger-ui-dist")
+    );
+    app.use(
+      swagger.express({
+        definition: {
+          info: {
+            title: "My api",
+            version: "1.0",
+          },
+          externalDocs: {
+            url: "My url",
+          },
+          models: {
+            Car: {
+              properties: {
+                id: {
+                  type:
+                    swagger.SwaggerDefinitionConstant.Model.Property.Type
+                      .NUMBER,
+                },
+                name: {
+                  type:
+                    swagger.SwaggerDefinitionConstant.Model.Property.Type
+                      .STRING,
+                  required: true,
+                },
+              },
+            },
+          },
+
+          // Models can be defined here
+        },
+      })
+    );
+
+    app.use(new CarController().getRouter());
 
     // Automatically connect with /routes folder and subfolders
     myConsoleSuccess("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB");
