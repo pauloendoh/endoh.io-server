@@ -52,7 +52,7 @@ createConnection(ormconfig)
 
     // For testing
     app.get("/", async (req, res) => {
-      res.statusMessage = "lmao";
+      res.statusMessage = "zimbabwe";
 
       res.status(404).json("nice?");
     });

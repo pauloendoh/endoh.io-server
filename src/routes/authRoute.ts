@@ -1,4 +1,4 @@
-import { compare, genSalt, hash } from "bcrypt";
+import { compare, genSalt, hash } from "bcryptjs";
 import { randomBytes } from "crypto";
 import { Request, Response, Router } from "express";
 import { sign } from "jsonwebtoken";
@@ -284,8 +284,10 @@ authRoute.post(
   authMiddleware,
   async (req: MyAuthRequest, res) => {
     try {
-      const { oldPassword, newPassword } =
-        req.body as AuthChangePasswordPostDto;
+      const {
+        oldPassword,
+        newPassword,
+      } = req.body as AuthChangePasswordPostDto;
       const user = req.user;
 
       const passwordOk = await compare(oldPassword, user.password);

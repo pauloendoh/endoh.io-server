@@ -4,8 +4,10 @@
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
     "@types/bcrypt": "^3.0.1",
+    "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/cookie-session": "^2.0.43",
+    "@types/crypto-js": "^4.1.1",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.13",
     "@types/jest": "^26.0.22",
@@ -28,7 +30,7 @@
     "@sendgrid/mail": "^7.6.2",
     "avsc": "^5.7.4",
     "aws-sdk": "^2.867.0",
-    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
     "class-transformer": "^0.3.1",
@@ -88,7 +90,10 @@
     "watch": [
       "src"
     ],
-    "exec": "npm run watch",
-    "ext": "ts"
+    "ext": "ts",
+    "execMap": {
+      "ts": "node --require ts-node/register"
+    }
+    
   }
 }

@@ -1,13 +1,17 @@
 version: "3"
 services:
-  web:
-    build: .
+  api:
+    image: node:16
+    volumes:
+      - ./node_modules:/node_modules
+      - ./package.json:/package.json
+      - ./tsconfig.json:/tsconfig.json
+      - ./src:/src
+      - ./.env:/.env
+      - ./ormconfig.js:/ormconfig.js
     ports:
-      - "3000:3000"
-      - "5757:5757"
-    volumes: #
-      - ./node_modules:/app/node_modules
-
+      - 3000:3000
+      - 9229:9229
     depends_on: # only starts after these services
       - postgres
       - zookeeper
@@ -19,6 +23,28 @@ services:
       - DB_PORT=5432
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
+    networks:
+      - backend
+    command: npx nodemon --inspect=0.0.0.0:9229 --signal SIGINT --nolazy --legacy-watch src/server.ts
+  # web:
+  #   build: .
+  #   ports:
+  #     - "3000:3000"
+  #     - "5757:5757"
+  #   volumes: #
+  #     - ./node_modules:/app/node_modules
+
+  #   depends_on: # only starts after these services
+  #     - postgres
+  #     - zookeeper
+  #     - kafka
+  #   restart: always # restart after crash?
+  #   environment:
+  #     - IS_DOCKER=true
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_USERNAME=postgres
+  #     - DB_PASSWORD=password
 
   postgres:
     # mdillon/postgis is postgres + PostGIS (only). if you need additional
