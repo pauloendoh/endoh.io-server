@@ -1,11 +1,19 @@
+import { config } from "dotenv";
 import * as pup from "puppeteer";
 import { myConsoleError } from "../myConsoleError";
 import { scrapeChampions } from "./scrapeLolRates/scrapeChampions";
 import { scrapeLolGraphs } from "./scrapeLolRates/scrapeLolGraphs";
 import { scrapeOpgg } from "./scrapeLolRates/scrapeOpgg";
 import { scrapeUgg } from "./scrapeLolRates/scrapeUgg";
+config();
 
 export async function scrapeLolRates() {
+  if (process.env.IS_DOCKER) {
+    console.log({
+      isDocker: process.env.IS_DOCKER,
+    });
+    return;
+  }
   const browser = await pup.launch({
     // devtools: true, // if you want to debug https://stackoverflow.com/a/49887254/8060650
     args: ["--no-sandbox", "--disable-setuid-sandbox"],

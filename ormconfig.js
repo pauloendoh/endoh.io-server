@@ -9,10 +9,10 @@ require("dotenv").config();
 // if dev mode...
 let ormconfig = {
   type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "postgres",
-  password: "password",
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
   database: "endoh.io",
   entities: [__dirname + "/src/entities/**/*.ts"],
   synchronize: false, // set as 'true' if you're syncronizing for the first time
@@ -31,11 +31,7 @@ let ormconfig = {
 if (process.env.NODE_ENV === "production") {
   ormconfig = {
     ...ormconfig,
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: "endoh.io",
+
     entities: [__dirname + "/build/entities/**/*.js"],
     migrations: [__dirname + "/build/migrations/**/*.js"],
     subscribers: [__dirname + "/build/subscriber/**/*Subscriber.js"],

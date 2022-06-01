@@ -1,5 +1,43 @@
 version: "3"
 services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+      - "5757:5757"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - zookeeper
+      - kafka
+    networks:
+      - backend
+    environment:
+      - IS_DOCKER=true
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+  # postgres
+  postgres:
+    # mdillon/postgis is postgres + PostGIS (only). if you need additional
+    # extensions, it's probably time to create a purpose-built image with all
+    # necessary extensions. sorry, and thanks for adding support for them!
+    image: "postgres:14"
+    container_name: "typeorm-postgres"
+    restart: "always"
+    expose:
+      - "5432"
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "endoh.io"
+    networks:
+      - backend
   zookeeper:
     image: "bitnami/zookeeper:latest"
     ports:
@@ -19,3 +57,6 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+networks:
+  backend:
+    driver: "bridge"
