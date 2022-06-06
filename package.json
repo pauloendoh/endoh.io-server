@@ -20,11 +20,13 @@
     "@types/nodemailer": "^6.4.4",
     "@types/passport": "^1.0.7",
     "@types/passport-google-oauth20": "^2.0.10",
+    "@types/swagger-ui-express": "^4.1.3",
     "@types/uuid": "^8.3.1",
+    "concurrently": "^7.2.1",
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
     "ts-jest": "^26.5.6",
-    "ts-node-dev": "^1.1.8"
+    "ts-node-dev": "^2.0.0"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
@@ -58,7 +60,9 @@
     "socket.io": "^4.4.1",
     "sqlite3": "^5.0.2",
     "swagger-express-ts": "^1.1.0",
+    "swagger-ui-express": "^4.4.0",
     "ts-node": "^10.2.1",
+    "tsoa": "^4.1.0",
     "typeorm": "^0.2.37",
     "typeorm-pagination": "^2.0.3",
     "typescript": "^4.4.3",
@@ -78,7 +82,8 @@
     "test-server": "set NODE_ENV=test&&  nodemon",
     "test": "set NODE_ENV=test&& jest --detectOpenHandles",
     "test:watch": "set NODE_ENV=test&& jest --watchAll --detectOpenHandles",
-    "runKafka": "docker compose up"
+    "runKafka": "docker compose up",
+    "swagger": "tsoa spec"
   },
   "nodemonConfig": {
     "ignore": [
@@ -91,9 +96,9 @@
       "src"
     ],
     "ext": "ts",
+    "exec": "npm run watch",
     "execMap": {
       "ts": "node --require ts-node/register"
     }
-    
   }
 }
