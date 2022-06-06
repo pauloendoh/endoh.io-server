@@ -71,8 +71,8 @@ export default class SkillHistoryService {
       (s."currentLevel" - COALESCE (sh."currentLevel", 0) ) AS "levelImprovement"
     FROM
       skill s
-    LEFT JOIN skill_history sh ON
-      sh."skillId" = s.id
+    INNER JOIN skill_history sh ON
+      sh."skillId" = s.id AND sh."currentLevel" IS NOT NULL
     WHERE
       s."userId" = $1
       AND to_char(sh."createdAt", 'YYYY-MM-dd') = $2
