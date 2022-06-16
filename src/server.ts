@@ -50,16 +50,15 @@ createConnection(ormconfig)
       schema: await buildSchema({
         resolvers: [__dirname + "/resolvers/**/*Resolver.ts"],
       }),
+      csrfPrevention: true,
+      cache: "bounded",
     });
 
     await apolloServer.start();
     apolloServer.applyMiddleware({ app, path: "/graphql" });
+    console.log("Apollo server started");
 
-    app.use(
-      cors({
-        origin: "*",
-      })
-    );
+    app.use(cors());
 
     app.use(pagination);
 
