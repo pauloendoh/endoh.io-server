@@ -2,7 +2,7 @@ import { compare, genSalt, hash } from "bcryptjs";
 import { randomBytes } from "crypto";
 import { Request, Response, Router } from "express";
 import { sign } from "jsonwebtoken";
-import * as passport from "passport";
+import passport from "passport";
 import { getCustomRepository, getRepository, MoreThan } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 import { USER_TOKEN_TYPES } from "../consts/USER_TOKEN_TYPES";

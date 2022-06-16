@@ -1,5 +1,5 @@
-import * as cors from "cors";
-import * as express from "express";
+import cors from "cors";
+import express from "express";
 import autoroutes from "express-automatic-routes";
 import * as fs from "fs";
 import { createServer } from "http";
