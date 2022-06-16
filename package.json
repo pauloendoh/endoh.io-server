@@ -30,6 +30,9 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
+    "apollo-server": "^3.9.0",
+    "apollo-server-core": "^3.9.0",
+    "apollo-server-express": "^3.9.0",
     "avsc": "^5.7.4",
     "aws-sdk": "^2.867.0",
     "bcryptjs": "^2.4.3",
@@ -63,6 +66,7 @@
     "swagger-ui-express": "^4.4.0",
     "ts-node": "^10.2.1",
     "tsoa": "^4.1.0",
+    "type-graphql": "^1.1.1",
     "typeorm": "^0.2.37",
     "typeorm-pagination": "^2.0.3",
     "typescript": "^4.4.3",

@@ -4,11 +4,14 @@ import autoroutes from "express-automatic-routes";
 import * as fs from "fs";
 import { createServer } from "http";
 import { memoryUsage } from "process";
+
 import * as Redis from "redis";
 // Why did I import this for?
+import { ApolloServer } from "apollo-server-express";
 import "reflect-metadata";
 import { Server } from "socket.io";
 import * as swaggerUi from "swagger-ui-express";
+import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { pagination } from "typeorm-pagination";
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
@@ -41,6 +44,16 @@ createConnection(ormconfig)
     // await redisClient.connect();
     myConsoleSuccess("Connected!");
     const app = express();
+
+    const apolloServer = new ApolloServer({
+      schema: await buildSchema({
+        resolvers: [__dirname + "/resolvers/**/*Resolver.ts"],
+      }),
+    });
+
+    await apolloServer.start();
+    apolloServer.applyMiddleware({ app, path: "/graphql" });
+
     app.use(cors());
 
     app.use(pagination);
@@ -164,9 +177,9 @@ createConnection(ormconfig)
     });
 
     // SOCKET.IO
-    const server = createServer(app);
+    const socketServer = createServer(app);
 
-    const io = new Server(server, {
+    const io = new Server(socketServer, {
       cors: {
         origin: "*",
       },
@@ -182,7 +195,7 @@ createConnection(ormconfig)
       });
     });
 
-    server.listen(3001, () => {
+    socketServer.listen(3001, () => {
       console.log("listening on *:3001");
     });
   })
