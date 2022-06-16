@@ -48,7 +48,7 @@ createConnection(ormconfig)
 
     const apolloServer = new ApolloServer({
       schema: await buildSchema({
-        resolvers: [__dirname + "/resolvers/**/*Resolver.ts"],
+        resolvers: [__dirname + "/resolvers/**/*Resolver.{ts,js}"],
       }),
       csrfPrevention: true,
       cache: "bounded",
