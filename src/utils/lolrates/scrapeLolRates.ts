@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import * as pup from "puppeteer";
+import pup from "puppeteer";
 import { myConsoleError } from "../myConsoleError";
 import { scrapeChampions } from "./scrapeLolRates/scrapeChampions";
 import { scrapeLolGraphs } from "./scrapeLolRates/scrapeLolGraphs";

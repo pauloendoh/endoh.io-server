@@ -1,4 +1,4 @@
-import * as pup from "puppeteer";
+import pup from "puppeteer";
 import { getCustomRepository } from "typeorm";
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository";
 import { myConsoleError } from "../../myConsoleError";
