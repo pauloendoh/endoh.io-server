@@ -11,6 +11,7 @@ import "reflect-metadata";
 import { Server } from "socket.io";
 import * as swaggerUi from "swagger-ui-express";
 
+import cors from "cors";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { pagination } from "typeorm-pagination";
@@ -28,7 +29,6 @@ import passport = require("passport");
 import bodyParser = require("body-parser");
 require("./utils/passport-setup");
 require(`dotenv`).config();
-const cors = require("cors");
 
 const env = process.env;
 // It must use 'require' to work properly.
@@ -55,7 +55,11 @@ createConnection(ormconfig)
     await apolloServer.start();
     apolloServer.applyMiddleware({ app, path: "/graphql" });
 
-    app.use(cors());
+    app.use(
+      cors({
+        origin: "*",
+      })
+    );
 
     app.use(pagination);
 
