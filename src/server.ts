@@ -1,4 +1,3 @@
-import cors from "cors";
 import express from "express";
 import autoroutes from "express-automatic-routes";
 import * as fs from "fs";
@@ -11,6 +10,7 @@ import { ApolloServer } from "apollo-server-express";
 import "reflect-metadata";
 import { Server } from "socket.io";
 import * as swaggerUi from "swagger-ui-express";
+
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { pagination } from "typeorm-pagination";
@@ -28,6 +28,7 @@ import passport = require("passport");
 import bodyParser = require("body-parser");
 require("./utils/passport-setup");
 require(`dotenv`).config();
+const cors = require("cors");
 
 const env = process.env;
 // It must use 'require' to work properly.
