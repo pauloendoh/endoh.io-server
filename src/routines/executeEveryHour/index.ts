@@ -12,7 +12,7 @@ const executeEveryHour = async () => {
   saveSkillHistoryFromAllUsers();
 
   setInterval(async () => {
-    scrapeLolRates();
+    scrapeLolRates().catch((e) => console.error("Error scraping lolrates"));
     createUserSuggestionsForAll();
     getResourceRepository().resetRatingsWhereCompletedAtIsNull();
   }, 60 * 1000 * 60);

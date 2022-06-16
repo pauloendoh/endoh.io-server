@@ -12,7 +12,10 @@ const executeEvery15Min = async () => {
       .then((res) => res.json())
       .then((json) =>
         myConsoleSuccess("GET OK https://endohio-server.herokuapp.com/")
-      );
+      )
+      .catch(() => {
+        myConsoleError("GET FAIL https://endohio-server.herokuapp.com/");
+      });
 
     fetch("https://ideameter-server.herokuapp.com/").then((res) =>
       myConsoleSuccess("GET OK https://ideameter-server.herokuapp.com/")
