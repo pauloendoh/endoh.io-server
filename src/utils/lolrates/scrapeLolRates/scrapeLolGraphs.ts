@@ -16,8 +16,6 @@ export async function scrapeLolGraphs(page: pup.Page) {
 
     await page.waitForSelector(".data_table.with_sortable_column tbody");
 
-    // page.on("console", (msg) => console.log("PAGE LOG:", msg.text()))
-
     const results = await page.evaluate(async () => {
       function delay(time) {
         return new Promise(function (resolve) {

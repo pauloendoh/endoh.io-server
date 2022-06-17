@@ -2,6 +2,7 @@ import { Application, Request, Response } from "express";
 import { Resource } from "express-automatic-routes";
 import { getManager } from "typeorm";
 import { Resource as ResourceEntity } from "../../../entities/relearn/Resource";
+import { myConsoleError } from "../../../utils/myConsoleError";
 
 export default function lolRatesPaginated2Route(expressApp: Application) {
   return <Resource>{
@@ -15,7 +16,7 @@ export default function lolRatesPaginated2Route(expressApp: Application) {
 
         return res.json(resources);
       } catch (err) {
-        console.log(err);
+        myConsoleError(err);
         return res.status(400).json(err);
       }
     },

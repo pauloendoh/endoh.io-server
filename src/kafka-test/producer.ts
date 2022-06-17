@@ -1,4 +1,5 @@
 import { Kafka } from "kafkajs";
+import { myConsoleError } from "../utils/myConsoleError";
 
 const kafka = new Kafka({
   brokers: ["localhost:9092"],
@@ -17,6 +18,6 @@ const run = async () => {
     });
   }, 1000);
 };
-run().catch(console.error);
+run().catch(myConsoleError);
 
 export default producer;

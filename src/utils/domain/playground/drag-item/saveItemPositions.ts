@@ -1,6 +1,7 @@
 import { getManager } from "typeorm";
 import DragItemRepository from "../../../../repositories/playground/DragItemRepository";
 import { INewDragItemPosition } from "../../../../types/domain/playground/drag-item/INewDragItemPosition";
+import { myConsoleError } from "../../../myConsoleError";
 
 export const saveItemPositions = async (
   newPositions: INewDragItemPosition[]
@@ -19,7 +20,7 @@ export const saveItemPositions = async (
         );
       }
     } catch (err) {
-      console.error(JSON.stringify(err));
+      myConsoleError(err.message);
     }
   });
 };

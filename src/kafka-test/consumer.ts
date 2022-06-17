@@ -1,4 +1,6 @@
 import { Kafka } from "kafkajs";
+import { myConsoleDebug } from "../utils/console/myConsoleDebug";
+import { myConsoleError } from "../utils/myConsoleError";
 
 const kafka = new Kafka({
   brokers: ["localhost:9092"],
@@ -13,7 +15,7 @@ const run = async () => {
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      console.log({
+      myConsoleDebug({
         partition,
         offset: message.offset,
         value: message.value.toString(),
@@ -21,6 +23,6 @@ const run = async () => {
     },
   });
 };
-run().catch(console.error);
+run().catch(myConsoleError);
 
 export default consumer;
