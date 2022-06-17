@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import "reflect-metadata";
 import { getCustomRepository } from "typeorm";
 import UserRepository from "../repositories/UserRepository";
+import { myConsoleLoading } from "../utils/console/myConsoleLoading";
 import { myConsoleError } from "../utils/myConsoleError";
 import { myConsoleSuccess } from "../utils/myConsoleSuccess";
 
@@ -29,7 +30,7 @@ const executeEvery15Min = async () => {
       const userRepo = getCustomRepository(UserRepository);
 
       const deleted = await userRepo.deleteExpiredTempUsers();
-      myConsoleSuccess("Deleting expired temp users");
+      myConsoleLoading("Deleting expired temp users");
     } catch (e) {
       myConsoleError(e.message);
     }

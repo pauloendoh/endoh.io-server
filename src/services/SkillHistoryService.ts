@@ -1,7 +1,7 @@
 import { getCustomRepository, getRepository, Repository } from "typeorm";
 import { SkillHistory } from "../entities/skillbase/SkillHistory";
 import SkillRepository from "../repositories/skillbase/SkillRepository";
-import ISkillProgress from "../types/domain/skillbase/skill-progress/ISkillProgress";
+import SkillProgressDto from "../types/domain/skillbase/skill-progress/SkillProgressDto";
 
 export default class SkillHistoryService {
   historyRepo: Repository<SkillHistory>;
@@ -59,7 +59,7 @@ export default class SkillHistoryService {
   async findProgressFrom(
     userId: number,
     fromYearMonth: string
-  ): Promise<ISkillProgress[]> {
+  ): Promise<SkillProgressDto[]> {
     return this.historyRepo.query(
       `
 		SELECT

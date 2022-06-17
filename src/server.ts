@@ -19,6 +19,9 @@ import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
 import PingController from "./controllers/PingController";
 import executeEvery15Min from "./routines/executeEvery15Min";
 import executeEveryHour from "./routines/executeEveryHour";
+import { myConsoleDebug } from "./utils/console/myConsoleDebug";
+import { myConsoleInfo } from "./utils/console/myConsoleInfo";
+import { myConsoleLoading } from "./utils/console/myConsoleLoading";
 import { myConsoleError } from "./utils/myConsoleError";
 import { myConsoleSuccess } from "./utils/myConsoleSuccess";
 import { createPreferencesForAll } from "./utils/user/createPreferencesForAll";
@@ -39,24 +42,28 @@ const redisClient = Redis.createClient();
 const DEFAULT_EXPIRATION = 3600;
 
 // PE 2/3
-myConsoleSuccess("Connecting with ormconfig");
+myConsoleLoading("Connecting with ormconfig");
 createConnection(ormconfig)
   .then(async (connection) => {
     // await redisClient.connect();
     myConsoleSuccess("Connected!");
     const app = express();
 
-    const apolloServer = new ApolloServer({
-      schema: await buildSchema({
-        resolvers: [__dirname + "/resolvers/**/*Resolver.{ts,js}"],
-      }),
-      csrfPrevention: true,
-      cache: "bounded",
-    });
+    try {
+      const apolloServer = new ApolloServer({
+        schema: await buildSchema({
+          resolvers: [__dirname + "/resolvers/**/*Resolver.{ts,js}"],
+        }),
+        csrfPrevention: true,
+        context: ({ req, res }) => ({ req, res }),
+      });
 
-    await apolloServer.start();
-    apolloServer.applyMiddleware({ app, path: "/graphql" });
-    console.log("Apollo server started");
+      await apolloServer.start();
+      apolloServer.applyMiddleware({ app, path: "/graphql" });
+      myConsoleSuccess("Apollo server started");
+    } catch (e) {
+      myConsoleError("Error starting apollo server");
+    }
 
     app.use(cors());
 
@@ -78,10 +85,10 @@ createConnection(ormconfig)
         .get("photos")
         .then((photos) => {
           if (photos) {
-            console.log("CACHE HIT");
+            myConsoleSuccess("CACHE HIT");
             return res.json(JSON.parse(photos));
           } else {
-            console.log("CACHE MISS");
+            myConsoleError("CACHE MISS");
             redisClient.setEx(
               "photos",
               DEFAULT_EXPIRATION,
@@ -93,7 +100,7 @@ createConnection(ormconfig)
             return res.status(200).json("nice?");
           }
         })
-        .catch((err) => console.error(err.message));
+        .catch((err) => myConsoleError(err.message));
     });
 
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
@@ -140,8 +147,8 @@ createConnection(ormconfig)
     );
 
     // Automatically connect with /routes folder and subfolders
-    myConsoleSuccess("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB");
-    myConsoleSuccess("Setting up routes");
+    myConsoleInfo("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB");
+    myConsoleLoading("Setting up routes");
     fs.readdirSync(`${__dirname}/routes`).forEach(async (fileOrFolderName) => {
       if (
         fileOrFolderName.endsWith(".ts") ||
@@ -168,7 +175,7 @@ createConnection(ormconfig)
     autoroutes(app, { dir: "./auto-routes" });
 
     const port = process.env.PORT || 3000;
-    myConsoleSuccess("Trying to access port " + port);
+    myConsoleLoading("Trying to access port " + port);
 
     app.listen(port, async () => {
       myConsoleSuccess("Listening to port " + port);
@@ -190,17 +197,17 @@ createConnection(ormconfig)
     });
 
     io.on("connection", (socket) => {
-      console.log("a user has connected");
+      myConsoleSuccess("a user has connected");
 
       socket.on("message", (data) => {
-        console.log({ data });
+        myConsoleDebug({ data });
         io.emit("message", data);
         // socket.broadcast.emit("message", data);
       });
     });
 
     socketServer.listen(3001, () => {
-      console.log("listening on *:3001");
+      myConsoleSuccess("listening on *:3001");
     });
   })
   .catch((error) => myConsoleError(error));
