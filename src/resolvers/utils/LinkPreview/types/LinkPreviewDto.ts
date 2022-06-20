@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
+import { Resource } from "../../../../entities/relearn/Resource";
 
 @ObjectType()
 export class LinkPreviewDto {
@@ -13,4 +14,22 @@ export class LinkPreviewDto {
 
   @Field()
   url: string;
+
+  @Field()
+  youtubeVideoLength: string;
+
+  @Field(() => Resource, { nullable: true })
+  alreadySavedResource: Resource | null;
 }
+
+export const buildLinkPreviewDto = (
+  p?: Partial<LinkPreviewDto>
+): LinkPreviewDto => ({
+  title: "",
+  image: "",
+  description: "",
+  url: "",
+  youtubeVideoLength: "00:00h",
+  alreadySavedResource: null,
+  ...p,
+});
