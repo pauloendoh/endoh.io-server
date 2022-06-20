@@ -1,8 +1,8 @@
 export function myConsoleLoading(text: any) {
   if (typeof text === "string") {
-    console.log("⌛", text);
+    console.log("💭", text);
   } else {
-    console.log("⌛", JSON.stringify(text));
+    console.log("💭", JSON.stringify(text));
   }
   return;
 }

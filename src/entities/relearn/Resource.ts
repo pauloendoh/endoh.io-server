@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -80,5 +81,6 @@ export class Resource {
   tagId: number;
 
   @Column("tsvector", { select: false, nullable: true })
+  @Index("document_weights_idx")
   document_with_weights: any;
 }

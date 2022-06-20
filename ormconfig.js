@@ -7,6 +7,7 @@ require("dotenv").config();
 // you can't have separated files because CLI commands uses ormconfig.js at root
 
 // if dev mode...
+/** @type {import("typeorm").ConnectionOptions} */
 let ormconfig = {
   type: "postgres",
   host: process.env.DB_HOST,
@@ -26,6 +27,14 @@ let ormconfig = {
   },
 
   logging: ["error"],
+
+  cache: {
+    type: "ioredis",
+    options: {
+      host: process.env.REDIS_HOST,
+      port: 6379,
+    },
+  },
 };
 
 if (process.env.NODE_ENV === "production") {

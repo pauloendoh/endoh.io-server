@@ -17,6 +17,7 @@ services:
       - postgres
       - zookeeper
       - kafka
+      - redis
     restart: always # restart after crash?
     environment:
       - IS_DOCKER=true
@@ -61,6 +62,11 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+  redis:
+    image: redis:7.0.2-alpine
+
+    networks:
+      - backend
 networks:
   backend:
     driver: "bridge"

@@ -7,12 +7,18 @@ import { RoleTypes } from "../../types/domain/lolates/RoleTypes";
 import { IChampion } from "../../utils/lolrates/scrapeLolRates/scrapeChampions";
 import { IOpggResult as ScrapeResult } from "../../utils/lolrates/scrapeLolRates/scrapeOpgg";
 import { myConsoleError } from "../../utils/myConsoleError";
+import myRedis from "../../utils/myRedis";
 
 @EntityRepository(LolRate)
 export default class LolRateRepository extends Repository<LolRate> {
   async findWinrates(): Promise<LolRateDto[]> {
     try {
-      return this.query(`
+      const cached = await myRedis.get("winrates");
+      if (cached) {
+        return JSON.parse(cached);
+      }
+
+      const winrates = await this.query(`
            select avgs.*,
                    (avgs."avgPick" + avgs."avgWin")/2  as "avgAvg"
 	          from (select "championName",
@@ -30,7 +36,12 @@ export default class LolRateRepository extends Repository<LolRate> {
 	          where  "avgWin" > 0
          order by "avgAvg" desc 
         `);
-    } catch (err) {}
+
+      await myRedis.set("winrates", JSON.stringify(winrates), "EX", 3600);
+      return winrates;
+    } catch (e) {
+      myConsoleError(e.message);
+    }
   }
 
   async findWinratesPaginated() {

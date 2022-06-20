@@ -37,7 +37,7 @@ const env = process.env;
 // It must use 'require' to work properly.
 const ormconfig = require("../ormconfig");
 
-const redisClient = Redis.createClient();
+const redisClient = Redis.createClient({ url: env.REDIS_URL });
 
 const DEFAULT_EXPIRATION = 3600;
 
@@ -45,8 +45,12 @@ const DEFAULT_EXPIRATION = 3600;
 myConsoleLoading("Connecting with ormconfig");
 createConnection(ormconfig)
   .then(async (connection) => {
-    // await redisClient.connect();
-    myConsoleSuccess("Connected!");
+    myConsoleSuccess("Connected with ormconfig!");
+
+    await redisClient
+      .connect()
+      .then(() => myConsoleSuccess("Connected with redis!"));
+
     const app = express();
 
     try {
@@ -88,7 +92,7 @@ createConnection(ormconfig)
             myConsoleSuccess("CACHE HIT");
             return res.json(JSON.parse(photos));
           } else {
-            myConsoleError("CACHE MISS");
+            myConsoleInfo("CACHE MISS");
             redisClient.setEx(
               "photos",
               DEFAULT_EXPIRATION,
