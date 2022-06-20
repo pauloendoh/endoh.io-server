@@ -24,6 +24,7 @@ import { myConsoleInfo } from "./utils/console/myConsoleInfo";
 import { myConsoleLoading } from "./utils/console/myConsoleLoading";
 import { myConsoleError } from "./utils/myConsoleError";
 import { myConsoleSuccess } from "./utils/myConsoleSuccess";
+import urls from "./utils/urls";
 import { createPreferencesForAll } from "./utils/user/createPreferencesForAll";
 import { createProfileForUsers } from "./utils/user/createProfileForAll";
 import cookieSession = require("cookie-session");
@@ -37,7 +38,7 @@ const env = process.env;
 // It must use 'require' to work properly.
 const ormconfig = require("../ormconfig");
 
-const redisClient = Redis.createClient({ url: env.REDIS_URL });
+const redisClient = Redis.createClient({ url: urls.redis });
 
 const DEFAULT_EXPIRATION = 3600;
 

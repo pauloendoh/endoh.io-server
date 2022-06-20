@@ -29,10 +29,10 @@ let ormconfig = {
   logging: ["error"],
 
   cache: {
-    type: "ioredis",
+    type: "redis",
     options: {
       host: process.env.REDIS_HOST,
-      port: 6379,
+      port: Number(process.env.REDIS_PORT),
     },
   },
 };

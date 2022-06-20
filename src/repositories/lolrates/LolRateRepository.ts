@@ -7,6 +7,7 @@ import { RoleTypes } from "../../types/domain/lolates/RoleTypes";
 import { IChampion } from "../../utils/lolrates/scrapeLolRates/scrapeChampions";
 import { IOpggResult as ScrapeResult } from "../../utils/lolrates/scrapeLolRates/scrapeOpgg";
 import { myConsoleError } from "../../utils/myConsoleError";
+import { myConsoleSuccess } from "../../utils/myConsoleSuccess";
 import myRedis from "../../utils/myRedis";
 
 @EntityRepository(LolRate)
@@ -15,6 +16,7 @@ export default class LolRateRepository extends Repository<LolRate> {
     try {
       const cached = await myRedis.get("winrates");
       if (cached) {
+        myConsoleSuccess('CACHE HIT: "winrates"');
         return JSON.parse(cached);
       }
 
