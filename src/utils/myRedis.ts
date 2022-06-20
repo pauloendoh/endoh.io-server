@@ -1,8 +1,7 @@
 import { config } from "dotenv";
 import Redis from "ioredis";
-import urls from "./urls";
 config();
 
-const myRedis = new Redis(urls.redis);
+const myRedis = new Redis(process.env.REDIS_URL);
 
 export default myRedis;

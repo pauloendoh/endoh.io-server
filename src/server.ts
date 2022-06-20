@@ -4,7 +4,6 @@ import * as fs from "fs";
 import { createServer } from "http";
 import { memoryUsage } from "process";
 
-import * as Redis from "redis";
 // Why did I import this for?
 import { ApolloServer } from "apollo-server-express";
 import "reflect-metadata";
@@ -24,7 +23,6 @@ import { myConsoleInfo } from "./utils/console/myConsoleInfo";
 import { myConsoleLoading } from "./utils/console/myConsoleLoading";
 import { myConsoleError } from "./utils/myConsoleError";
 import { myConsoleSuccess } from "./utils/myConsoleSuccess";
-import urls from "./utils/urls";
 import { createPreferencesForAll } from "./utils/user/createPreferencesForAll";
 import { createProfileForUsers } from "./utils/user/createProfileForAll";
 import cookieSession = require("cookie-session");
@@ -38,8 +36,6 @@ const env = process.env;
 // It must use 'require' to work properly.
 const ormconfig = require("../ormconfig");
 
-const redisClient = Redis.createClient({ url: urls.redis });
-
 const DEFAULT_EXPIRATION = 3600;
 
 // PE 2/3
@@ -47,10 +43,6 @@ myConsoleLoading("Connecting with ormconfig");
 createConnection(ormconfig)
   .then(async (connection) => {
     myConsoleSuccess("Connected with ormconfig!");
-
-    await redisClient
-      .connect()
-      .then(() => myConsoleSuccess("Connected with redis!"));
 
     const app = express();
 
@@ -83,29 +75,6 @@ createConnection(ormconfig)
     app.get("/", async (req, res) => {
       res.statusMessage = "zimbabwe";
       res.status(404).json("nice?");
-    });
-
-    app.get("/redis", async (req, res) => {
-      redisClient
-        .get("photos")
-        .then((photos) => {
-          if (photos) {
-            myConsoleSuccess("CACHE HIT");
-            return res.json(JSON.parse(photos));
-          } else {
-            myConsoleInfo("CACHE MISS");
-            redisClient.setEx(
-              "photos",
-              DEFAULT_EXPIRATION,
-              JSON.stringify([
-                { id: 1, name: "photo1" },
-                { id: 2, name: "photo2" },
-              ])
-            );
-            return res.status(200).json("nice?");
-          }
-        })
-        .catch((err) => myConsoleError(err.message));
     });
 
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express

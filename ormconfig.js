@@ -27,14 +27,6 @@ let ormconfig = {
   },
 
   logging: ["error"],
-
-  cache: {
-    type: "redis",
-    options: {
-      host: process.env.REDIS_HOST,
-      port: Number(process.env.REDIS_PORT),
-    },
-  },
 };
 
 if (process.env.NODE_ENV === "production") {
