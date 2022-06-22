@@ -10,6 +10,7 @@ export class LinkPreviewResolver {
   @UseMiddleware(isAuth)
   async getLinkPreview(@Ctx() { req }: MyContext, @Arg("url") url: string) {
     const service = new LinkPreviewService();
+    service;
     return await service.getLinkPreview(url, req.user.id);
   }
 }

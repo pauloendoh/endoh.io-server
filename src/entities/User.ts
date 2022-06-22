@@ -16,6 +16,7 @@ import { FollowingTag } from "./feed/FollowingTag";
 import { Notification } from "./feed/Notification";
 import { Profile } from "./feed/Profile";
 import { UserSuggestion } from "./feed/UserSuggestion";
+import { Learning } from "./learning-diary/Learning";
 import { ChampionRadar } from "./LolRates/ChampionRadar";
 import { Player } from "./LolRates/Player";
 import Category from "./monerate/Category";
@@ -76,6 +77,9 @@ export class User {
 
   @OneToMany((type) => Expense, (expense) => expense.user)
   expenses: Expense[];
+
+  @OneToMany((type) => Learning, (learning) => learning.user)
+  learnings: Learning[];
 
   @OneToMany((type) => Category, (category) => category.user)
   categories: Category[];
