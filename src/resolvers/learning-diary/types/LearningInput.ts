@@ -14,5 +14,5 @@ export default class LearningInput {
 
   @Field()
   @IsDateString()
-  date: string;
+  datetime: string;
 }
