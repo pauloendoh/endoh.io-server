@@ -1,3 +1,5 @@
+import { DateResolver, DateTimeResolver } from "graphql-scalars";
+
 import { Field, ObjectType } from "type-graphql";
 import {
   Column,
@@ -32,14 +34,14 @@ export class Learning {
   isHighlight: boolean;
 
   @CreateDateColumn()
-  @Field()
+  @Field(() => DateResolver)
   date: string;
 
   @CreateDateColumn()
-  @Field()
+  @Field(() => DateTimeResolver)
   createdAt: string;
 
   @UpdateDateColumn()
-  @Field()
+  @Field(() => DateTimeResolver)
   updatedAt: string;
 }

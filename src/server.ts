@@ -59,7 +59,7 @@ createConnection(ormconfig)
       apolloServer.applyMiddleware({ app, path: "/graphql" });
       myConsoleSuccess("Apollo server started");
     } catch (e) {
-      myConsoleError("Error starting apollo server");
+      myConsoleError(e.message);
     }
 
     app.use(cors());
