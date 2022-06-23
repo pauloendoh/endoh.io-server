@@ -1,3 +1,4 @@
+import { DateTimeResolver } from "graphql-scalars";
 import { Field, ObjectType } from "type-graphql";
 import {
   Column,
@@ -66,11 +67,11 @@ export class Resource {
   privateNote: string;
 
   @CreateDateColumn()
-  @Field()
+  @Field(() => DateTimeResolver)
   createdAt: string;
 
   @UpdateDateColumn()
-  @Field()
+  @Field(() => DateTimeResolver)
   updatedAt: string;
 
   @ManyToOne((type) => Tag, (tag) => tag.resources, { onDelete: "CASCADE" })

@@ -1,3 +1,5 @@
+import { DateTimeResolver } from "graphql-scalars";
+import { Field } from "type-graphql";
 import {
   Column,
   CreateDateColumn,
@@ -15,12 +17,14 @@ import { Resource } from "./Resource";
 @Entity()
 export class Tag {
   @PrimaryGeneratedColumn()
+  @Field()
   id: number;
 
   @ManyToOne((type) => User, (user) => user.tags, { onDelete: "CASCADE" })
   user: User;
 
   @Column()
+  @Field()
   userId: number;
 
   @OneToMany((type) => Resource, (resource) => resource.tag)
@@ -35,23 +39,30 @@ export class Tag {
   // --- end of relations
 
   @Column()
+  @Field()
   name: string;
 
   @Column({ nullable: true })
+  @Field({ nullable: true })
   position: number;
 
   @Column({ default: "#ffffff" })
+  @Field()
   color: string;
 
   @Column({ default: false })
+  @Field()
   isPrivate: boolean;
 
   @CreateDateColumn()
+  @Field(() => DateTimeResolver)
   createdAt: string;
 
   @UpdateDateColumn()
+  @Field(() => DateTimeResolver)
   updatedAt: string;
 
   @Column({ type: "timestamp without time zone", nullable: true })
+  @Field(() => DateTimeResolver, { nullable: true })
   lastOpenedAt: string;
 }
