@@ -4,7 +4,6 @@ import { getCustomRepository, In } from "typeorm";
 import { Resource } from "../../entities/relearn/Resource";
 import authMiddleware from "../../middlewares/authMiddleware";
 import ResourceRepository from "../../repositories/relearn/ResourceRepository";
-import { myConsoleDebug } from "../../utils/console/myConsoleDebug";
 import { MyErrorsResponse } from "../../utils/ErrorMessage";
 import { MyAuthRequest } from "../../utils/MyAuthRequest";
 import { myConsoleError } from "../../utils/myConsoleError";
@@ -93,7 +92,6 @@ resourceRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
       sentResource.userId = user.id;
     }
 
-    myConsoleDebug(sentResource);
     await resourceRepo.save({ ...sentResource });
     const resources = await resourceRepo.findAllResourcesFromUser(user);
     return res.status(200).json(resources);

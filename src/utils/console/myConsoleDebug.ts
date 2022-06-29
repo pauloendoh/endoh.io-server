@@ -1,8 +1,3 @@
-export function myConsoleDebug(text: any) {
-  if (typeof text === "string") {
-    console.log("🐛", text);
-  } else {
-    console.log("🐛", JSON.stringify(text));
-  }
-  return;
+export function myConsoleDebug(debugKey: string, text: any) {
+  return console.log("🔎", debugKey + ":", text);
 }

@@ -1,6 +1,5 @@
 import { config } from "dotenv";
 import pup from "puppeteer";
-import { myConsoleDebug } from "../console/myConsoleDebug";
 import { myConsoleError } from "../myConsoleError";
 import { scrapeChampions } from "./scrapeLolRates/scrapeChampions";
 import { scrapeLolGraphs } from "./scrapeLolRates/scrapeLolGraphs";
@@ -10,9 +9,6 @@ config();
 
 export async function scrapeLolRates() {
   if (process.env.IS_DOCKER) {
-    myConsoleDebug({
-      isDocker: process.env.IS_DOCKER,
-    });
     return;
   }
   const browser = await pup.launch({

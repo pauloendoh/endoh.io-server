@@ -15,7 +15,7 @@ const run = async () => {
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      myConsoleDebug({
+      myConsoleDebug("consumer-run", {
         partition,
         offset: message.offset,
         value: message.value.toString(),

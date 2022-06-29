@@ -16,9 +16,9 @@ import { createConnection } from "typeorm";
 import { pagination } from "typeorm-pagination";
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
 import PingController from "./controllers/PingController";
+import saveResponseTime from "./middlewares/saveResponseTime";
 import executeEvery15Min from "./routines/executeEvery15Min";
 import executeEveryHour from "./routines/executeEveryHour";
-import { myConsoleDebug } from "./utils/console/myConsoleDebug";
 import { myConsoleInfo } from "./utils/console/myConsoleInfo";
 import { myConsoleLoading } from "./utils/console/myConsoleLoading";
 import { myConsoleError } from "./utils/myConsoleError";
@@ -29,6 +29,7 @@ import cookieSession = require("cookie-session");
 import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport");
 import bodyParser = require("body-parser");
+import responseTime = require("response-time");
 require("./utils/passport-setup");
 require(`dotenv`).config();
 
@@ -63,6 +64,8 @@ createConnection(ormconfig)
     }
 
     app.use(cors());
+
+    app.use(saveResponseTime());
 
     app.use(pagination);
 
@@ -174,7 +177,6 @@ createConnection(ormconfig)
       myConsoleSuccess("a user has connected");
 
       socket.on("message", (data) => {
-        myConsoleDebug({ data });
         io.emit("message", data);
         // socket.broadcast.emit("message", data);
       });
