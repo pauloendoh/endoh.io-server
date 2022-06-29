@@ -8,14 +8,14 @@ const saveResponseTime = () =>
     const repo = getRepository(ResponseTime);
     const contentLength = res.getHeader("content-length");
 
-    // repo.save({
-    //   endpoint: req.originalUrl,
+    repo.save({
+      endpoint: req.originalUrl,
 
-    //   method: req.method,
-    //   contentLengthBytes: contentLength ? Number(contentLength) : 0,
-    //   statusCode: res.statusCode,
-    //   millis: Math.floor(millis),
-    // });
+      method: req.method,
+      contentLengthBytes: contentLength ? Number(contentLength) : 0,
+      statusCode: res.statusCode,
+      millis: Math.floor(millis),
+    });
   });
 
 export default saveResponseTime;
