@@ -18,7 +18,7 @@ services:
       - zookeeper
       - kafka
       - redis
-    restart: always # restart after crash?
+    restart: "unless-stopped" # restart after crash?
     environment:
       - IS_DOCKER=true
       - DB_HOST=postgres
@@ -32,7 +32,7 @@ services:
   postgres:
     image: "postgres:14"
     container_name: "typeorm-postgres"
-    restart: "always"
+    restart: "unless-stopped"
     expose:
       - "5432"
     ports:
