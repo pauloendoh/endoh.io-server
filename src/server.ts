@@ -11,11 +11,11 @@ import { Server } from "socket.io";
 import * as swaggerUi from "swagger-ui-express";
 
 import cors from "cors";
+import { createExpressServer } from "routing-controllers";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { pagination } from "typeorm-pagination";
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS";
-import PingController from "./controllers/PingController";
 import saveResponseTime from "./middlewares/saveResponseTime";
 import executeEvery15Min from "./routines/executeEvery15Min";
 import executeEveryHour from "./routines/executeEveryHour";
@@ -30,6 +30,7 @@ import cookieParser = require("cookie-parser"); // parse cookie header
 import passport = require("passport");
 import bodyParser = require("body-parser");
 import responseTime = require("response-time");
+import path = require("path");
 require("./utils/passport-setup");
 require(`dotenv`).config();
 
@@ -45,7 +46,12 @@ createConnection(ormconfig)
   .then(async (connection) => {
     myConsoleSuccess("Connected with ormconfig!");
 
-    const app = express();
+    const routingControllersOptions = {
+      cors: true,
+      controllers: [path.join(__dirname + "/**/*Controller{.js,.ts}")],
+    };
+
+    const app = createExpressServer(routingControllersOptions);
 
     try {
       const apolloServer = new ApolloServer({
@@ -112,14 +118,6 @@ createConnection(ormconfig)
         swaggerOptions: {
           url: "/swagger.json",
         },
-      })
-    );
-
-    app.use(
-      express.Router().get("/ping", async (req, res) => {
-        const controller = new PingController();
-        const response = await controller.getMessage();
-        return res.send(response);
       })
     );
 

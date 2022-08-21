@@ -5,6 +5,7 @@
     "moduleResolution": "node", // what is thisss
     "outDir": "./build",
     "declaration": false, // don't generate d.ts files
+
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true, // do i still need this?
     "sourceMap": false, // don't generate js.map files

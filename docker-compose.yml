@@ -1,70 +1,71 @@
 version: "3"
 services:
-  api:
-    image: node:16
-    volumes:
-      - ./node_modules:/node_modules
-      - ./package.json:/package.json
-      - ./tsconfig.json:/tsconfig.json
-      - ./src:/src
-      - ./.env:/.env
-      - ./ormconfig.js:/ormconfig.js
-      - ./public:/public
-    ports:
-      - 3000:3000
-      - 9229:9229
-    depends_on: # only starts after these services
-      - postgres
-      - zookeeper
-      - kafka
-      - redis
-    restart: "unless-stopped" # restart after crash?
-    environment:
-      - IS_DOCKER=true
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=password
-    networks:
-      - backend
-    command: npx nodemon --inspect=0.0.0.0:9229 --signal SIGINT --nolazy --legacy-watch src/server.ts
+  # api:
+  #   image: node:16
+  #   volumes:
+  #     - ./node_modules:/node_modules
+  #     - ./package.json:/package.json
+  #     - ./tsconfig.json:/tsconfig.json
+  #     - ./src:/src
+  #     - ./.env:/.env
+  #     - ./ormconfig.js:/ormconfig.js
+  #     - ./public:/public
+  #   ports:
+  #     - 3000:3000
+  #     - 9229:9229
+  #   depends_on: # only starts after these services
+  #     - postgres
+  #     - zookeeper
+  #     - kafka
+  #     - redis
+  #   restart: "unless-stopped" # restart after crash?
+  #   environment:
+  #     - IS_DOCKER=true
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_USERNAME=postgres
+  #     - DB_PASSWORD=password
+  #   networks:
+  #     - backend
+  #   command: npx nodemon --inspect=0.0.0.0:9229 --signal SIGINT --nolazy --legacy-watch src/server.ts
 
-  postgres:
-    image: "postgres:14"
-    container_name: "typeorm-postgres"
-    restart: "unless-stopped"
-    expose:
-      - "5432"
-    ports:
-      - "5431:5432"
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "endoh.io"
-    networks:
-      - backend
-  zookeeper:
-    image: "bitnami/zookeeper:latest"
-    ports:
-      - "2181:2181"
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-  kafka:
-    image: "bitnami/kafka:latest"
-    container_name: "kafka"
-    ports:
-      - "9092:9092"
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    depends_on:
-      - zookeeper
+  # postgres:
+  #   image: "postgres:14"
+  #   container_name: "typeorm-postgres"
+  #   restart: "unless-stopped"
+  #   expose:
+  #     - "5432"
+  #   ports:
+  #     - "5431:5432"
+  #   environment:
+  #     POSTGRES_USER: "postgres"
+  #     POSTGRES_PASSWORD: "password"
+  #     POSTGRES_DB: "endoh.io"
+  #   networks:
+  #     - backend
+  # zookeeper:
+  #   image: "bitnami/zookeeper:latest"
+  #   ports:
+  #     - "2181:2181"
+  #   environment:
+  #     - ALLOW_ANONYMOUS_LOGIN=yes
+  # kafka:
+  #   image: "bitnami/kafka:latest"
+  #   container_name: "kafka"
+  #   ports:
+  #     - "9092:9092"
+  #   environment:
+  #     - KAFKA_BROKER_ID=1
+  #     - KAFKA_LISTENERS=PLAINTEXT://:9092
+  #     - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+  #     - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+  #     - ALLOW_PLAINTEXT_LISTENER=yes
+  #   depends_on:
+  #     - zookeeper
   redis:
     image: redis:7.0.2-alpine
-
+    ports:
+      - 6379:6379
     networks:
       - backend
 networks:
