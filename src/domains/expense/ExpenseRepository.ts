@@ -29,7 +29,7 @@ export default class ExpenseRepository extends Repository<Expense> {
         (select  e.id as id, abs($1 - e.value) as diff 
           from expense e where e.\"userId\" = $2 and e.value is not null order by diff limit 10)  closest
       inner join expense e on e.id = closest.id
-      order by e.rating desc 
+      order by e.rating desc nulls last
       `,
       [value, userId]
     );
