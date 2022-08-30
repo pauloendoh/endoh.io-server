@@ -6,10 +6,7 @@ import { cyanBright } from 'chalk'
 import crypto = require('crypto')
 require('dotenv').config()
 
-const storageS3 = new aws.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-})
+
 
 const storageTypes = {
     local: multer.diskStorage({
