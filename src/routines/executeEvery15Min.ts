@@ -18,9 +18,9 @@ const executeEvery15Min = async () => {
         myConsoleError("GET FAIL https://endohio-server.herokuapp.com/");
       });
 
-    // fetch("https://ideameter-server.herokuapp.com/").then((res) =>
-    //   myConsoleSuccess("GET OK https://ideameter-server.herokuapp.com/")
-    // );
+    fetch("https://clothes-server.onrender.com/ping").then((res) =>
+      myConsoleSuccess("GET OK https://clothes-server.onrender.com/ping")
+    );
 
     fetch("https://lolrates.vercel.app/")
       .then((res) => res.text())
