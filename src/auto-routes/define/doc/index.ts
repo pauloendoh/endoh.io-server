@@ -45,6 +45,7 @@ export default function docRoute(expressApp: Application) {
                 );
 
             doc.title = sentDoc.title;
+            doc.folderId = sentDoc.folderId;
             const savedDoc = await getDocRepository().save(doc);
             return res.status(200).json(savedDoc);
           }
@@ -52,6 +53,7 @@ export default function docRoute(expressApp: Application) {
           const newDoc = new Doc();
           newDoc.title = sentDoc.title;
           newDoc.userId = user.id;
+          newDoc.folderId = sentDoc.folderId;
 
           const savedDoc = await getDocRepository().save(newDoc);
           return res.status(200).json(savedDoc);

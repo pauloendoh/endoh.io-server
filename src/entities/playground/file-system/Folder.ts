@@ -9,6 +9,7 @@ import {
   TreeParent,
 } from "typeorm";
 import { CreatedEntity } from "../../../types/CreatedEntity";
+import { Doc } from "../../define/Doc";
 import { User } from "../../User";
 import { File } from "./File";
 
@@ -35,4 +36,7 @@ export class Folder extends CreatedEntity {
 
   @OneToMany((type) => File, (file) => file.parentFolder)
   files: File[];
+
+  @OneToMany((type) => Doc, (doc) => doc.folder)
+  docs: Doc[];
 }

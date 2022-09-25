@@ -2,6 +2,7 @@ import { plainToClass } from "class-transformer";
 import { Application, Response } from "express";
 import { Resource } from "express-automatic-routes";
 import { getRepository, getTreeRepository } from "typeorm";
+import { FolderService } from "../../../domains/folder/FolderService";
 import { Folder } from "../../../entities/playground/file-system/Folder";
 import authMiddleware from "../../../middlewares/authMiddleware";
 import findFoldersFromUser from "../../../utils/domain/playground/file-system/findFoldersFromUser";
@@ -77,7 +78,8 @@ export default function folderRoute(expressApp: Application) {
       middleware: authMiddleware,
       handler: async (req: MyAuthRequest, res: Response) => {
         try {
-          const userFolders = await findFoldersFromUser(req.user.id);
+          const service = new FolderService();
+          const userFolders = await service.findFoldersFromUser(req.user.id);
           return res.json(userFolders);
         } catch (err) {
           myConsoleError(err.message);

@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Folder } from "../playground/file-system/Folder";
 import { User } from "../User";
 import { Note } from "./Note";
 
@@ -21,6 +22,12 @@ export class Doc {
   user: User;
   @Column()
   userId: number;
+
+  @ManyToOne(() => Folder, (folder) => folder.docs, { nullable: true })
+  folder: Folder | null;
+
+  @Column({ nullable: true })
+  folderId: number | null;
 
   @OneToMany(() => Note, (note) => note.doc)
   notes: Note[];
