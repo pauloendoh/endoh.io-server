@@ -221,7 +221,7 @@ authRoute.post("/google/login", async (req: Request, res: Response) => {
     const expireDate = new Date(new Date().setDate(new Date().getDate() + 365));
     const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365;
 
-    req.logout();
+    // req.logout();
     await oauthRepo.delete({
       userId: user.id,
       type: USER_TOKEN_TYPES.googleOauth,
