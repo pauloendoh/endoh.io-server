@@ -75,6 +75,7 @@
     "routing-controllers": "^0.9.0",
     "socket.io": "^4.4.1",
     "sqlite3": "^5.0.2",
+    "stripe": "^10.11.0",
     "swagger-express-ts": "^1.1.0",
     "swagger-ui-express": "^4.4.0",
     "ts-node": "^10.2.1",
@@ -87,8 +88,6 @@
   },
   "scripts": {
     "start": "typeorm migration:run && node build/server.js",
-    "start:producer": "ts-node-dev --transpile-only --respawn --inspect=4322 --project tsconfig.json src/kafka-test/producer.ts",
-    "start:consumer": "ts-node-dev --transpile-only --respawn src/kafka-test/consumer.ts",
     "watch": "node --inspect=9229 -r ts-node/register  ./src/server.ts ",
     "dev": "nodemon",
     "build": "tsc",
@@ -99,7 +98,6 @@
     "test-server": "set NODE_ENV=test&&  nodemon",
     "test": "set NODE_ENV=test&& jest --detectOpenHandles",
     "test:watch": "set NODE_ENV=test&& jest --watchAll --detectOpenHandles",
-    "runKafka": "docker compose up",
     "swagger": "tsoa spec"
   },
   "nodemonConfig": {

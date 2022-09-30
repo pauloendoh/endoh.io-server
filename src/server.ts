@@ -12,6 +12,7 @@ import * as swaggerUi from "swagger-ui-express";
 
 import cors from "cors";
 import { createExpressServer } from "routing-controllers";
+import { Stripe } from "stripe";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { pagination } from "typeorm-pagination";
@@ -33,6 +34,7 @@ import responseTime = require("response-time");
 import path = require("path");
 require("./utils/passport-setup");
 require(`dotenv`).config();
+const stripe: Stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 const env = process.env;
 // It must use 'require' to work properly.
@@ -110,6 +112,38 @@ createConnection(ormconfig)
     app.use(passport.session());
 
     app.use(express.static("public"));
+
+    const storeItems = new Map([
+      [1, { priceInCents: 10000, name: "Learn React Today" }],
+      [2, { priceInCents: 20000, name: "Learn CSS Today" }],
+    ]);
+    app.post("/create-checkout-session", async (req, res) => {
+      try {
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          mode: "payment",
+          line_items: req.body.items.map((item) => {
+            const storeItem = storeItems.get(item.id);
+            return {
+              price_data: {
+                currency: "usd",
+                product_data: {
+                  name: storeItem.name,
+                },
+                unit_amount: storeItem.priceInCents,
+              },
+              quantity: item.quantity,
+            };
+          }),
+          success_url: `${process.env.SERVER_BASE_URL}/success`,
+
+          cancel_url: `${process.env.SERVER_BASE_URL}/cancel`,
+        });
+        res.json({ url: session.url });
+      } catch (e) {
+        res.status(500).json({ errors: e.message });
+      }
+    });
 
     app.use(
       "/docs",

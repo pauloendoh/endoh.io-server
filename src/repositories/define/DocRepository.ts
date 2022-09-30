@@ -16,4 +16,19 @@ export default class DocRepository extends Repository<Doc> {
   async createDocForNewUser(user: User): Promise<Doc> {
     return this.save({ user, title: "[Example] The Little Prince" });
   }
+
+  async userOwnsDoc(userId: number, docId: number) {
+    const found = await this.findOne({
+      where: {
+        userId,
+        id: docId,
+      },
+    });
+
+    return !!found;
+  }
+
+  async deleteDoc(docId: number) {
+    return this.delete({ id: docId });
+  }
 }
