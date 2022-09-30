@@ -1,3 +1,4 @@
+import compression from "compression";
 import express from "express";
 import autoroutes from "express-automatic-routes";
 import * as fs from "fs";
@@ -74,6 +75,12 @@ createConnection(ormconfig)
     app.use(cors());
 
     app.use(saveResponseTime());
+    app.use(
+      compression({
+        level: 6,
+        threshold: 100 * 1000, // 100kB
+      })
+    );
 
     app.use(pagination);
 
