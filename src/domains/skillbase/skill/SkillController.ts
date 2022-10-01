@@ -29,12 +29,13 @@ export class SkillController {
   ) {}
 
   @Get("/skillbase/skill")
-  findAllSkillsFromAuthUser(
+  async findAllSkillsFromAuthUser(
     @UseBefore(MyAuthMiddleware)
     @Req()
     req: MyAuthRequest
   ) {
-    return this.skillRepo.getAllFromUser(req.user.id);
+    const skills = await this.skillRepo.getAllFromUser(req.user.id);
+    return skills;
   }
 
   @Post("/skillbase/skill")

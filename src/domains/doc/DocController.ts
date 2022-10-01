@@ -14,7 +14,7 @@ export class DocController {
   constructor(private docService = new DocService()) {}
 
   @Delete("/docs/:docId")
-  getSimilarExpenses(
+  deleteDoc(
     @UseBefore(MyAuthMiddleware)
     @Req()
     req: MyAuthRequest,
