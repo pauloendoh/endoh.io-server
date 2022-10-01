@@ -1,25 +1,21 @@
 import { Router } from "express";
 import { getCustomRepository } from "typeorm";
-import authMiddleware from "../../middlewares/authMiddleware";
 import SkillRepository from "../../repositories/skillbase/SkillRepository";
-import { MyErrorsResponse } from "../../utils/ErrorMessage";
-import { MyAuthRequest } from "../../utils/MyAuthRequest";
-import { myConsoleError } from "../../utils/myConsoleError";
 
 const skillRoute = Router();
 const skillRepo = getCustomRepository(SkillRepository);
 
-skillRoute.get("/", authMiddleware, async (req: MyAuthRequest, res) => {
-  const { user } = req;
+// skillRoute.get("/", authMiddleware, async (req: MyAuthRequest, res) => {
+//   const { user } = req;
 
-  try {
-    const skills = await skillRepo.getAllFromUser(user.id);
-    return res.status(200).json(skills);
-  } catch (err) {
-    myConsoleError(err.message);
-    return res.status(400).json(new MyErrorsResponse(err.message));
-  }
-});
+//   try {
+//     const skills = await skillRepo.getAllFromUser(user.id);
+//     return res.status(200).json(skills);
+//   } catch (err) {
+//     myConsoleError(err.message);
+//     return res.status(400).json(new MyErrorsResponse(err.message));
+//   }
+// });
 
 // skillRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
 //   const sentSkill = req.body as Skill
