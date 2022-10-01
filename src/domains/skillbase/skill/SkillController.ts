@@ -1,13 +1,14 @@
 import { ForbiddenError } from "apollo-server-core";
 import {
   Body,
+  CurrentUser,
   Delete,
+  Get,
   JsonController,
   NotFoundError,
   Param,
   Post,
   Put,
-  Req,
   UseBefore,
 } from "routing-controllers";
 import { getCustomRepository, getRepository } from "typeorm";
@@ -15,9 +16,9 @@ import { IdsDto } from "../../../dtos/IdsDto";
 import { Skill } from "../../../entities/skillbase/Skill";
 import { SkillExpectation } from "../../../entities/skillbase/SkillExpectation";
 import { SkillProgress } from "../../../entities/skillbase/SkillProgress";
+import { User } from "../../../entities/User";
 import { MyAuthMiddleware } from "../../../middlewares/MyAuthMiddleware";
 import SkillRepository from "../../../repositories/skillbase/SkillRepository";
-import { MyAuthRequest } from "../../../utils/MyAuthRequest";
 
 @JsonController()
 export class SkillController {
@@ -27,25 +28,24 @@ export class SkillController {
     private skillExpectationRepo = getRepository(SkillExpectation)
   ) {}
 
-  // @Get("/skillbase/skill")
-  // async findAllSkillsFromAuthUser(
-  //   @UseBefore(MyAuthMiddleware)
-  //   @Req()
-  //   req: MyAuthRequest
-  // ) {
-  //   const skills = await this.skillRepo.getAllFromUser(req.user.id);
-  //   return skills;
-  // }
+  @Get("/skillbase/skill")
+  async findAllSkillsFromAuthUser(
+    @UseBefore(MyAuthMiddleware)
+    @CurrentUser({ required: true })
+    user: User
+  ) {
+    const skills = await this.skillRepo.getAllFromUser(user.id);
+    return skills;
+  }
 
   @Post("/skillbase/skill")
   async createSkill(
     @UseBefore(MyAuthMiddleware)
-    @Req()
-    req: MyAuthRequest,
+    @CurrentUser({ required: true })
+    user: User,
+
     @Body() sentSkill: Skill
   ) {
-    const { user } = req;
-
     // checking ownership
     if (sentSkill.id) {
       const found = await this.skillRepo.findOne({ id: sentSkill.id, user });
@@ -67,14 +67,14 @@ export class SkillController {
       }
     }
 
-    sentSkill.userId = req.user.id;
+    sentSkill.userId = user.id;
 
     const savedSkill = await this.skillRepo.save(sentSkill);
 
     // saving expectations
     const expectations = sentSkill.expectations.map((expectation) => ({
       ...expectation,
-      userId: req.user.id,
+      userId: user.id,
       skillId: savedSkill.id,
     }));
     await this.skillExpectationRepo.delete({ skillId: savedSkill.id });
@@ -87,13 +87,13 @@ export class SkillController {
   @Put("/skillbase/skill/:id")
   async updateSkill(
     @UseBefore(MyAuthMiddleware)
-    @Req()
-    req: MyAuthRequest,
+    @CurrentUser({ required: true })
+    user: User,
     @Body() sentSkill: Skill,
     @Param("id") skillId: number
   ) {
     const isOwner = await this.skillRepo.findOne({
-      userId: req.user.id,
+      userId: user.id,
       id: skillId,
     });
     if (!isOwner)
@@ -110,12 +110,12 @@ export class SkillController {
   @Delete("/skillbase/skill")
   async deleteSkill(
     @UseBefore(MyAuthMiddleware)
-    @Req()
-    req: MyAuthRequest,
+    @CurrentUser({ required: true })
+    user: User,
     @Body() body: IdsDto
   ) {
-    await this.skillRepo.deleteIdsFromUser(body.ids, req.user.id);
-    const skills = await this.skillRepo.getAllFromUser(req.user.id);
+    await this.skillRepo.deleteIdsFromUser(body.ids, user.id);
+    const skills = await this.skillRepo.getAllFromUser(user.id);
 
     return skills;
   }

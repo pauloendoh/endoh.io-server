@@ -11,7 +11,11 @@ import { Server } from "socket.io";
 import * as swaggerUi from "swagger-ui-express";
 
 import cors from "cors";
-import { createExpressServer } from "routing-controllers";
+import {
+  Action,
+  createExpressServer,
+  RoutingControllersOptions,
+} from "routing-controllers";
 import { Stripe } from "stripe";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
@@ -22,6 +26,7 @@ import executeEvery15Min from "./routines/executeEvery15Min";
 import executeEveryHour from "./routines/executeEveryHour";
 import { myConsoleInfo } from "./utils/console/myConsoleInfo";
 import { myConsoleLoading } from "./utils/console/myConsoleLoading";
+import { validateJwt } from "./utils/domain/auth/validateJwt";
 import { myConsoleError } from "./utils/myConsoleError";
 import { myConsoleSuccess } from "./utils/myConsoleSuccess";
 import { createPreferencesForAll } from "./utils/user/createPreferencesForAll";
@@ -49,9 +54,14 @@ createConnection(ormconfig)
   .then(async (connection) => {
     myConsoleSuccess("Connected with ormconfig!");
 
-    const routingControllersOptions = {
+    const routingControllersOptions: RoutingControllersOptions = {
       cors: true,
       controllers: [path.join(__dirname + "/**/*Controller{.js,.ts}")],
+      currentUserChecker: async (action: Action) => {
+        const token = action.request.headers["x-auth-token"];
+        const user = await validateJwt(token);
+        return user;
+      },
     };
 
     const app = createExpressServer(routingControllersOptions);
