@@ -32,6 +32,7 @@ import passport = require("passport");
 import bodyParser = require("body-parser");
 import responseTime = require("response-time");
 import path = require("path");
+import compression = require("compression");
 require("./utils/passport-setup");
 require(`dotenv`).config();
 const stripe: Stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
@@ -74,12 +75,12 @@ createConnection(ormconfig)
     app.use(cors());
 
     app.use(saveResponseTime());
-    // app.use(
-    //   compression({
-    //     level: 6,
-    //     threshold: 100 * 1000, // 100kB
-    //   })
-    // );
+    app.use(
+      compression({
+        level: 6,
+        threshold: 100 * 1000, // 100kB
+      })
+    );
 
     app.use(pagination);
 
