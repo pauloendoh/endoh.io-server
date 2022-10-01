@@ -2,7 +2,6 @@ import { ForbiddenError } from "apollo-server-core";
 import {
   Body,
   Delete,
-  Get,
   JsonController,
   NotFoundError,
   Param,
@@ -28,15 +27,15 @@ export class SkillController {
     private skillExpectationRepo = getRepository(SkillExpectation)
   ) {}
 
-  @Get("/skillbase/skill")
-  async findAllSkillsFromAuthUser(
-    @UseBefore(MyAuthMiddleware)
-    @Req()
-    req: MyAuthRequest
-  ) {
-    const skills = await this.skillRepo.getAllFromUser(req.user.id);
-    return skills;
-  }
+  // @Get("/skillbase/skill")
+  // async findAllSkillsFromAuthUser(
+  //   @UseBefore(MyAuthMiddleware)
+  //   @Req()
+  //   req: MyAuthRequest
+  // ) {
+  //   const skills = await this.skillRepo.getAllFromUser(req.user.id);
+  //   return skills;
+  // }
 
   @Post("/skillbase/skill")
   async createSkill(
