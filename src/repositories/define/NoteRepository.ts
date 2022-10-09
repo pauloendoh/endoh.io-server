@@ -1,9 +1,4 @@
-import {
-  EntityRepository,
-  getCustomRepository,
-  ILike,
-  Repository,
-} from "typeorm"
+import { EntityRepository, getCustomRepository, Repository } from "typeorm"
 import { Doc } from "../../entities/define/Doc"
 import { Note } from "../../entities/define/Note"
 import { User } from "../../entities/User"
@@ -98,16 +93,25 @@ export default class NoteRepository extends Repository<Note> {
     await this.save(newNotes)
   }
 
-  async searchNotes(query: string, userId: number) {
-    return this.find({
-      where: [
+  async searchNotes(text: string, userId: number) {
+    const words = text.split(" ")
+
+    let query = this.createQueryBuilder("note").where({ userId })
+
+    // multi word search
+    words.forEach((word, index) => {
+      // https://github.com/typeorm/typeorm/issues/3119
+      query = query.andWhere(
+        `(unaccent(note.description) ilike unaccent(:text${index}) 
+                 or unaccent(note.question) ilike unaccent(:text${index}))`,
         {
-          userId,
-          description: ILike(`%${query}%`),
-        },
-        { userId, question: ILike(`%${query}%`) },
-      ],
-      relations: ["doc"],
+          [`text${index}`]: `%${word}%`,
+        }
+      )
     })
+
+    query = query.leftJoinAndSelect("note.doc", "doc")
+
+    return query.getMany()
   }
 }
