@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid"
+
 import { sign } from "jsonwebtoken"
 
 import { compare, genSalt, hash } from "bcryptjs"
@@ -9,9 +11,11 @@ import {
   BadRequestError,
   Body,
   CurrentUser,
+  Delete,
   Get,
   JsonController,
   Post,
+  Put,
   Req,
   Res,
   UseBefore,
@@ -20,8 +24,13 @@ import { getCustomRepository, getRepository, MoreThan } from "typeorm"
 import { USER_TOKEN_TYPES } from "../../consts/USER_TOKEN_TYPES"
 import { UserToken } from "../../entities/OAuthToken"
 import { User } from "../../entities/User"
+import { UserPreference } from "../../entities/UserPreference"
 import { DotEnvKeys } from "../../enums/DotEnvKeys"
+import { AuthChangePasswordPostDto } from "../../interfaces/dtos/auth/AuthChangePasswordPostDto"
 import { AuthUserGetDto } from "../../interfaces/dtos/auth/AuthUserGetDto"
+import { PasswordResetPostDto } from "../../interfaces/dtos/auth/PasswordResetPostDto"
+import { UserDeleteDto } from "../../interfaces/dtos/auth/UserDeleteDto"
+import { UsernamePutDto } from "../../interfaces/dtos/auth/UsernamePutDto"
 import { UserTokenPostDto } from "../../interfaces/dtos/auth/UserTokenPostDto"
 import UserRepository from "../../repositories/UserRepository"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
@@ -32,7 +41,8 @@ import validateUserFields from "../../utils/validateUser"
 export class AuthController {
   constructor(
     private tokenRepo = getRepository(UserToken),
-    private userRepo = getCustomRepository(UserRepository)
+    private userRepo = getCustomRepository(UserRepository),
+    private preferenceRepo = getRepository(UserPreference)
   ) {}
 
   @Post("/register")
@@ -183,8 +193,7 @@ export class AuthController {
   }
 
   // The front-end uses the token and userId in the URL to finish the login
-  @Get("/google/login")
-  @UseBefore(passport.authenticate("google"))
+  @Post("/google/login")
   async googleLogin(@Body() body: UserTokenPostDto) {
     const { userId, token } = body
 
@@ -224,5 +233,150 @@ export class AuthController {
     })
 
     return authUser
+  }
+
+  @Post("/password-reset")
+  async passwordReset(@Body() body: PasswordResetPostDto) {
+    const { password, token, userId } = body
+
+    // Token exists?
+    const tokenExists = await this.tokenRepo.findOne({
+      userId,
+      token,
+      type: USER_TOKEN_TYPES.passwordReset,
+      expiresAt: MoreThan(new Date().toISOString()),
+    })
+
+    // se existe, faz a alteração de senha
+    if (tokenExists) {
+      const user = await this.userRepo.findOne({ id: userId })
+
+      const salt = await genSalt(10)
+      user.password = await hash(password, salt)
+
+      await this.userRepo.save(user)
+      await this.tokenRepo.delete({
+        userId,
+        type: USER_TOKEN_TYPES.passwordReset,
+      })
+
+      return true
+    }
+
+    throw new BadRequestError("Token does not exist or it is expired.")
+  }
+
+  @Post("/authenticated-password-change")
+  async authenticatedPasswordChange(
+    @CurrentUser({ required: true }) requester: User,
+    @Body() body: AuthChangePasswordPostDto
+  ) {
+    const { oldPassword, newPassword } = body
+
+    const passwordOk = await compare(oldPassword, requester.password)
+    if (passwordOk) {
+      const userRepo = getCustomRepository(UserRepository)
+
+      const salt = await genSalt(10)
+      const newPasswordHashed = await hash(newPassword, salt)
+      requester.password = newPasswordHashed
+      await userRepo.save(requester)
+
+      return true
+    }
+
+    throw new BadRequestError("Incorrect password.")
+  }
+
+  @Delete("/")
+  async deleteAccount(
+    @CurrentUser({ required: true }) requester: User,
+    @Body() body: UserDeleteDto
+  ) {
+    const { password } = body
+
+    const passwordOk = await compare(password, requester.password)
+
+    if (!passwordOk) throw new BadRequestError("Incorrect password.")
+    if (passwordOk) {
+      const userRepo = getCustomRepository(UserRepository)
+
+      await userRepo.delete({ id: requester.id })
+
+      return true
+    }
+  }
+
+  @Put("/username")
+  async changeUsername(
+    @CurrentUser({ required: true }) requester: User,
+    @Body() body: UsernamePutDto
+  ) {
+    const { newUsername } = body
+
+    const userRepo = getCustomRepository(UserRepository)
+    const usernameExists = await userRepo.findOne({ username: newUsername })
+
+    if (usernameExists) {
+      throw new BadRequestError("Username already in use.")
+    }
+
+    // Checking if username is valid
+    const regex = new RegExp(/^[a-zA-Z0-9]+$/)
+    if (!regex.test(newUsername)) {
+      throw new BadRequestError(
+        "Invalid characters for username. Only use letters and numbers."
+      )
+    }
+
+    requester.username = newUsername
+    await userRepo.save(requester)
+
+    return true
+  }
+
+  @Get("/temp-user")
+  async getTempUser() {
+    const username = uuidv4()
+    const expireDate = new Date(new Date().setDate(new Date().getDate() + 1))
+
+    const user = await this.userRepo.save({
+      username: username,
+      email: username + "@" + username + ".com",
+      password: username,
+      expiresAt: expireDate.toISOString(),
+    })
+
+    // Signing in and returning  user's token
+    const ONE_DAY_IN_SECONDS = 3600 * 24
+
+    const authUser = await new Promise<AuthUserGetDto>((res, rej) => {
+      sign(
+        { userId: user.id },
+        process.env[DotEnvKeys.JWT_SECRET],
+        { expiresIn: ONE_DAY_IN_SECONDS },
+        (err, token) => {
+          if (err) return rej(err)
+          return res(new AuthUserGetDto(user, token, expireDate))
+        }
+      )
+    })
+    return authUser
+  }
+
+  @Get("/user-preference")
+  async getUserPreferences(@CurrentUser({ required: true }) requester: User) {
+    return this.preferenceRepo.findOne({ user: requester })
+  }
+
+  @Post("/user-preference")
+  async saveUserPreferences(
+    @CurrentUser({ required: true }) requester: User,
+    @Body() body: UserPreference
+  ) {
+    body.user = requester
+
+    const preferenceRepo = getRepository(UserPreference)
+    return preferenceRepo.save(body)
   }
 }

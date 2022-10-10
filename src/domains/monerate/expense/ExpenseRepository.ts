@@ -1,6 +1,6 @@
-import { EntityRepository, Repository } from "typeorm";
-import { Expense } from "../../entities/monerate/Expense";
-import { User } from "../../entities/User";
+import { EntityRepository, Repository } from "typeorm"
+import { Expense } from "../../../entities/monerate/Expense"
+import { User } from "../../../entities/User"
 
 @EntityRepository(Expense)
 export default class ExpenseRepository extends Repository<Expense> {
@@ -10,16 +10,16 @@ export default class ExpenseRepository extends Repository<Expense> {
       .leftJoinAndSelect("decision.place", "place")
       .leftJoinAndSelect("decision.category", "category")
       .orderBy("decision.createdAt", "DESC")
-      .getMany();
+      .getMany()
   }
 
   // simple 'save()' was not returning 'createdAt' field...
   async saveAndGetEntireModel(expense: Expense): Promise<Expense> {
-    const savedExpense = await this.save(expense);
+    const savedExpense = await this.save(expense)
     return await this.findOne({
       where: { id: savedExpense.id },
       relations: ["category", "place"],
-    });
+    })
   }
 
   async findSimilarExpenses(userId: number, value: number): Promise<Expense[]> {
@@ -32,6 +32,6 @@ export default class ExpenseRepository extends Repository<Expense> {
       order by e.rating desc nulls last
       `,
       [value, userId]
-    );
+    )
   }
 }

@@ -1,74 +1,67 @@
-import { Router } from "express";
-import { getCustomRepository } from "typeorm";
-import ExpenseRepository from "../../domains/expense/ExpenseRepository";
-import { Expense } from "../../entities/monerate/Expense";
-import authMiddleware from "../../middlewares/authMiddleware";
-import { MyErrorsResponse } from "../../utils/ErrorMessage";
-import { myConsoleError } from "../../utils/myConsoleError";
-import { MyAuthRequest } from "./../../utils/MyAuthRequest";
+import { Router } from "express"
 
-const expenseRoute = Router();
+const expenseRoute = Router()
 
-expenseRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
-  const sentExpense = req.body as Expense; // should be ExpensePostDto ?
-  const expenseRepo = getCustomRepository(ExpenseRepository);
-  const user = req.user;
+// expenseRoute.post("/", authMiddleware, async (req: MyAuthRequest, res) => {
+//   const sentExpense = req.body as Expense // should be ExpensePostDto ?
+//   const expenseRepo = getCustomRepository(ExpenseRepository)
+//   const user = req.user
 
-  try {
-    if (sentExpense.id) {
-      const isOwner = await expenseRepo.find({ id: sentExpense.id, user });
-      if (!isOwner) {
-        return res
-          .status(400)
-          .json(new MyErrorsResponse(`User doesn't own this expense.z`));
-      }
-    }
+//   try {
+//     if (sentExpense.id) {
+//       const isOwner = await expenseRepo.find({ id: sentExpense.id, user })
+//       if (!isOwner) {
+//         return res
+//           .status(400)
+//           .json(new MyErrorsResponse(`User doesn't own this expense.z`))
+//       }
+//     }
 
-    sentExpense.user = req.user;
-    sentExpense.userId = req.user.id;
+//     sentExpense.user = req.user
+//     sentExpense.userId = req.user.id
 
-    const savedExpense = await expenseRepo.saveAndGetEntireModel(sentExpense);
-    return res.status(200).json(savedExpense);
-  } catch (err) {
-    myConsoleError(err.message);
-    return res.status(400).json(new MyErrorsResponse(err.message));
-  }
-});
+//     const savedExpense = await expenseRepo.saveAndGetEntireModel(sentExpense)
+//     return res.status(200).json(savedExpense)
+//   } catch (err) {
+//     myConsoleError(err.message)
+//     return res.status(400).json(new MyErrorsResponse(err.message))
+//   }
+// })
 
-expenseRoute.get("/", authMiddleware, async (req: MyAuthRequest, res) => {
-  const expenseRepo = getCustomRepository(ExpenseRepository);
+// expenseRoute.get("/", authMiddleware, async (req: MyAuthRequest, res) => {
+//   const expenseRepo = getCustomRepository(ExpenseRepository)
 
-  const user = req.user;
+//   const user = req.user
 
-  try {
-    const expenses = await expenseRepo.getAllExpensesFromUser(user);
-    return res.json(expenses);
-  } catch (err) {
-    myConsoleError(err.message);
-    return res.status(400).json(new MyErrorsResponse(err.message));
-  }
-});
+//   try {
+//     const expenses = await expenseRepo.getAllExpensesFromUser(user)
+//     return res.json(expenses)
+//   } catch (err) {
+//     myConsoleError(err.message)
+//     return res.status(400).json(new MyErrorsResponse(err.message))
+//   }
+// })
 
-expenseRoute.delete("/:id", authMiddleware, async (req: MyAuthRequest, res) => {
-  const expenseRepo = getCustomRepository(ExpenseRepository);
-  const { user } = req;
-  const expenseId = parseFloat(req.params.id);
+// expenseRoute.delete("/:id", authMiddleware, async (req: MyAuthRequest, res) => {
+//   const expenseRepo = getCustomRepository(ExpenseRepository)
+//   const { user } = req
+//   const expenseId = parseFloat(req.params.id)
 
-  try {
-    const result = await expenseRepo.delete({ id: expenseId, user });
-    if (result.affected) {
-      return res.status(200).json(`Expense id=${expenseId} deleted.`);
-    } else {
-      return res
-        .status(400)
-        .json(
-          new MyErrorsResponse("Expense id not found, or user is not owner.")
-        );
-    }
-  } catch (err) {
-    myConsoleError(err.message);
-    return res.status(400).json(new MyErrorsResponse(err.message));
-  }
-});
+//   try {
+//     const result = await expenseRepo.delete({ id: expenseId, user })
+//     if (result.affected) {
+//       return res.status(200).json(`Expense id=${expenseId} deleted.`)
+//     } else {
+//       return res
+//         .status(400)
+//         .json(
+//           new MyErrorsResponse("Expense id not found, or user is not owner.")
+//         )
+//     }
+//   } catch (err) {
+//     myConsoleError(err.message)
+//     return res.status(400).json(new MyErrorsResponse(err.message))
+//   }
+// })
 
-export default expenseRoute;
+export default expenseRoute
