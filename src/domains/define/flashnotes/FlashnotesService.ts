@@ -1,5 +1,5 @@
 import { getCustomRepository } from "typeorm"
-import NoteRepository from "../../repositories/define/NoteRepository"
+import NoteRepository from "../../../repositories/define/NoteRepository"
 
 export class FlashnotesService {
   constructor(private noteRepository = getCustomRepository(NoteRepository)) {}
