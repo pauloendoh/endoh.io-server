@@ -185,12 +185,7 @@ export class AuthController {
   // The front-end uses the token and userId in the URL to finish the login
   @Get("/google/login")
   @UseBefore(passport.authenticate("google"))
-  async googleLogin(
-    @Req() req: MyAuthRequest,
-    @Res() res: Response,
-
-    @Body() body: UserTokenPostDto
-  ) {
+  async googleLogin(@Body() body: UserTokenPostDto) {
     const { userId, token } = body
 
     const tokenExists = await this.tokenRepo.findOne({

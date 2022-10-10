@@ -12,7 +12,6 @@ import { AuthUserGetDto } from "../interfaces/dtos/auth/AuthUserGetDto"
 import { PasswordResetPostDto } from "../interfaces/dtos/auth/PasswordResetPostDto"
 import { UserDeleteDto } from "../interfaces/dtos/auth/UserDeleteDto"
 import { UsernamePutDto } from "../interfaces/dtos/auth/UsernamePutDto"
-import { UserTokenPostDto } from "../interfaces/dtos/auth/UserTokenPostDto"
 import authMiddleware from "../middlewares/authMiddleware"
 import UserRepository from "../repositories/UserRepository"
 import { MyErrorsResponse } from "../utils/ErrorMessage"
@@ -126,49 +125,49 @@ const authRoute = Router()
 
 // PE 2/3
 // The front-end uses the token and userId in the URL to finish the login
-authRoute.post("/google/login", async (req: Request, res: Response) => {
-  try {
-    const { userId, token } = req.body as UserTokenPostDto
-    const oauthRepo = getRepository(UserToken)
+// authRoute.post("/google/login", async (req: Request, res: Response) => {
+//   try {
+//     const { userId, token } = req.body as UserTokenPostDto
+//     const oauthRepo = getRepository(UserToken)
 
-    const tokenExists = await oauthRepo.findOne({
-      userId,
-      token,
-      expiresAt: MoreThan(new Date().toISOString()),
-    })
+//     const tokenExists = await oauthRepo.findOne({
+//       userId,
+//       token,
+//       expiresAt: MoreThan(new Date().toISOString()),
+//     })
 
-    if (!tokenExists) {
-      return res.status(400).json(new MyErrorsResponse("No OAuthToken found"))
-    }
+//     if (!tokenExists) {
+//       return res.status(400).json(new MyErrorsResponse("No OAuthToken found"))
+//     }
 
-    // Same process as POST /auth/login
-    const userRepo = getCustomRepository(UserRepository)
+//     // Same process as POST /auth/login
+//     const userRepo = getCustomRepository(UserRepository)
 
-    const user = await userRepo.findOne({ id: userId })
+//     const user = await userRepo.findOne({ id: userId })
 
-    const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
-    const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
+//     const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
+//     const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
 
-    // req.logout();
-    await oauthRepo.delete({
-      userId: user.id,
-      type: USER_TOKEN_TYPES.googleOauth,
-    })
+//     // req.logout();
+//     await oauthRepo.delete({
+//       userId: user.id,
+//       type: USER_TOKEN_TYPES.googleOauth,
+//     })
 
-    sign(
-      { userId: user.id },
-      process.env[DotEnvKeys.JWT_SECRET],
-      { expiresIn: ONE_YEAR_IN_SECONDS },
-      (err, token) => {
-        if (err) throw err
-        return res.json(new AuthUserGetDto(user, token, expireDate))
-      }
-    )
-  } catch (err) {
-    myConsoleError(err.message)
-    return res.status(400).json(new MyErrorsResponse(err.message))
-  }
-})
+//     sign(
+//       { userId: user.id },
+//       process.env[DotEnvKeys.JWT_SECRET],
+//       { expiresIn: ONE_YEAR_IN_SECONDS },
+//       (err, token) => {
+//         if (err) throw err
+//         return res.json(new AuthUserGetDto(user, token, expireDate))
+//       }
+//     )
+//   } catch (err) {
+//     myConsoleError(err.message)
+//     return res.status(400).json(new MyErrorsResponse(err.message))
+//   }
+// })
 
 // --------- password reset
 authRoute.post("/password-reset", async (req: MyAuthRequest, res) => {
