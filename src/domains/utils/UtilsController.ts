@@ -66,6 +66,7 @@ export class UtilsController {
     return notifications
   }
 
+  // PE 1/3 - not being used ? Use LinkPreviewService instead?
   @Post("/v2/utils/link-preview")
   async getLinkPreview(
     @CurrentUser({ required: true }) user: User,
