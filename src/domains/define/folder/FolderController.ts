@@ -13,7 +13,7 @@ import { getRepository, getTreeRepository } from "typeorm"
 import { Folder } from "../../../entities/playground/file-system/Folder"
 import { User } from "../../../entities/User"
 import findFoldersFromUser from "../../../utils/domain/playground/file-system/findFoldersFromUser"
-import { FolderService } from "../../folder/FolderService"
+import { FolderService } from "./FolderService"
 
 @JsonController()
 export class FolderController {

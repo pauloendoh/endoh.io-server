@@ -1,23 +1,26 @@
-import { EntityRepository, getRepository, Repository } from "typeorm";
-import { LolRateDto } from "../../dtos/lolrates/LolRateDto";
-import { WinratesUpdatedAtDTO } from "../../dtos/lolrates/WinratesUpdatedAtDTO";
-import { Champion } from "../../entities/LolRates/Champion";
-import { LolRate } from "../../entities/LolRates/LolRate";
-import { RoleTypes } from "../../types/domain/lolates/RoleTypes";
-import { IChampion } from "../../utils/lolrates/scrapeLolRates/scrapeChampions";
-import { IOpggResult as ScrapeResult } from "../../utils/lolrates/scrapeLolRates/scrapeOpgg";
-import { myConsoleError } from "../../utils/myConsoleError";
-import { myConsoleSuccess } from "../../utils/myConsoleSuccess";
-import myRedis from "../../utils/myRedis";
+import { EntityRepository, getRepository, Repository } from "typeorm"
+import { LolRateDto } from "../../dtos/lolrates/LolRateDto"
+import { WinratesUpdatedAtDTO } from "../../dtos/lolrates/WinratesUpdatedAtDTO"
+import { Champion } from "../../entities/LolRates/Champion"
+import { LolRate } from "../../entities/LolRates/LolRate"
+import { RoleTypes } from "../../types/domain/lolates/RoleTypes"
+import { IChampion } from "../../utils/lolrates/scrapeLolRates/scrapeChampions"
+import { IOpggResult as ScrapeResult } from "../../utils/lolrates/scrapeLolRates/scrapeOpgg"
+import { myConsoleError } from "../../utils/myConsoleError"
+import { myConsoleSuccess } from "../../utils/myConsoleSuccess"
+import myRedis from "../../utils/myRedis"
 
 @EntityRepository(LolRate)
 export default class LolRateRepository extends Repository<LolRate> {
   async findWinrates(): Promise<LolRateDto[]> {
     try {
-      const cached = await myRedis.get("winrates");
+      const cached = await myRedis
+        .get("winrates")
+        .catch((err) => myConsoleError(err.message))
+
       if (cached) {
-        myConsoleSuccess('CACHE HIT: "winrates"');
-        return JSON.parse(cached);
+        myConsoleSuccess('CACHE HIT: "winrates"')
+        return JSON.parse(cached)
       }
 
       const winrates = await this.query(`
@@ -37,12 +40,12 @@ export default class LolRateRepository extends Repository<LolRate> {
                       from "lol_rate") as avgs
 	          where  "avgWin" > 0
          order by "avgAvg" desc 
-        `);
+        `)
 
-      await myRedis.set("winrates", JSON.stringify(winrates), "EX", 3600);
-      return winrates;
+      await myRedis.set("winrates", JSON.stringify(winrates), "EX", 3600)
+      return winrates
     } catch (e) {
-      myConsoleError(e.message);
+      myConsoleError(e.message)
     }
   }
 
@@ -51,7 +54,7 @@ export default class LolRateRepository extends Repository<LolRate> {
       return this.createQueryBuilder()
         .select("lolRates")
         .from(LolRate, "lolRates")
-        .paginate();
+        .paginate()
     } catch (err) {}
   }
 
@@ -62,42 +65,42 @@ export default class LolRateRepository extends Repository<LolRate> {
                    "uggUpdatedAt"
               from "lol_rate"
              limit 1
-        `);
+        `)
   }
 
   async saveChampions(champions: IChampion[]) {
     try {
       // Saving on LolRate table
       for (const champion of champions) {
-        const { name: championName, iconUrl } = champion;
+        const { name: championName, iconUrl } = champion
 
         const exists = await this.findOne({
           where: { championName, iconUrl },
-        });
+        })
 
         if (!exists) {
-          const roles: RoleTypes[] = ["TOP", "JUNGLE", "MID", "BOT", "SUP"];
+          const roles: RoleTypes[] = ["TOP", "JUNGLE", "MID", "BOT", "SUP"]
           for (const role of roles) {
-            await this.save({ championName, iconUrl, role });
+            await this.save({ championName, iconUrl, role })
           }
         }
       }
 
       // Saving on Champion table
-      const championRepo = getRepository(Champion);
+      const championRepo = getRepository(Champion)
       for (const { name, iconUrl } of champions) {
         const exists = await championRepo.findOne({
           where: { name },
-        });
+        })
 
         if (!exists) {
-          await championRepo.save({ name, iconUrl });
+          await championRepo.save({ name, iconUrl })
         }
       }
 
-      return this.find();
+      return this.find()
     } catch (err) {
-      myConsoleError(err.message);
+      myConsoleError(err.message)
     }
   }
 
@@ -112,12 +115,12 @@ export default class LolRateRepository extends Repository<LolRate> {
           opggAvg: null,
           opggUpdatedAt: new Date().toISOString(),
         })
-        .execute();
+        .execute()
 
       for (const { role, championName, pickRate, winRate } of results) {
-        const opggPick = Number(pickRate.trim().replace(/%/g, ""));
-        const opggWin = Number(winRate.trim().replace(/%/g, ""));
-        const opggAvg = Number((opggPick + opggWin) / 2);
+        const opggPick = Number(pickRate.trim().replace(/%/g, ""))
+        const opggWin = Number(winRate.trim().replace(/%/g, ""))
+        const opggAvg = Number((opggPick + opggWin) / 2)
 
         await this.createQueryBuilder()
           .update()
@@ -129,10 +132,10 @@ export default class LolRateRepository extends Repository<LolRate> {
           })
           .where("championName = :championName", { championName })
           .andWhere("role = :role", { role })
-          .execute();
+          .execute()
       }
     } catch (err) {
-      myConsoleError(err.message);
+      myConsoleError(err.message)
     }
   }
 
@@ -147,12 +150,12 @@ export default class LolRateRepository extends Repository<LolRate> {
           lolgraphsAvg: null,
           lolgraphsUpdatedAt: new Date().toISOString(),
         })
-        .execute();
+        .execute()
 
       for (const { role, championName, pickRate, winRate } of results) {
-        const lolgraphsPick = Number(pickRate.trim().replace(/%/g, ""));
-        const lolgraphsWin = Number(winRate.trim().replace(/%/g, ""));
-        const lolgraphsAvg = Number((lolgraphsPick + lolgraphsWin) / 2);
+        const lolgraphsPick = Number(pickRate.trim().replace(/%/g, ""))
+        const lolgraphsWin = Number(winRate.trim().replace(/%/g, ""))
+        const lolgraphsAvg = Number((lolgraphsPick + lolgraphsWin) / 2)
 
         await this.createQueryBuilder()
           .update()
@@ -164,10 +167,10 @@ export default class LolRateRepository extends Repository<LolRate> {
           })
           .where("championName = :championName", { championName })
           .andWhere("role = :role", { role })
-          .execute();
+          .execute()
       }
     } catch (err) {
-      myConsoleError(err.message);
+      myConsoleError(err.message)
     }
   }
 
@@ -182,12 +185,12 @@ export default class LolRateRepository extends Repository<LolRate> {
           uggAvg: null,
           uggUpdatedAt: new Date().toISOString(),
         })
-        .execute();
+        .execute()
 
       for (const { role, championName, pickRate, winRate } of results) {
-        const uggPick = Number(pickRate.trim().replace(/%/g, ""));
-        const uggWin = Number(winRate.trim().replace(/%/g, ""));
-        const uggAvg = Number((uggPick + uggWin) / 2);
+        const uggPick = Number(pickRate.trim().replace(/%/g, ""))
+        const uggWin = Number(winRate.trim().replace(/%/g, ""))
+        const uggAvg = Number((uggPick + uggWin) / 2)
 
         await this.createQueryBuilder()
           .update()
@@ -199,10 +202,10 @@ export default class LolRateRepository extends Repository<LolRate> {
           })
           .where("championName = :championName", { championName })
           .andWhere("role = :role", { role })
-          .execute();
+          .execute()
       }
     } catch (err) {
-      myConsoleError(err.message);
+      myConsoleError(err.message)
     }
   }
 }

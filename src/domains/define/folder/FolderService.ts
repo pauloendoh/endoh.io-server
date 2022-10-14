@@ -1,5 +1,5 @@
 import { getTreeRepository } from "typeorm";
-import { Folder } from "../../entities/playground/file-system/Folder";
+import { Folder } from "../../../entities/playground/file-system/Folder";
 
 export class FolderService {
   constructor(private folderTreeRepo = getTreeRepository(Folder)) {}
