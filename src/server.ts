@@ -8,7 +8,6 @@ import "reflect-metadata"
 import { Server } from "socket.io"
 import * as swaggerUi from "swagger-ui-express"
 
-import cors from "cors"
 import {
   Action,
   createExpressServer,
@@ -92,11 +91,6 @@ createConnection(ormconfig)
 
     app.use(pagination)
 
-    app.use(
-      "/auth/google/login",
-      cors({ credentials: true, origin: process.env.CLIENT_BASE_URL })
-    )
-
     // For testing
     app.get("/", async (req, res) => {
       res.statusMessage = "zimbabwe"
@@ -174,30 +168,6 @@ createConnection(ormconfig)
     // Automatically connect with /routes folder and subfolders
     myConsoleInfo("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB")
     myConsoleLoading("Setting up routes")
-    // fs.readdirSync(`${__dirname}/routes`).forEach(async (fileOrFolderName) => {
-    //   if (
-    //     fileOrFolderName.endsWith(".ts") ||
-    //     fileOrFolderName.endsWith(".js")
-    //   ) {
-    //     const routeName = fileOrFolderName.split("Route")[0]
-    //     const module = await import(`${__dirname}/routes/${fileOrFolderName}`)
-    //     app.use(`/${routeName}`, module.default)
-    //   } else {
-    //     // subroutes from subfolders
-    //     fs.readdirSync(`${__dirname}/routes/${fileOrFolderName}`).forEach(
-    //       async (fileName) => {
-    //         const routeName = fileName.split("Route")[0]
-    //         const module = await import(
-    //           `${__dirname}/routes/${fileOrFolderName}/${fileName}`
-    //         )
-    //         app.use(`/${fileOrFolderName}/${routeName}`, module.default)
-    //       }
-    //     )
-    //   }
-    // })
-
-    // AUTO ROUTES
-    // autoroutes(app, { dir: "./auto-routes" })
 
     const port = process.env.PORT || 3000
     myConsoleLoading("Trying to access port " + port)
