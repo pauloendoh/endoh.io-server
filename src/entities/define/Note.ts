@@ -36,11 +36,14 @@ export class Note {
   @Column()
   description: string
 
-  @Column({default: ''})
+  @Column({ default: "" })
   question: string
 
-  @Column({default: 1})
+  @Column({ default: 1 })
   weight: number
+
+  @Column({ default: false })
+  toRefine: boolean
 
   @CreateDateColumn()
   createdAt: string
