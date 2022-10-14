@@ -54,6 +54,8 @@ export class FlashnotesController {
         throw new NotFoundError("Note doesn't exist or user is not owner")
     }
 
+    sentNote.userId = user.id
+
     return this.noteRepo.save(sentNote)
   }
 
