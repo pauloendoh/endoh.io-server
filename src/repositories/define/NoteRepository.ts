@@ -114,4 +114,40 @@ export default class NoteRepository extends Repository<Note> {
 
     return query.getMany()
   }
+
+  async findNoteWithHighestIndex(docId: number) {
+    return this.findOne({
+      where: {
+        docId,
+      },
+      order: {
+        index: "DESC",
+      },
+    })
+  }
+
+  async createEmptyNotes(args: {
+    quantity: number
+    docId: number
+    userId: number
+    initialIndex: number
+  }) {
+    const { quantity, docId, userId, initialIndex } = args
+
+    let notes: Note[] = []
+
+    await this.manager.transaction(async (manager) => {
+      for (let i = initialIndex; i < initialIndex + quantity; i++) {
+        const newNote = new Note()
+        newNote.userId = userId
+        newNote.docId = docId
+        newNote.index = i
+        newNote.description = ""
+        const savedNote = await manager.save(newNote)
+        notes.push(savedNote)
+      }
+    })
+
+    return notes
+  }
 }

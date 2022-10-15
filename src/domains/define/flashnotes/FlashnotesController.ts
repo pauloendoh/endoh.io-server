@@ -5,13 +5,16 @@ import {
   Get,
   JsonController,
   NotFoundError,
+  Param,
   Post,
+  Put,
   QueryParam,
 } from "routing-controllers"
 import { Note } from "../../../entities/define/Note"
 import { User } from "../../../entities/User"
 import { getNoteRepository } from "../../../repositories/define/NoteRepository"
 import { FlashnotesService } from "./FlashnotesService"
+import { CreateManyNotesDto } from "./types/CreateManyNotesDto"
 
 @JsonController()
 export class FlashnotesController {
@@ -59,8 +62,8 @@ export class FlashnotesController {
     return this.noteRepo.save(sentNote)
   }
 
-  @Post("/define/note/many")
-  async saveMany(
+  @Put("/define/note/many")
+  async updateManyNotes(
     @CurrentUser({ required: true })
     user: User,
     @Body() sentNotes: Note[]
@@ -70,5 +73,19 @@ export class FlashnotesController {
 
     await this.noteRepo.save(sentNotes)
     return this.noteRepo.getAllNotesFromUserId(user.id)
+  }
+
+  @Post("/define/doc/:docId/notes/many")
+  async createManyNotes(
+    @CurrentUser({ required: true })
+    user: User,
+    @Body() body: CreateManyNotesDto,
+    @Param("docId") docId: number
+  ) {
+    return this.flashnotesService.createManyNotes(
+      docId,
+      body.notesQuantity,
+      user.id
+    )
   }
 }
