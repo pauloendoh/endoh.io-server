@@ -7,14 +7,15 @@
     "dev": "ts-node-dev src/server.ts",
     "watch": "node --inspect=9229 -r ts-node/register  ./src/server.ts ",
     "build": "tsc",
-    "makeMigrations": "ts-node node_modules/typeorm/cli.js migration:generate -n Migration",
-    "makeEmptyMigration": "ts-node node_modules/typeorm/cli.js migration:create -n Migration",
-    "migrate": "ts-node node_modules/typeorm/cli.js migration:run",
-    "revertMigration": "ts-node node_modules/typeorm/cli.js migration:revert",
+    "makeMigrations": "npm run typeorm migration:generate -n Migration",
+    "makeEmptyMigration": "npm run typeorm migration:create -n Migration",
+    "migrate": "npm run typeorm migration:run",
+    "revertMigration": "npm run typeorm migration:revert",
     "test-server": "set NODE_ENV=test&&  nodemon",
     "test": "set NODE_ENV=test&& jest --detectOpenHandles",
     "test:watch": "set NODE_ENV=test&& jest --watchAll --detectOpenHandles",
-    "swagger": "tsoa spec"
+    "swagger": "tsoa spec",
+    "typeorm": "typeorm-ts-node-commonjs -d ./src/dataSource.ts"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
@@ -66,7 +67,6 @@
     "sqlite3": "^5.0.2",
     "stripe": "^10.11.0",
     "swagger-ui-express": "^4.4.0",
-    "ts-node": "^10.2.1",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.3.10",
     "typeorm-pagination": "^2.0.3",
@@ -100,6 +100,7 @@
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
     "ts-jest": "^26.5.6",
+    "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0"
   },
   "nodemonConfig": {
