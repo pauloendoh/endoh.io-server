@@ -3,7 +3,7 @@
   "version": "16.15.0",
   "description": "endoh.io - server",
   "scripts": {
-    "start": "npm run migrate && node build/server.js",
+    "start": "cross-env NODE_OPTIONS=--max-old-space-size=512 npm run migrate && node build/server.js",
     "dev": "ts-node-dev src/server.ts",
     "watch": "node --inspect=9229 -r ts-node/register  ./src/server.ts ",
     "build": "tsc",
