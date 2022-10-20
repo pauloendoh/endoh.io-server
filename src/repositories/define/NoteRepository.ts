@@ -94,6 +94,7 @@ export default class NoteRepository extends Repository<Note> {
   }
 
   async searchNotes(text: string, userId: number) {
+    console.log("searching notes")
     const words = text.split(" ")
 
     let query = this.createQueryBuilder("note").where({ userId })

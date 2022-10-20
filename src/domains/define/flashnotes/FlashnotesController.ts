@@ -48,7 +48,6 @@ export class FlashnotesController {
     @Body() sentNote: Note
   ) {
     if (sentNote.id) {
-      //ownership
       const found = await getNoteRepository().findOne({
         where: { userId: user.id, id: sentNote.id },
       })

@@ -10,7 +10,15 @@ export class FlashnotesService {
   ) {}
 
   async searchFlashnotes(query: string, requesterId: number) {
-    return { notes: await this.noteRepository.searchNotes(query, requesterId) }
+    const [docs, notes] = await Promise.all([
+      this.docRepo.searchDocs(query, requesterId),
+      this.noteRepository.searchNotes(query, requesterId),
+    ])
+
+    return {
+      docs,
+      notes,
+    }
   }
 
   async createManyNotes(docId: number, quantity: number, requesterId: number) {
