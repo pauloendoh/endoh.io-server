@@ -1,4 +1,4 @@
-import { EntityRepository, getRepository, Repository } from "typeorm"
+import { dataSource } from "../../dataSource"
 import { LolRateDto } from "../../dtos/lolrates/LolRateDto"
 import { WinratesUpdatedAtDTO } from "../../dtos/lolrates/WinratesUpdatedAtDTO"
 import { Champion } from "../../entities/LolRates/Champion"
@@ -10,8 +10,7 @@ import { myConsoleError } from "../../utils/myConsoleError"
 import { myConsoleSuccess } from "../../utils/myConsoleSuccess"
 import myRedis from "../../utils/myRedis"
 
-@EntityRepository(LolRate)
-export default class LolRateRepository extends Repository<LolRate> {
+const LolRateRepository = dataSource.getRepository(LolRate).extend({
   async findWinrates(): Promise<LolRateDto[]> {
     try {
       const cached = await myRedis
@@ -47,16 +46,15 @@ export default class LolRateRepository extends Repository<LolRate> {
     } catch (e) {
       myConsoleError(e.message)
     }
-  }
+  },
 
   async findWinratesPaginated() {
     try {
       return this.createQueryBuilder()
         .select("lolRates")
         .from(LolRate, "lolRates")
-        .paginate()
     } catch (err) {}
-  }
+  },
 
   async getUpdatedAt(): Promise<WinratesUpdatedAtDTO> {
     return this.query(`
@@ -66,7 +64,7 @@ export default class LolRateRepository extends Repository<LolRate> {
               from "lol_rate"
              limit 1
         `)
-  }
+  },
 
   async saveChampions(champions: IChampion[]) {
     try {
@@ -87,7 +85,7 @@ export default class LolRateRepository extends Repository<LolRate> {
       }
 
       // Saving on Champion table
-      const championRepo = getRepository(Champion)
+      const championRepo = dataSource.getRepository(Champion)
       for (const { name, iconUrl } of champions) {
         const exists = await championRepo.findOne({
           where: { name },
@@ -102,7 +100,7 @@ export default class LolRateRepository extends Repository<LolRate> {
     } catch (err) {
       myConsoleError(err.message)
     }
-  }
+  },
 
   async saveOpgg(results: ScrapeResult[]) {
     try {
@@ -137,7 +135,7 @@ export default class LolRateRepository extends Repository<LolRate> {
     } catch (err) {
       myConsoleError(err.message)
     }
-  }
+  },
 
   async saveLolGraphs(results: ScrapeResult[]) {
     try {
@@ -172,7 +170,7 @@ export default class LolRateRepository extends Repository<LolRate> {
     } catch (err) {
       myConsoleError(err.message)
     }
-  }
+  },
 
   async saveUgg(results: ScrapeResult[]) {
     try {
@@ -207,5 +205,7 @@ export default class LolRateRepository extends Repository<LolRate> {
     } catch (err) {
       myConsoleError(err.message)
     }
-  }
-}
+  },
+})
+
+export default LolRateRepository

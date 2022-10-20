@@ -8,16 +8,14 @@ import {
   Post,
   QueryParam,
 } from "routing-controllers"
-import { getCustomRepository, IsNull, Not } from "typeorm"
+import { IsNull, Not } from "typeorm"
 import { YOUTUBE_API_KEY } from "../../config/config"
 import { SearchResultsDto } from "../../dtos/utils/SearchResultsDto"
 import { User } from "../../entities/User"
 import { EmailPostDto } from "../../interfaces/dtos/auth/EmailPostDto"
 import { LinkPreviewDto } from "../../interfaces/dtos/relearn/LinkPreviewDto"
 import NotificationRepository from "../../repositories/feed/NotificationRepository"
-import ResourceRepository, {
-  getResourceRepository,
-} from "../../repositories/relearn/ResourceRepository"
+import ResourceRepository from "../../repositories/relearn/ResourceRepository"
 import SkillRepository from "../../repositories/skillbase/SkillRepository"
 import UserRepository from "../../repositories/UserRepository"
 import { isValidEmail } from "../../utils/email/isValidEmail"
@@ -27,10 +25,10 @@ import { isValidUrl } from "../../utils/isValidUrl"
 @JsonController()
 export class UtilsController {
   constructor(
-    private userRepo = getCustomRepository(UserRepository),
-    private notificationsRepo = getCustomRepository(NotificationRepository),
-    private skillRepo = getCustomRepository(SkillRepository),
-    private resourceRepo = getCustomRepository(ResourceRepository)
+    private userRepo = UserRepository,
+    private notificationsRepo = NotificationRepository,
+    private skillRepo = SkillRepository,
+    private resourceRepo = ResourceRepository
   ) {}
 
   @Post("/utils/passwordResetEmail")
@@ -38,7 +36,11 @@ export class UtilsController {
     const { email } = body
     if (!isValidEmail(email)) throw new BadRequestError("Invalid email.")
 
-    const registeredUser = await this.userRepo.findOne({ email })
+    const registeredUser = await this.userRepo.findOne({
+      where: {
+        email,
+      },
+    })
     if (!registeredUser) {
       return true
     }
@@ -76,7 +78,7 @@ export class UtilsController {
       throw new BadRequestError("Url is not valid.")
     }
 
-    const foundResource = await getResourceRepository().findOneRelationsId({
+    const foundResource = await this.resourceRepo.findOneRelationsId({
       userId: user.id,
       url,
       tagId: Not(IsNull()),

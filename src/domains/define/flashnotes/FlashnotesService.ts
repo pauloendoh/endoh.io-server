@@ -1,12 +1,11 @@
 import { NotFoundError } from "routing-controllers"
-import { getCustomRepository } from "typeorm"
 import DocRepository from "../../../repositories/define/DocRepository"
 import NoteRepository from "../../../repositories/define/NoteRepository"
 
 export class FlashnotesService {
   constructor(
-    private noteRepository = getCustomRepository(NoteRepository),
-    private docRepo = getCustomRepository(DocRepository)
+    private noteRepository = NoteRepository,
+    private docRepo = DocRepository
   ) {}
 
   async searchFlashnotes(query: string, requesterId: number) {

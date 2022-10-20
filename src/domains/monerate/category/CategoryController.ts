@@ -8,14 +8,13 @@ import {
   Param,
   Post,
 } from "routing-controllers"
-import { getCustomRepository } from "typeorm"
 import Category from "../../../entities/monerate/Category"
 import { User } from "../../../entities/User"
 import CategoryRepository from "../../../repositories/monerate/CategoryRepository"
 
 @JsonController("/monerate/category")
 export class CategoryController {
-  constructor(private categoryRepo = getCustomRepository(CategoryRepository)) {}
+  constructor(private categoryRepo = CategoryRepository) {}
 
   @Post("/")
   async saveCategory(
@@ -24,8 +23,10 @@ export class CategoryController {
   ) {
     if (sentCategory.id) {
       const results = await this.categoryRepo.find({
-        id: sentCategory.id,
-        user,
+        where: {
+          id: sentCategory.id,
+          user,
+        },
       })
       if (!results.length) {
         throw new BadRequestError("User is not owner of this category.")

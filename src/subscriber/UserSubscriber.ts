@@ -38,39 +38,31 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
       await event.manager.getRepository(Profile).save(profile)
 
       // Create user suggestions
-      await event.manager
-        .getCustomRepository(UserSuggestionRepository)
-        .createUserSuggestionsForUser(event.entity)
+      await UserSuggestionRepository.createUserSuggestionsForUser(event.entity)
 
       // Create user tags
-      const tags = await event.manager
-        .getCustomRepository(TagRepository)
-        .createExampleTagsForNewUser(event.entity)
+      const tags = await TagRepository.createExampleTagsForNewUser(event.entity)
 
       // Create resources
-      await event.manager
-        .getCustomRepository(ResourceRepository)
-        .createResourcesForNewUser(event.entity, tags)
+      await ResourceRepository.createResourcesForNewUser(event.entity, tags)
 
       // Create skill to Programming tag
-      const skills = await event.manager
-        .getCustomRepository(SkillRepository)
-        .createSkillsForNewUser(event.entity, tags[0])
+      const skills = await SkillRepository.createSkillsForNewUser(
+        event.entity,
+        tags[0]
+      )
 
       // Create skill expectations
-      await event.manager
-        .getCustomRepository(SkillExpectationRepository)
-        .createExpectationsForNewUser(event.entity, skills)
+      await SkillExpectationRepository.createExpectationsForNewUser(
+        event.entity,
+        skills
+      )
 
       // Create little prince doc
-      const doc = await event.manager
-        .getCustomRepository(DocRepository)
-        .createDocForNewUser(event.entity)
+      const doc = await DocRepository.createDocForNewUser(event.entity)
 
       // Create little prince notes
-      await event.manager
-        .getCustomRepository(NoteRepository)
-        .createNotesForNewUser(event.entity, doc)
+      await NoteRepository.createNotesForNewUser(event.entity, doc)
     } catch (e) {
       myConsoleError(e.message)
     }

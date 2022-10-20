@@ -1,5 +1,4 @@
 import pup from "puppeteer";
-import { getCustomRepository } from "typeorm";
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository";
 import { myConsoleError } from "../../myConsoleError";
 
@@ -35,7 +34,7 @@ export async function scrapeChampions(page: pup.Page) {
       return champions;
     });
 
-    const saved = await getCustomRepository(LolRateRepository).saveChampions(
+    const saved = await LolRateRepository.saveChampions(
       champions
     );
 

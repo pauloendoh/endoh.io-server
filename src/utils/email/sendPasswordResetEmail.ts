@@ -1,7 +1,7 @@
 import sgMail from "@sendgrid/mail"
 import { randomBytes } from "crypto"
-import { getRepository } from "typeorm"
 import { USER_TOKEN_TYPES } from "../../consts/USER_TOKEN_TYPES"
+import { dataSource } from "../../dataSource"
 import { UserToken } from "../../entities/OAuthToken"
 import { User } from "../../entities/User"
 import { myConsoleSuccess } from "../myConsoleSuccess"
@@ -15,7 +15,7 @@ export async function sendPasswordResetEmail(user: User) {
   // Only needed if you don't have a real mail account for testing
   // let testAccount = await nodemailer.createTestAccount();
 
-  const userTokenRepo = getRepository(UserToken)
+  const userTokenRepo = dataSource.getRepository(UserToken)
 
   // removes all the previous password reset tokens from the user
   await userTokenRepo.delete({

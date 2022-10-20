@@ -12,7 +12,6 @@ import {
   Res,
   UseBefore,
 } from "routing-controllers"
-import { getCustomRepository } from "typeorm"
 import { Expense } from "../../../entities/monerate/Expense"
 import { User } from "../../../entities/User"
 import { MyAuthMiddleware } from "../../../middlewares/MyAuthMiddleware"
@@ -24,7 +23,7 @@ import { ExpenseService } from "./ExpenseService"
 export class ExpenseController {
   constructor(
     private expenseService = new ExpenseService(),
-    private expenseRepo = getCustomRepository(ExpenseRepository)
+    private expenseRepo = ExpenseRepository
   ) {}
 
   @Get("/expenses/similar-expenses")
@@ -44,7 +43,12 @@ export class ExpenseController {
     @Body() sentExpense: Expense
   ) {
     if (sentExpense.id) {
-      const isOwner = await this.expenseRepo.find({ id: sentExpense.id, user })
+      const isOwner = await this.expenseRepo.find({
+        where: {
+          id: sentExpense.id,
+          user,
+        },
+      })
       if (!isOwner) {
         throw new BadRequestError("User does not own this expense.")
       }

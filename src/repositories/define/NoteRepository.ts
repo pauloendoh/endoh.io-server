@@ -1,12 +1,11 @@
-import { EntityRepository, getCustomRepository, Repository } from "typeorm"
+import { dataSource } from "../../dataSource"
 import { Doc } from "../../entities/define/Doc"
 import { Note } from "../../entities/define/Note"
 import { User } from "../../entities/User"
 
-export const getNoteRepository = () => getCustomRepository(NoteRepository)
+export const getNoteRepository = () => NoteRepository
 
-@EntityRepository(Note)
-export default class NoteRepository extends Repository<Note> {
+const NoteRepository = dataSource.getRepository(Note).extend({
   async getAllNotesFromUserId(userId: number): Promise<Note[]> {
     return this.createQueryBuilder("note")
       .where({ userId })
@@ -15,7 +14,7 @@ export default class NoteRepository extends Repository<Note> {
       .getMany()
   }
 
-  async isOwner(notes: Note[], userId: number): Promise<boolean> {
+  ,async isOwner(notes: Note[], userId: number): Promise<boolean> {
     const ids = notes.map((note) => note.id)
 
     const count = await this.createQueryBuilder("note")
@@ -26,7 +25,7 @@ export default class NoteRepository extends Repository<Note> {
     return ids.length === count
   }
 
-  async createNotesForNewUser(user: User, doc: Doc): Promise<Note[]> {
+  ,async createNotesForNewUser(user: User, doc: Doc): Promise<Note[]> {
     const notes: Note[] = []
 
     notes.push(
@@ -78,7 +77,7 @@ export default class NoteRepository extends Repository<Note> {
     return notes
   }
 
-  async removeEmptyNotesFromDocId(docId: number, userId: number) {
+  ,async removeEmptyNotesFromDocId(docId: number, userId: number) {
     await this.createQueryBuilder()
       .delete()
       .where("docId = :docId", { docId })
@@ -93,7 +92,7 @@ export default class NoteRepository extends Repository<Note> {
     await this.save(newNotes)
   }
 
-  async searchNotes(text: string, userId: number) {
+  ,async searchNotes(text: string, userId: number) {
     console.log("searching notes")
     const words = text.split(" ")
 
@@ -116,7 +115,7 @@ export default class NoteRepository extends Repository<Note> {
     return query.getMany()
   }
 
-  async findNoteWithHighestIndex(docId: number) {
+  ,async findNoteWithHighestIndex(docId: number) {
     return this.findOne({
       where: {
         docId,
@@ -127,7 +126,7 @@ export default class NoteRepository extends Repository<Note> {
     })
   }
 
-  async createEmptyNotes(args: {
+  ,async createEmptyNotes(args: {
     quantity: number
     docId: number
     userId: number
@@ -151,4 +150,6 @@ export default class NoteRepository extends Repository<Note> {
 
     return notes
   }
-}
+})
+
+export default NoteRepository

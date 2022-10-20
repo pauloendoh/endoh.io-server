@@ -1,14 +1,14 @@
-import { getManager } from "typeorm";
-import DragItemRepository from "../../../../repositories/playground/DragItemRepository";
-import { INewDragItemPosition } from "../../../../types/domain/playground/drag-item/INewDragItemPosition";
-import { myConsoleError } from "../../../myConsoleError";
+import { dataSource } from "../../../../dataSource"
+import { DragItem } from "../../../../entities/playground/DragItem"
+import { INewDragItemPosition } from "../../../../types/domain/playground/drag-item/INewDragItemPosition"
+import { myConsoleError } from "../../../myConsoleError"
 
 export const saveItemPositions = async (
   newPositions: INewDragItemPosition[]
 ) => {
-  await getManager().transaction(async (manager) => {
+  await dataSource.transaction(async (manager) => {
     try {
-      const repo = manager.getCustomRepository(DragItemRepository);
+      const repo = manager.getRepository(DragItem)
 
       for (let newPosition of newPositions) {
         await repo.update(
@@ -17,10 +17,10 @@ export const saveItemPositions = async (
             containerId: newPosition.containerId,
             position: newPosition.position,
           }
-        );
+        )
       }
     } catch (err) {
-      myConsoleError(err.message);
+      myConsoleError(err.message)
     }
-  });
-};
+  })
+}

@@ -1,13 +1,12 @@
 import {
   EntitySubscriberInterface,
   EventSubscriber,
-  getCustomRepository,
   InsertEvent,
   RemoveEvent,
 } from "typeorm"
+import { Decision } from "../entities/BigDecisions/Decision"
 import { DecisionTable } from "../entities/BigDecisions/DecisionTable"
 import { DecisionTableItem } from "../entities/BigDecisions/DecisionTableItem"
-import DecisionRepository from "../repositories/BigDecisions/DecisionRepository"
 import DecisionTableRepository from "../repositories/BigDecisions/DecisionTableRepository"
 import { myConsoleError } from "../utils/myConsoleError"
 
@@ -23,7 +22,7 @@ export class DecisionTableSubscriber
       // divide into two separated functions...
 
       // secures table.position
-      const decisionRepo = event.manager.getCustomRepository(DecisionRepository)
+      const decisionRepo = event.manager.getRepository(Decision)
       const decision = await decisionRepo.findOne({
         where: { id: event.entity.decisionId },
         relations: ["tables"],
@@ -40,8 +39,8 @@ export class DecisionTableSubscriber
         userId: event.entity.userId,
         problem: "",
         solution: "",
-        weight: 1
-      }) 
+        weight: 1,
+      })
     } catch (e) {
       myConsoleError(e.message)
     }
@@ -49,7 +48,7 @@ export class DecisionTableSubscriber
 
   async afterRemove(event: RemoveEvent<DecisionTable>) {
     try {
-      const repo = event.manager.getCustomRepository(DecisionTableRepository)
+      const repo = DecisionTableRepository
       const ok = await repo.normalizeTablesPositions(event.entity.decisionId)
       return
     } catch (e) {

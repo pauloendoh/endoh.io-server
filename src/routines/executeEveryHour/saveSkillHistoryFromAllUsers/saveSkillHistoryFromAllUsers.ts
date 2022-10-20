@@ -1,10 +1,9 @@
-import { getCustomRepository } from "typeorm";
 import UserRepository from "../../../repositories/UserRepository";
 import SkillHistoryService from "../../../services/SkillHistoryService";
 import { myConsoleSuccess } from "../../../utils/myConsoleSuccess";
 
 const saveSkillHistoryFromAllUsers = async (
-  userRepo = getCustomRepository(UserRepository),
+  userRepo = UserRepository,
   historyService = new SkillHistoryService()
 ) => {
   const date = new Date();

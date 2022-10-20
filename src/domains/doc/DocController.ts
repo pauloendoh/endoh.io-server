@@ -16,7 +16,6 @@ import { User } from "../../entities/User"
 import { MyAuthMiddleware } from "../../middlewares/MyAuthMiddleware"
 import { getDocRepository } from "../../repositories/define/DocRepository"
 import { getNoteRepository } from "../../repositories/define/NoteRepository"
-import checkOwnershipAsync from "../../utils/domain/checkOwnership"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
 import { DocService } from "./DocService"
 
@@ -76,7 +75,12 @@ export class DocController {
     @CurrentUser({ required: true }) user: User,
     @Param("id") docId: number
   ) {
-    const found = await checkOwnershipAsync(user.id, docId, Doc)
+    const found = await this.docRepository.findOne({
+      where: {
+        userId: user.id,
+        id: docId,
+      },
+    })
 
     if (!found) throw new NotFoundError("Not found.")
 

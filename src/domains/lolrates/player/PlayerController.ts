@@ -5,14 +5,13 @@ import {
   JsonController,
   Post,
 } from "routing-controllers"
-import { getCustomRepository } from "typeorm"
 import { Player } from "../../../entities/LolRates/Player"
 import { User } from "../../../entities/User"
 import PlayerRepo from "../../../repositories/lolrates/PlayerRepo"
 
 @JsonController("/lolrates/player")
 export class PlayerController {
-  constructor(private playerRepo = getCustomRepository(PlayerRepo)) {}
+  constructor(private playerRepo = PlayerRepo) {}
 
   @Get("/")
   async getPlaces(@CurrentUser({ required: true }) user: User) {

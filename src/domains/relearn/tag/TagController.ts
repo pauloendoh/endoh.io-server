@@ -8,17 +8,15 @@ import {
   NotFoundError,
   Param,
   Post,
-  Put,
+  Put
 } from "routing-controllers"
-import { getCustomRepository } from "typeorm"
 import { Tag } from "../../../entities/relearn/Tag"
 import { User } from "../../../entities/User"
 import TagRepository from "../../../repositories/relearn/TagRepository"
-import checkOwnershipAsync from "../../../utils/domain/checkOwnership"
 
 @JsonController()
 export class TagController {
-  constructor(private tagRepo = getCustomRepository(TagRepository)) {}
+  constructor(private tagRepo = TagRepository) {}
 
   @Post("/relearn/tag/")
   async saveTag(
@@ -31,15 +29,22 @@ export class TagController {
 
     // checking ownership
     if (body.id) {
-      const isOwner = await this.tagRepo.find({ id: body.id, user })
+      const isOwner = await this.tagRepo.find({ 
+        where:{
+          id: body.id, user
+        }
+         })
       if (!isOwner) {
         throw new BadRequestError("User does not own this tag.")
       }
     } else {
       // checking if tag name already exists
       const nameExists = await this.tagRepo.findOne({
-        name: body.name,
-        user: user,
+        where:{
+
+          name: body.name,
+          user: user,
+        }
       })
       if (nameExists) {
         throw new BadRequestError("Tag name must be unique.")
@@ -67,9 +72,8 @@ export class TagController {
     user: User,
     @Param("id") tagId: number
   ) {
-    const tagRepo = getCustomRepository(TagRepository)
 
-    const result = await tagRepo.delete({ id: tagId, user })
+    const result = await this.tagRepo.delete({ id: tagId, user })
     if (!result.affected) {
       throw new BadRequestError("Tag id not found, or user is not owner.")
     }
@@ -82,7 +86,12 @@ export class TagController {
     user: User,
     @Param("tagId") tagId: number
   ) {
-    const found = await checkOwnershipAsync(user.id, tagId, Tag)
+    const found = await this.tagRepo.findOne({
+      where:{
+        userId: user.id, 
+        id: tagId
+      }
+    }) 
 
     if (!found) {
       throw new NotFoundError("Tag not found.")

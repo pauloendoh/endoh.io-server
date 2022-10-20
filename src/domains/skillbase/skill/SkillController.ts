@@ -11,7 +11,7 @@ import {
   Put,
   UseBefore,
 } from "routing-controllers"
-import { getCustomRepository, getRepository } from "typeorm"
+import { dataSource } from "../../../dataSource"
 import { IdsDto } from "../../../dtos/IdsDto"
 import { Skill } from "../../../entities/skillbase/Skill"
 import { SkillExpectation } from "../../../entities/skillbase/SkillExpectation"
@@ -23,9 +23,9 @@ import SkillRepository from "../../../repositories/skillbase/SkillRepository"
 @JsonController()
 export class SkillController {
   constructor(
-    private skillRepo = getCustomRepository(SkillRepository),
-    private skillProgressRepo = getRepository(SkillProgress),
-    private skillExpectationRepo = getRepository(SkillExpectation)
+    private skillRepo = SkillRepository,
+    private skillProgressRepo = dataSource.getRepository(SkillProgress),
+    private skillExpectationRepo = dataSource.getRepository(SkillExpectation)
   ) {}
 
   @Get("/skillbase/skill")
@@ -48,7 +48,12 @@ export class SkillController {
   ) {
     // checking ownership
     if (sentSkill.id) {
-      const found = await this.skillRepo.findOne({ id: sentSkill.id, user })
+      const found = await this.skillRepo.findOne({
+        where: {
+          id: sentSkill.id,
+          user,
+        },
+      })
       if (!found) throw new NotFoundError("Not owner or skill not found.")
 
       // criar progress
@@ -93,8 +98,10 @@ export class SkillController {
     @Param("id") skillId: number
   ) {
     const isOwner = await this.skillRepo.findOne({
-      userId: user.id,
-      id: skillId,
+      where: {
+        userId: user.id,
+        id: skillId,
+      },
     })
     if (!isOwner)
       throw new ForbiddenError("User is not owner or skill doesn't exist")

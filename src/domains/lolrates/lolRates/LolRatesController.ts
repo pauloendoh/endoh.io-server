@@ -1,11 +1,10 @@
 import { CurrentUser, Get, JsonController } from "routing-controllers"
-import { getCustomRepository } from "typeorm"
 import { User } from "../../../entities/User"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 
 @JsonController()
 export class DocController {
-  constructor(private lolRateRepo = getCustomRepository(LolRateRepository)) {}
+  constructor(private lolRateRepo = LolRateRepository) {}
 
   @Get("/lolRates")
   async getDocs(@CurrentUser({ required: true }) user: User) {

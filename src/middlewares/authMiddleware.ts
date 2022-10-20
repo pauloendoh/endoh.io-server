@@ -1,10 +1,10 @@
-import { NextFunction, Response } from "express";
-import { verify as validateJwt } from "jsonwebtoken";
-import { getCustomRepository } from "typeorm";
-import { DotEnvKeys } from "../enums/DotEnvKeys";
-import UserRepository from "../repositories/UserRepository";
-import { MyErrorsResponse } from "../utils/ErrorMessage";
-import { MyAuthRequest } from "../utils/MyAuthRequest";
+import { NextFunction, Response } from "express"
+import { verify as validateJwt } from "jsonwebtoken"
+import { dataSource } from "../dataSource"
+import { User } from "../entities/User"
+import { DotEnvKeys } from "../enums/DotEnvKeys"
+import { MyErrorsResponse } from "../utils/ErrorMessage"
+import { MyAuthRequest } from "../utils/MyAuthRequest"
 
 // PE 2/3
 export default function authMiddleware(
@@ -12,7 +12,7 @@ export default function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const authToken = req.header("x-auth-token");
+  const authToken = req.header("x-auth-token")
 
   if (!authToken)
     return res
@@ -21,7 +21,7 @@ export default function authMiddleware(
         new MyErrorsResponse(
           "No token, authorization denied! Sign in and try again."
         )
-      );
+      )
 
   // Verify token
   try {
@@ -33,16 +33,18 @@ export default function authMiddleware(
         if (error || typeof decodedObj["userId"] === "string") {
           return res
             .status(401)
-            .json({ msg: "Token is not valid. Sign in and try again." });
+            .json({ msg: "Token is not valid. Sign in and try again." })
         } else {
-          req.user = await getCustomRepository(UserRepository).findOne({
-            id: decodedObj["userId"],
-          });
-          next();
+          req.user = await dataSource.getRepository(User).findOne({
+            where: {
+              id: decodedObj["userId"],
+            },
+          })
+          next()
         }
       }
-    );
+    )
   } catch (err) {
-    res.status(500).json(new MyErrorsResponse("Server Error"));
+    res.status(500).json(new MyErrorsResponse("Server Error"))
   }
 }

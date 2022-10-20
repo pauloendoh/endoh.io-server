@@ -19,7 +19,7 @@ import {
   Res,
   UseBefore,
 } from "routing-controllers"
-import { getCustomRepository, getRepository } from "typeorm"
+import { dataSource } from "../../dataSource"
 import { UserToken } from "../../entities/OAuthToken"
 import { User } from "../../entities/User"
 import { UserPreference } from "../../entities/UserPreference"
@@ -37,9 +37,9 @@ import { AuthService } from "./AuthService"
 @JsonController("/auth")
 export class AuthController {
   constructor(
-    private tokenRepo = getRepository(UserToken),
-    private userRepo = getCustomRepository(UserRepository),
-    private preferenceRepo = getRepository(UserPreference),
+    private tokenRepo = dataSource.getRepository(UserToken),
+    private userRepo = UserRepository,
+    private preferenceRepo = dataSource.getRepository(UserPreference),
     private authService = new AuthService()
   ) {}
 
@@ -101,12 +101,10 @@ export class AuthController {
 
     const passwordOk = await compare(oldPassword, requester.password)
     if (passwordOk) {
-      const userRepo = getCustomRepository(UserRepository)
-
       const salt = await genSalt(10)
       const newPasswordHashed = await hash(newPassword, salt)
       requester.password = newPasswordHashed
-      await userRepo.save(requester)
+      await this.userRepo.save(requester)
 
       return true
     }
@@ -125,9 +123,7 @@ export class AuthController {
 
     if (!passwordOk) throw new BadRequestError("Incorrect password.")
     if (passwordOk) {
-      const userRepo = getCustomRepository(UserRepository)
-
-      await userRepo.delete({ id: requester.id })
+      await this.userRepo.delete({ id: requester.id })
 
       return true
     }
@@ -140,8 +136,11 @@ export class AuthController {
   ) {
     const { newUsername } = body
 
-    const userRepo = getCustomRepository(UserRepository)
-    const usernameExists = await userRepo.findOne({ username: newUsername })
+    const usernameExists = await this.userRepo.findOne({
+      where: {
+        username: newUsername,
+      },
+    })
 
     if (usernameExists) {
       throw new BadRequestError("Username already in use.")
@@ -156,7 +155,7 @@ export class AuthController {
     }
 
     requester.username = newUsername
-    await userRepo.save(requester)
+    await this.userRepo.save(requester)
 
     return true
   }
@@ -192,7 +191,13 @@ export class AuthController {
 
   @Get("/user-preference")
   async getUserPreferences(@CurrentUser({ required: true }) requester: User) {
-    return this.preferenceRepo.findOne({ user: requester })
+    return this.preferenceRepo.findOne({
+      where: {
+        user: {
+          id: requester.id,
+        },
+      },
+    })
   }
 
   @Post("/user-preference")
@@ -202,7 +207,6 @@ export class AuthController {
   ) {
     body.user = requester
 
-    const preferenceRepo = getRepository(UserPreference)
-    return preferenceRepo.save(body)
+    return this.preferenceRepo.save(body)
   }
 }

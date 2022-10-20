@@ -15,9 +15,9 @@ import {
 } from "routing-controllers"
 import { Stripe } from "stripe"
 import { buildSchema } from "type-graphql"
-import { createConnection } from "typeorm"
 import { pagination } from "typeorm-pagination"
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS"
+import { dataSource } from "./dataSource"
 import saveResponseTime from "./middlewares/saveResponseTime"
 import executeEvery15Min from "./routines/executeEvery15Min"
 import executeEveryHour from "./routines/executeEveryHour"
@@ -39,18 +39,10 @@ require("./utils/passport-setup")
 require(`dotenv`).config()
 const stripe: Stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
-const env = process.env
-// It must use 'require' to work properly.
-const ormconfig = require("../ormconfig")
-
-const DEFAULT_EXPIRATION = 3600
-
-// PE 2/3
-myConsoleLoading("Connecting with ormconfig")
-createConnection(ormconfig)
-  .then(async (connection) => {
-    myConsoleSuccess("Connected with ormconfig!")
-
+dataSource
+  .initialize()
+  .then(async () => {
+    console.log("Data Source has been initialized!")
     const routingControllersOptions: RoutingControllersOptions = {
       cors: true,
       controllers: [path.join(__dirname + "/**/*Controller{.js,.ts}")],
@@ -204,4 +196,6 @@ createConnection(ormconfig)
       myConsoleSuccess("listening on *:3001")
     })
   })
-  .catch((error) => myConsoleError(error))
+  .catch((err) => {
+    console.error("Error during Data Source initialization", err)
+  })

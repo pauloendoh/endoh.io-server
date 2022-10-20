@@ -9,7 +9,7 @@ import {
   Post,
   Put,
 } from "routing-controllers"
-import { getRepository, getTreeRepository } from "typeorm"
+import { dataSource } from "../../../dataSource"
 import { Folder } from "../../../entities/playground/file-system/Folder"
 import { User } from "../../../entities/User"
 import findFoldersFromUser from "../../../utils/domain/playground/file-system/findFoldersFromUser"
@@ -18,8 +18,8 @@ import { FolderService } from "./FolderService"
 @JsonController()
 export class FolderController {
   constructor(
-    private folderRepo = getRepository(Folder),
-    private folderTreeRepo = getTreeRepository(Folder),
+    private folderRepo = dataSource.getRepository(Folder),
+    private folderTreeRepo = dataSource.getTreeRepository(Folder),
     private folderService = new FolderService()
   ) {}
 
@@ -39,7 +39,7 @@ export class FolderController {
       sent.parentFolder = parentFolder
     }
 
-    const folderRepo = getTreeRepository(Folder)
+    const folderRepo = dataSource.getTreeRepository(Folder)
     await folderRepo.save(sent)
 
     const userFolders = await findFoldersFromUser(user.id)
@@ -54,8 +54,10 @@ export class FolderController {
     @Body({ required: true }) sent: Folder
   ) {
     const found = await this.folderTreeRepo.findOne({
-      userId: user.id,
-      id: sent.id,
+      where: {
+        userId: user.id,
+        id: sent.id,
+      },
     })
 
     if (!found) throw new NotFoundError("Not found.")

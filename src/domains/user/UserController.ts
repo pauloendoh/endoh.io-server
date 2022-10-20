@@ -11,8 +11,8 @@ import {
   Put,
   UploadedFile,
 } from "routing-controllers"
-import { getCustomRepository, getRepository } from "typeorm"
 import { multerConfig } from "../../config/multer"
+import { dataSource } from "../../dataSource"
 import { TagFollowPostDto } from "../../dtos/feed/TagFollowPostDto"
 import { newUserInfo } from "../../dtos/UserInfoDto"
 import { Profile } from "../../entities/feed/Profile"
@@ -27,13 +27,13 @@ import UserRepository from "../../repositories/UserRepository"
 @JsonController("/user")
 export class UserController {
   constructor(
-    private userRepo = getCustomRepository(UserRepository),
-    private resourceRepo = getCustomRepository(ResourceRepository),
-    private profileRepo = getRepository(Profile),
-    private tagRepo = getCustomRepository(TagRepository),
-    private followingTagRepo = getCustomRepository(FollowingTagRepository),
-    private skillRepo = getCustomRepository(SkillRepository),
-    private notificationRepo = getCustomRepository(NotificationRepository)
+    private userRepo = UserRepository,
+    private resourceRepo = ResourceRepository,
+    private profileRepo = dataSource.getRepository(Profile),
+    private tagRepo = TagRepository,
+    private followingTagRepo = FollowingTagRepository,
+    private skillRepo = SkillRepository,
+    private notificationRepo = NotificationRepository
   ) {}
 
   @Get("/:username/all")
@@ -44,7 +44,11 @@ export class UserController {
     const userInfo = newUserInfo()
 
     // username exists?
-    const foundUser = await this.userRepo.findOne({ username })
+    const foundUser = await this.userRepo.findOne({
+      where: {
+        username,
+      },
+    })
     if (!foundUser) throw new NotFoundError("User not found.")
 
     // get all resources (if req.user === user); otherwise, just get from public lists
@@ -55,20 +59,26 @@ export class UserController {
 
     // profile
     userInfo.profile = await this.profileRepo.findOne({
-      userId: foundUser.id,
+      where: {
+        userId: foundUser.id,
+      },
     })
 
     // public lists
     userInfo.publicLists = await this.tagRepo.find({
-      userId: foundUser.id,
-      isPrivate: false,
+      where: {
+        userId: foundUser.id,
+        isPrivate: false,
+      },
     })
 
     // private tags
     if (foundUser.id === requester.id) {
       userInfo.privateLists = await this.tagRepo.find({
-        userId: foundUser.id,
-        isPrivate: true,
+        where: {
+          userId: foundUser.id,
+          isPrivate: true,
+        },
       })
     }
 
@@ -89,7 +99,11 @@ export class UserController {
     @CurrentUser({ required: true }) requester: User,
     @Param("username") username: string
   ) {
-    const user = await this.userRepo.findOne({ username })
+    const user = await this.userRepo.findOne({
+      where: {
+        username,
+      },
+    })
 
     const resources = await this.resourceRepo.getRatedResourcesFromUser(
       user,
@@ -110,7 +124,9 @@ export class UserController {
 
     // do this so we can retrieve the profile picture altogether
     const savedProfile = await this.profileRepo.findOne({
-      userId: requester.id,
+      where: {
+        userId: requester.id,
+      },
     })
     return savedProfile
   }
@@ -121,7 +137,11 @@ export class UserController {
     @Body() tagFollows: TagFollowPostDto[],
     @Param("username") username: string
   ) {
-    const foundOwner = await this.userRepo.findOne({ username })
+    const foundOwner = await this.userRepo.findOne({
+      where: {
+        username,
+      },
+    })
 
     const tagFollowsToNotify = await this.followingTagRepo.saveTagFollows(
       requester.id,
@@ -139,7 +159,11 @@ export class UserController {
     }
 
     const userFollowingTags = await this.followingTagRepo.find({
-      where: { follower: requester },
+      where: {
+        follower: {
+          id: requester.id,
+        },
+      },
     })
     return userFollowingTags
   }
@@ -149,10 +173,14 @@ export class UserController {
     @CurrentUser({ required: true }) requester: User,
     @Param("username") username: string
   ) {
-    const user = await this.userRepo.findOne({ username })
+    const user = await this.userRepo.findOne({ where: { username } })
 
     const followingTags = await this.followingTagRepo.find({
-      where: { follower: user },
+      where: {
+        follower: {
+          id: user.id,
+        },
+      },
     })
     return followingTags
   }
@@ -164,7 +192,7 @@ export class UserController {
   ) {
     const { key, location } = file
 
-    const profileRepo = getRepository(Profile)
+    const profileRepo = dataSource.getRepository(Profile)
 
     const profile = await profileRepo.findOne({
       where: { userId: requester.id },

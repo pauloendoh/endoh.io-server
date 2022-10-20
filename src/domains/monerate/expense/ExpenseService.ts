@@ -1,10 +1,9 @@
-import { getCustomRepository } from "typeorm";
-import ExpenseRepository from "./ExpenseRepository";
+import ExpenseRepository from "./ExpenseRepository"
 
 export class ExpenseService {
-  constructor(private expenseRepo = getCustomRepository(ExpenseRepository)) {}
+  constructor(private expenseRepo = ExpenseRepository) {}
 
   findSimilarExpenses(userId: number, value: number) {
-    return this.expenseRepo.findSimilarExpenses(userId, value);
+    return this.expenseRepo.findSimilarExpenses(userId, value)
   }
 }

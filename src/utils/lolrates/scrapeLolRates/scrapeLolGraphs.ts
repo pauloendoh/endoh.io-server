@@ -1,5 +1,4 @@
 import pup from "puppeteer";
-import { getCustomRepository } from "typeorm";
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository";
 import { RoleTypes } from "../../../types/domain/lolates/RoleTypes";
 import { myConsoleError } from "../../myConsoleError";
@@ -75,7 +74,7 @@ export async function scrapeLolGraphs(page: pup.Page) {
       return results;
     });
 
-    await getCustomRepository(LolRateRepository).saveLolGraphs(results);
+    await LolRateRepository.saveLolGraphs(results);
 
     myConsoleSuccess("Finished scrapeLolGraphs");
   } catch (err) {

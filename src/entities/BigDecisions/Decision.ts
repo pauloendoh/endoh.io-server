@@ -1,17 +1,14 @@
 import {
-  AfterInsert,
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
 import { User } from "../User"
-import { Note } from "../define/Note"
-import { DecisionTable } from './DecisionTable'
+import { DecisionTable } from "./DecisionTable"
 
 @Entity()
 export class Decision {
@@ -32,7 +29,7 @@ export class Decision {
   @Column()
   title: string
 
-  @Column({default: true})
+  @Column({ default: true })
   isPriority: boolean
 
   @CreateDateColumn()
@@ -40,6 +37,4 @@ export class Decision {
 
   @UpdateDateColumn()
   updatedAt: string
-
-
 }

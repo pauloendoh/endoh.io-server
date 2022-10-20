@@ -7,13 +7,15 @@ import {
   Param,
   Post,
 } from "routing-controllers"
-import { getRepository } from "typeorm"
+import { dataSource } from "../../../dataSource"
 import { PlayerChampion } from "../../../entities/LolRates/PlayerChampion"
 import { User } from "../../../entities/User"
 
 @JsonController("/lolrates/playerChampion")
 export class PlayerChampionController {
-  constructor(private playerChampionRepo = getRepository(PlayerChampion)) {}
+  constructor(
+    private playerChampionRepo = dataSource.getRepository(PlayerChampion)
+  ) {}
 
   @Post("/")
   async savePlayerChampion(

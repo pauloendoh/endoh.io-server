@@ -1,9 +1,9 @@
-import { DeleteResult, EntityRepository, Repository } from "typeorm"
+import { DeleteResult } from "typeorm"
+import { dataSource } from "../dataSource"
 import { UserProfileDto } from "../dtos/feed/UserProfileDto"
 import { User } from "../entities/User"
 
-@EntityRepository(User)
-export default class UserRepository extends Repository<User> {
+const UserRepository = dataSource.getRepository(User).extend({
   async getAvailableUsernameByEmail(email: string) {
     const emailArr = email.split("@")
     if (emailArr.length === 1) {
@@ -11,7 +11,11 @@ export default class UserRepository extends Repository<User> {
     }
 
     const username = emailArr[0]
-    const user = await this.findOne({ username })
+    const user = await this.findOne({
+      where: {
+        username,
+      },
+    })
     if (!user) {
       return username
     }
@@ -20,7 +24,11 @@ export default class UserRepository extends Repository<User> {
     let i = 0
     while (!foundAvailableUsername) {
       const tryUsername = username + i
-      const tryUser = await this.findOne({ username: tryUsername })
+      const tryUser = await this.findOne({
+        where: {
+          username: tryUsername,
+        },
+      })
 
       if (!tryUser) {
         foundAvailableUsername = true
@@ -28,13 +36,13 @@ export default class UserRepository extends Repository<User> {
       }
       i++
     }
-  }
+  },
 
   async getTemporaryUsers(): Promise<User[]> {
     return this.createQueryBuilder("user")
       .where("user.expiresAt IS NOT NULL")
       .getMany()
-  }
+  },
 
   async getAvailableTempUsername() {
     const tempUsers = await this.getTemporaryUsers()
@@ -44,7 +52,11 @@ export default class UserRepository extends Repository<User> {
 
     while (!foundAvailable) {
       const tryUsername = "temp_user_" + i
-      const tryUser = await this.findOne({ username: tryUsername })
+      const tryUser = await this.findOne({
+        where: {
+          username: tryUsername,
+        },
+      })
 
       if (!tryUser) {
         foundAvailable = true
@@ -52,24 +64,21 @@ export default class UserRepository extends Repository<User> {
       }
       i++
     }
-  }
-
+  },
   // wow, this seems dangerous haha :D
   async deleteExpiredTempUsers(): Promise<DeleteResult> {
     return this.createQueryBuilder("user")
       .delete()
       .where('"expiresAt" < NOW()')
       .execute()
-  }
-
-  saveAndGetRelations = async (user: User) => {
+  },
+  async saveAndGetRelations(user: User) {
     const savedUser = await this.save(user)
     return this.findOne({
       where: { id: savedUser.id },
       relations: ["preference"],
     })
-  }
-
+  },
   async getUsersByText(text: string): Promise<UserProfileDto[]> {
     return this.query(`
     select use."id" 		as "userId",
@@ -83,7 +92,7 @@ inner join profile pro on pro."userId" = use."id"
      where use."username" ilike '%${text}%'
 	    or use."email"	  ilike '%${text}%'
 		or pro."fullName" ilike '%${text}%'`)
-  }
+  },
 
   async createUserForUnitTests(username: string): Promise<User> {
     return this.save({
@@ -91,5 +100,7 @@ inner join profile pro on pro."userId" = use."id"
       email: username + "@" + username,
       password: username,
     })
-  }
-}
+  },
+})
+
+export default UserRepository

@@ -1,12 +1,13 @@
-import { EntityRepository, getCustomRepository, Repository } from "typeorm";
-import { Tag } from "../../entities/relearn/Tag";
-import { Skill } from "../../entities/skillbase/Skill";
-import { User } from "../../entities/User";
+import { dataSource } from "../../dataSource"
+import { Tag } from "../../entities/relearn/Tag"
+import { Skill } from "../../entities/skillbase/Skill"
+import { User } from "../../entities/User"
 
-export const getSkillRepository = () => getCustomRepository(SkillRepository);
+export const getSkillRepository = () => SkillRepository
 
-@EntityRepository(Skill)
-export default class SkillRepository extends Repository<Skill> {
+export const getFollowingTagRepo = () => SkillRepository
+
+export const SkillRepository = dataSource.getRepository(Skill).extend({
   async getAllFromUser(userId: number): Promise<Skill[]> {
     return this.createQueryBuilder("skill")
       .where({ userId: userId })
@@ -18,23 +19,23 @@ export default class SkillRepository extends Repository<Skill> {
       .addOrderBy("skill.currentLevel", "DESC")
       .addOrderBy("expectations.index", "ASC")
       .addOrderBy("labels.id", "ASC")
-      .getMany();
-  }
+      .getMany()
+  },
 
   async findPublicSkillsFromUser(userId: number) {
     return this.find({
       where: { isPublic: true, userId },
       relations: ["expectations"],
-    });
-  }
+    })
+  },
 
   async deleteIdsFromUser(ids: number[], userId: number) {
     return this.createQueryBuilder("skill")
       .delete()
       .where({ userId: userId })
       .andWhere("skill.id IN (:...ids)", { ids: [...ids] })
-      .execute();
-  }
+      .execute()
+  },
 
   async getByText(userId: number, text: string): Promise<Skill[]> {
     return this.createQueryBuilder("skill")
@@ -45,14 +46,14 @@ export default class SkillRepository extends Repository<Skill> {
       .orderBy("skill.isPriority", "DESC")
       .addOrderBy("skill.goalLevel", "DESC")
       .addOrderBy("skill.currentLevel", "DESC")
-      .getMany();
-  }
+      .getMany()
+  },
 
   async createSkillsForNewUser(
     user: User,
     programmingTag: Tag
   ): Promise<Skill[]> {
-    const skills: Skill[] = [];
+    const skills: Skill[] = []
     skills.push(
       await this.save({
         user,
@@ -62,7 +63,7 @@ export default class SkillRepository extends Repository<Skill> {
         currentLevel: 3,
         goalLevel: 5,
       })
-    );
+    )
 
     skills.push(
       await this.save({
@@ -72,8 +73,10 @@ export default class SkillRepository extends Repository<Skill> {
         currentLevel: 6,
         goalLevel: 7,
       })
-    );
+    )
 
-    return skills;
-  }
-}
+    return skills
+  },
+})
+
+export default SkillRepository

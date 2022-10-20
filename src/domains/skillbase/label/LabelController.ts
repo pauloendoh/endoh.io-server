@@ -8,7 +8,7 @@ import {
   Param,
   Post,
 } from "routing-controllers"
-import { getCustomRepository, getRepository } from "typeorm"
+import { dataSource } from "../../../dataSource"
 import { Label } from "../../../entities/skillbase/Label"
 import { User } from "../../../entities/User"
 import SkillRepository from "../../../repositories/skillbase/SkillRepository"
@@ -16,8 +16,8 @@ import SkillRepository from "../../../repositories/skillbase/SkillRepository"
 @JsonController("/v2/skillbase")
 export class LabelController {
   constructor(
-    private labelRepo = getRepository(Label),
-    private skillRepo = getCustomRepository(SkillRepository)
+    private labelRepo = dataSource.getRepository(Label),
+    private skillRepo = SkillRepository
   ) {}
 
   @Get("/label")
@@ -50,7 +50,9 @@ export class LabelController {
 
     if (!label) throw new NotFoundError("Label not found.")
 
-    await this.labelRepo.delete(label)
+    await this.labelRepo.delete({
+      id: label.id,
+    })
     return label
   }
 
@@ -77,7 +79,7 @@ export class LabelController {
       where: { userId: user.id, id: skillId },
       relations: ["labels"],
     })
-    const foundLabel = await getRepository(Label).findOne({
+    const foundLabel = await dataSource.getRepository(Label).findOne({
       where: { id: body.labelId },
     })
 
@@ -97,7 +99,7 @@ export class LabelController {
       where: { userId: user.id, id: skillId },
       relations: ["labels"],
     })
-    const foundLabel = await getRepository(Label).findOne({
+    const foundLabel = await dataSource.getRepository(Label).findOne({
       where: { id: body.labelId },
     })
 

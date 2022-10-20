@@ -1,8 +1,7 @@
-import { EntityRepository, Repository } from "typeorm"
+import { dataSource } from "../../dataSource"
 import { Decision } from "../../entities/BigDecisions/Decision"
 
-@EntityRepository(Decision)
-export default class DecisionRepository extends Repository<Decision> {
+const DecisionRepository = dataSource.getRepository(Decision).extend({
   async getAllFromUser(userId: number): Promise<Decision[]> {
     return this.createQueryBuilder("decision")
       .where({ userId })
@@ -13,7 +12,7 @@ export default class DecisionRepository extends Repository<Decision> {
       .addOrderBy("table.createdAt", "ASC")
       .addOrderBy("item.index", "ASC")
       .getMany()
-  }
+  },
 
   async getFullDecision(id: number): Promise<Decision> {
     return this.createQueryBuilder("decision")
@@ -25,5 +24,7 @@ export default class DecisionRepository extends Repository<Decision> {
       .addOrderBy("table.createdAt", "ASC")
       .addOrderBy("item.index", "ASC")
       .getOne()
-  }
-}
+  },
+})
+
+export default DecisionRepository

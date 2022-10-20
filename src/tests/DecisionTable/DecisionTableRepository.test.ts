@@ -1,4 +1,4 @@
-import { getCustomRepository, getRepository } from "typeorm"
+import { dataSource } from "../../dataSource"
 import { DecisionTable } from "../../entities/BigDecisions/DecisionTable"
 import DecisionTableRepository from "../../repositories/BigDecisions/DecisionTableRepository"
 import UserRepository from "../../repositories/UserRepository"
@@ -11,18 +11,16 @@ beforeEach(async () => {
 })
 
 test("Normalize decision tables index", async () => {
-  const user = await getCustomRepository(UserRepository).createUserForUnitTests(
-    "test"
-  )
+  const user = await UserRepository.createUserForUnitTests("test")
   const decision = await createExampleDecision(user, "decision")
 
   // automatically adds two tables on creation
 
-  const tableRepo = getRepository(DecisionTable)
+  const tableRepo = dataSource.getRepository(DecisionTable)
   await tableRepo.save({ decision, user, title: "xd", index: 2 })
   await tableRepo.save({ decision, user, title: "xd", index: 3 })
 
-  const repo = getCustomRepository(DecisionTableRepository)
+  const repo = DecisionTableRepository
   const tables = await repo.find({ where: { decisionId: decision.id } })
   tables[2].index = 14
   tables[3].index = 17

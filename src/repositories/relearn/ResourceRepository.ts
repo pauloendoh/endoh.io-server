@@ -1,33 +1,21 @@
-import {
-  EntityRepository,
-  FindConditions,
-  getCustomRepository,
-  getManager,
-  In,
-  Repository,
-} from "typeorm";
-import { Resource } from "../../entities/relearn/Resource";
-import { Tag } from "../../entities/relearn/Tag";
-import { User } from "../../entities/User";
-import { myConsoleSuccess } from "../../utils/myConsoleSuccess";
+import { FindOptionsWhere, In } from "typeorm"
+import { dataSource } from "../../dataSource"
+import { Resource } from "../../entities/relearn/Resource"
+import { Tag } from "../../entities/relearn/Tag"
+import { User } from "../../entities/User"
+import { myConsoleSuccess } from "../../utils/myConsoleSuccess"
 
-export const getResourceRepository = () =>
-  getCustomRepository(ResourceRepository);
-
-@EntityRepository(Resource)
-export default class ResourceRepository extends Repository<Resource> {
-  // PE 2/3
+const ResourceRepository = dataSource.getRepository(Resource).extend({
   async findAllResourcesFromUser(user: User): Promise<Resource[]> {
     return this.createQueryBuilder("resource")
       .where({ user })
       .leftJoinAndSelect("resource.tag", "tag")
       .orderBy("resource.position", "ASC")
-      .getMany();
-  }
-
-  async findOneRelationsId(where: FindConditions<Resource>) {
-    return this.findOne({ where, relations: ["tag"] });
-  }
+      .getMany()
+  },
+  async findOneRelationsId(where: FindOptionsWhere<Resource>) {
+    return this.findOne({ where, relations: { tag: true } })
+  },
 
   // PE 2/3
   async getRatedResourcesFromUser(
@@ -42,7 +30,7 @@ export default class ResourceRepository extends Repository<Resource> {
         .andWhere("resource.rating > 0")
         .andWhere('resource."tagId" is not null')
         .orderBy("resource.completedAt", "DESC")
-        .getMany();
+        .getMany()
     } else {
       const resources = await this.createQueryBuilder("resource")
         .leftJoinAndSelect("resource.tag", "tag")
@@ -51,38 +39,38 @@ export default class ResourceRepository extends Repository<Resource> {
         .andWhere('resource."tagId" is not null')
         .andWhere('tag."isPrivate" is false') // get only the public resources (from public tags, that is)
         .orderBy("resource.completedAt", "DESC")
-        .getMany();
+        .getMany()
 
       // remover o campo privateNote se usuario não for dono
       return resources.map((resource) => ({
         ...resource,
         privateNote: undefined,
-      }));
+      }))
     }
-  }
+  },
 
   async getLastPosition(tag: Tag, user: User): Promise<number> {
-    let lastResource: Resource;
+    let lastResource: Resource
     if (tag) {
       lastResource = await this.createQueryBuilder("resource")
         .where({ tag })
         .andWhere("resource.position IS NOT NULL")
         .orderBy("resource.position", "DESC")
-        .getOne();
+        .getOne()
     } else {
       lastResource = await this.createQueryBuilder("resource")
         .where({ user })
         .andWhere("resource.tagId IS NULL")
         .andWhere("resource.position IS NOT NULL")
         .orderBy("resource.position", "DESC")
-        .getOne();
+        .getOne()
     }
 
     if (lastResource?.position >= 0) {
-      return lastResource.position + 1;
+      return lastResource.position + 1
     }
-    return 0;
-  }
+    return 0
+  },
 
   // reduce by 1
   async reducePosition(
@@ -91,16 +79,16 @@ export default class ResourceRepository extends Repository<Resource> {
     startingPosition: Number
   ): Promise<void> {
     if (tag) {
-      await getManager().query(
+      await dataSource.query(
         `
                 UPDATE "resource" 
                    SET "position" = "position" - 1 
                  WHERE "tagId" = $1 
                    AND "position" >= $2`,
         [tag.id, startingPosition]
-      );
+      )
     } else {
-      await getManager().query(
+      await dataSource.query(
         `
                 UPDATE "resource" 
                    SET "position" = "position" - 1 
@@ -108,9 +96,9 @@ export default class ResourceRepository extends Repository<Resource> {
                    AND "userId" = $1 
                    AND "position" >= $2`,
         [user.id, startingPosition]
-      );
+      )
     }
-  }
+  },
 
   // reduce by 1
   async increasePositionByOne(
@@ -119,16 +107,16 @@ export default class ResourceRepository extends Repository<Resource> {
     startingPosition: Number
   ): Promise<void> {
     if (tagId) {
-      await getManager().query(
+      await dataSource.query(
         `
                 UPDATE "resource" 
                    SET "position" = "position" + 1 
                  WHERE "tagId" = $1 
                    AND "position" >= $2`,
         [tagId, startingPosition]
-      );
+      )
     } else {
-      await getManager().query(
+      await dataSource.query(
         `
                 UPDATE "resource" 
                    SET "position" = "position" + 1 
@@ -136,15 +124,15 @@ export default class ResourceRepository extends Repository<Resource> {
                    AND "userId" = $1 
                    AND "position" >= $2`,
         [user.id, startingPosition]
-      );
+      )
     }
-  }
+  },
 
   // PE 2/3
   async getResourcesByText(user: User, text: string): Promise<Resource[]> {
-    const words = text.split(" ");
+    const words = text.split(" ")
 
-    let query = this.createQueryBuilder("resource").where({ user });
+    let query = this.createQueryBuilder("resource").where({ user })
 
     // multi word search
     words.forEach((word, index) => {
@@ -157,25 +145,25 @@ export default class ResourceRepository extends Repository<Resource> {
         {
           [`text${index}`]: `%${word}%`,
         }
-      );
-    });
+      )
+    })
 
     query = query
       .leftJoinAndSelect("resource.tag", "tag")
       .orderBy("resource.rating", "DESC")
-      .addOrderBy("resource.completedAt", "DESC");
+      .addOrderBy("resource.completedAt", "DESC")
 
-    return query.getMany();
-  }
+    return query.getMany()
+  },
 
   async createResourcesForNewUser(
     user: User,
     tags: Tag[]
   ): Promise<Resource[]> {
-    const programmingTag = tags[0];
-    const softSkillsTag = tags[1];
+    const programmingTag = tags[0]
+    const softSkillsTag = tags[1]
 
-    const resources: Resource[] = [];
+    const resources: Resource[] = []
     resources.push(
       await this.save({
         user,
@@ -187,7 +175,7 @@ export default class ResourceRepository extends Repository<Resource> {
         estimatedTime: "00:00h",
         position: 0,
       })
-    );
+    )
 
     resources.push(
       await this.save({
@@ -199,7 +187,7 @@ export default class ResourceRepository extends Repository<Resource> {
         estimatedTime: "00:10h",
         position: 1,
       })
-    );
+    )
 
     resources.push(
       await this.save({
@@ -210,7 +198,7 @@ export default class ResourceRepository extends Repository<Resource> {
         position: 2,
         privateNote: `1. Think about your website \n2. Prototype your website using Figma \n3. Program your site with HTML, CSS and JS`,
       })
-    );
+    )
 
     resources.push(
       await this.save({
@@ -222,21 +210,21 @@ export default class ResourceRepository extends Repository<Resource> {
         estimatedTime: "00:03h",
         position: 0,
       })
-    );
+    )
 
-    return resources;
-  }
+    return resources
+  },
 
   // This is used when the drag and drop gets messed up
   async resetRatingsWhereCompletedAtIsNull(): Promise<void> {
-    await getManager().query(
+    await dataSource.query(
       `UPDATE resource r 
           SET rating = null 
         WHERE "completedAt" = '' 
           AND rating > 0`
-    );
-    myConsoleSuccess("resetRatingsWhereCompletedAtIsNull() completed");
-  }
+    )
+    myConsoleSuccess("resetRatingsWhereCompletedAtIsNull() completed")
+  },
 
   async moveResourcesToTag(
     resourceIds: number[],
@@ -252,8 +240,8 @@ export default class ResourceRepository extends Repository<Resource> {
         id: In(resourceIds),
         userId: userId,
       })
-      .execute();
-  }
+      .execute()
+  },
 
   async fullTextSearch(userId: number, query: string) {
     const resources = await this.createQueryBuilder()
@@ -264,7 +252,9 @@ export default class ResourceRepository extends Repository<Resource> {
         "ts_rank(document_with_weights, plainto_tsquery(:query))",
         "DESC"
       )
-      .getMany();
-    return resources;
-  }
-}
+      .getMany()
+    return resources
+  },
+})
+
+export default ResourceRepository

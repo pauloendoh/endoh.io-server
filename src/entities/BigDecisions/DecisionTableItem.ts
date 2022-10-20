@@ -1,12 +1,9 @@
 import {
-  AfterInsert,
   Column,
   CreateDateColumn,
-  Entity,
-  getRepository,
-  ManyToOne,
+  Entity, ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from "typeorm"
 import { User } from "../User"
 import { DecisionTable } from "./DecisionTable"

@@ -1,8 +1,7 @@
-import { EntityRepository, Repository } from "typeorm"
+import { dataSource } from "../../dataSource"
 import { DecisionTable } from "../../entities/BigDecisions/DecisionTable"
 
-@EntityRepository(DecisionTable)
-export default class DecisionTableRepository extends Repository<DecisionTable> {
+const DecisionTableRepository = dataSource.getRepository(DecisionTable).extend({
   async normalizeTablesPositions(decisionId: number): Promise<void> {
     return this.query(
       `
@@ -16,7 +15,7 @@ export default class DecisionTableRepository extends Repository<DecisionTable> {
        where d.id = d2.id`,
       [decisionId]
     )
-  }
+  },
 
   async sortProblemsByWeight(tableId: number, order: "asc" | "desc") {
     // for some reason, 'order' had to be interpolated because it didn't consider in the params[]
@@ -30,5 +29,7 @@ export default class DecisionTableRepository extends Repository<DecisionTable> {
         where d.id = d2.id`,
       [tableId]
     )
-  }
-}
+  },
+})
+
+export default DecisionTableRepository

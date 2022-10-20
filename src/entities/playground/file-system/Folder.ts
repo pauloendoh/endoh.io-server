@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
-  TreeParent,
+  TreeParent
 } from "typeorm";
 import { CreatedEntity } from "../../../types/CreatedEntity";
 import { Doc } from "../../define/Doc";
@@ -32,7 +32,7 @@ export class Folder extends CreatedEntity {
   parentFolder: Folder;
 
   @Column({ nullable: true })
-  parentFolderId: Number;
+  parentFolderId: number;
 
   @OneToMany((type) => File, (file) => file.parentFolder)
   files: File[];

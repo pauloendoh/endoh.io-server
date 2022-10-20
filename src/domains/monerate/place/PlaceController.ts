@@ -8,14 +8,13 @@ import {
   Param,
   Post,
 } from "routing-controllers"
-import { getCustomRepository } from "typeorm"
 import Place from "../../../entities/monerate/Place"
 import { User } from "../../../entities/User"
 import PlaceRepository from "../../../repositories/monerate/PlaceRepository"
 
 @JsonController("/monerate/place")
 export class PlaceController {
-  constructor(private placeRepo = getCustomRepository(PlaceRepository)) {}
+  constructor(private placeRepo = PlaceRepository) {}
 
   @Post("/")
   async savePlace(
@@ -23,7 +22,12 @@ export class PlaceController {
     @Body() sentPlace: Place
   ) {
     if (sentPlace.id) {
-      const results = await this.placeRepo.find({ id: sentPlace.id, user })
+      const results = await this.placeRepo.find({
+        where: {
+          id: sentPlace.id,
+          user,
+        },
+      })
       if (!results.length) {
         throw new BadRequestError("User is not owner of this place.")
       }

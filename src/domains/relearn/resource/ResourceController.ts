@@ -9,7 +9,7 @@ import {
   Post,
   Put,
 } from "routing-controllers"
-import { getCustomRepository, In } from "typeorm"
+import { In } from "typeorm"
 import { IdsDto } from "../../../dtos/IdsDto"
 import { Resource } from "../../../entities/relearn/Resource"
 import { User } from "../../../entities/User"
@@ -17,7 +17,7 @@ import ResourceRepository from "../../../repositories/relearn/ResourceRepository
 
 @JsonController()
 export class ResourceController {
-  constructor(private resourceRepo = getCustomRepository(ResourceRepository)) {}
+  constructor(private resourceRepo = ResourceRepository) {}
 
   // PE 1/3 - it's getting way too slow
   @Post("/relearn/resource")
@@ -31,10 +31,15 @@ export class ResourceController {
 
     // If updating
     if (sentResource.id) {
-      const previousResource = await this.resourceRepo.findOne(
-        { id: sentResource.id, user },
-        { relations: ["tag"] }
-      )
+      const previousResource = await this.resourceRepo.findOne({
+        where: {
+          id: sentResource.id,
+          user,
+        },
+        relations: {
+          tag: true,
+        },
+      })
 
       // Check ownership
       if (!previousResource) {

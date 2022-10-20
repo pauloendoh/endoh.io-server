@@ -6,14 +6,13 @@ import {
   JsonController,
   Param,
 } from "routing-controllers"
-import { getCustomRepository } from "typeorm"
 import { User } from "../../../entities/User"
 import ProgressRepository from "../../../repositories/skillbase/ProgressRepository"
 
 // PE 1/3 - not being used. Delete?
 @JsonController("/skillbase/progress")
 export class ProgressController {
-  constructor(private progressRepo = getCustomRepository(ProgressRepository)) {}
+  constructor(private progressRepo = ProgressRepository) {}
 
   @Get("/")
   async findAllSkillsFromAuthUser(

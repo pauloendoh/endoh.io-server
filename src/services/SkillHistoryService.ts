@@ -1,22 +1,24 @@
-import { getCustomRepository, getRepository, Repository } from "typeorm";
-import { SkillHistory } from "../entities/skillbase/SkillHistory";
-import SkillRepository from "../repositories/skillbase/SkillRepository";
-import SkillProgressDto from "../types/domain/skillbase/skill-progress/SkillProgressDto";
+import { Repository } from "typeorm"
+import { dataSource } from "../dataSource"
+import { Skill } from "../entities/skillbase/Skill"
+import { SkillHistory } from "../entities/skillbase/SkillHistory"
+import SkillRepository from "../repositories/skillbase/SkillRepository"
+import SkillProgressDto from "../types/domain/skillbase/skill-progress/SkillProgressDto"
 
 export default class SkillHistoryService {
-  historyRepo: Repository<SkillHistory>;
-  skillRepo: SkillRepository;
+  historyRepo: Repository<SkillHistory>
+  skillRepo: Repository<Skill>
 
   constructor(
-    historyRepo = getRepository(SkillHistory),
-    skillRepo = getCustomRepository(SkillRepository)
+    historyRepo = dataSource.getRepository(SkillHistory),
+    skillRepo = SkillRepository
   ) {
-    this.historyRepo = historyRepo;
-    this.skillRepo = skillRepo;
+    this.historyRepo = historyRepo
+    this.skillRepo = skillRepo
   }
 
   async saveCurrentSkillHistory(userId: number) {
-    const skills = await this.skillRepo.find({ where: { userId } });
+    const skills = await this.skillRepo.find({ where: { userId } })
 
     const histories: Partial<SkillHistory>[] = skills.map((skill) => ({
       userId,
@@ -24,10 +26,10 @@ export default class SkillHistoryService {
       skillName: skill.name,
       createdAt: undefined,
       currentLevel: skill.currentLevel,
-    }));
+    }))
 
-    const savedHistories = await this.historyRepo.save(histories);
-    return savedHistories;
+    const savedHistories = await this.historyRepo.save(histories)
+    return savedHistories
   }
 
   async findFromMonth(params: { userId: number; year: number; month: number }) {
@@ -36,11 +38,11 @@ export default class SkillHistoryService {
       .where('"userId" = :userId', { userId: params.userId })
       .andWhere("to_char(\"createdAt\", 'YYYY-MM') = :yearMonth", {
         yearMonth: `${params.year}-${String(params.month).padStart(2, "0")}`,
-      });
+      })
 
-    const skillHistories = await query.getMany();
+    const skillHistories = await query.getMany()
 
-    return skillHistories;
+    return skillHistories
   }
 
   async findHistoryMonthsFromUser(userId: number) {
@@ -51,9 +53,9 @@ export default class SkillHistoryService {
       .where('"userId" = :userId', { userId })
       .orderBy("month", "DESC")
       .distinct(true)
-      .getRawMany<{ month: string }>();
+      .getRawMany<{ month: string }>()
 
-    return months.map((month) => month.month);
+    return months.map((month) => month.month)
   }
 
   async findProgressFrom(
@@ -80,6 +82,6 @@ export default class SkillHistoryService {
     ORDER BY
       "levelImprovement" DESC NULLS LAST`,
       [userId, fromYearMonth]
-    );
+    )
   }
 }

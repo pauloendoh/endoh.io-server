@@ -5,8 +5,9 @@ import { compare, genSalt, hash } from "bcryptjs"
 import { sign } from "jsonwebtoken"
 
 import { BadRequestError } from "routing-controllers"
-import { getCustomRepository, getRepository, MoreThan } from "typeorm"
+import { MoreThan } from "typeorm"
 import { USER_TOKEN_TYPES } from "../../consts/USER_TOKEN_TYPES"
+import { dataSource } from "../../dataSource"
 import { UserToken } from "../../entities/OAuthToken"
 import { User } from "../../entities/User"
 import { DotEnvKeys } from "../../enums/DotEnvKeys"
@@ -19,8 +20,8 @@ import validateUserFields from "../../utils/validateUser"
 
 export class AuthService {
   constructor(
-    private userRepo = getCustomRepository(UserRepository),
-    private tokenRepo = getRepository(UserToken)
+    private userRepo = UserRepository,
+    private tokenRepo = dataSource.getRepository(UserToken)
   ) {}
 
   async register(userPayload: User) {
@@ -31,13 +32,22 @@ export class AuthService {
     }
 
     // Checking if email exists
-    let userExists = await this.userRepo.findOne({ email: sentUser.email })
+    let userExists = await this.userRepo.findOne({
+      where: {
+        email: sentUser.email,
+      },
+    })
+
     if (userExists) {
       throw new BadRequestError("Email already in use")
     }
 
     // Checking if username exists
-    userExists = await this.userRepo.findOne({ username: sentUser.username })
+    userExists = await this.userRepo.findOne({
+      where: {
+        username: sentUser.username,
+      },
+    })
     if (userExists) {
       throw new BadRequestError("Username already in use")
     }
@@ -54,9 +64,7 @@ export class AuthService {
     const salt = await genSalt(10)
     sentUser.password = await hash(sentUser.password, salt)
 
-    const savedUser = await getCustomRepository(
-      UserRepository
-    ).saveAndGetRelations(sentUser)
+    const savedUser = await this.userRepo.saveAndGetRelations(sentUser)
     //  = await userRepo.save(sentUser)
 
     const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
@@ -85,10 +93,8 @@ export class AuthService {
       throw new BadRequestError(fieldErrors[0].message)
     }
 
-    let userRepo = getCustomRepository(UserRepository)
-
     // username or email exists ?
-    let user = await userRepo.findOne({
+    let user = await this.userRepo.findOne({
       where: [{ email: sentUser.email }, { username: sentUser.email }],
     })
     if (!user) {
@@ -143,9 +149,11 @@ export class AuthService {
     const { userId, token } = body
 
     const tokenExists = await this.tokenRepo.findOne({
-      userId,
-      token,
-      expiresAt: MoreThan(new Date().toISOString()),
+      where: {
+        userId,
+        token,
+        expiresAt: MoreThan(new Date().toISOString()),
+      },
     })
 
     if (!tokenExists) {
@@ -154,7 +162,11 @@ export class AuthService {
 
     // Same process as POST /auth/login
 
-    const user = await this.userRepo.findOne({ id: userId })
+    const user = await this.userRepo.findOne({
+      where: {
+        id: userId,
+      },
+    })
 
     const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
     const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
@@ -185,16 +197,22 @@ export class AuthService {
 
     // Token exists?
     const tokenExists = await this.tokenRepo.findOne({
-      userId,
-      token,
-      type: USER_TOKEN_TYPES.passwordReset,
-      expiresAt: MoreThan(new Date().toISOString()),
+      where: {
+        userId,
+        token,
+        type: USER_TOKEN_TYPES.passwordReset,
+        expiresAt: MoreThan(new Date().toISOString()),
+      },
     })
 
     if (!tokenExists)
       throw new BadRequestError("Token does not exist or it is expired.")
 
-    const user = await this.userRepo.findOne({ id: userId })
+    const user = await this.userRepo.findOne({
+      where: {
+        id: userId,
+      },
+    })
 
     const salt = await genSalt(10)
     user.password = await hash(password, salt)

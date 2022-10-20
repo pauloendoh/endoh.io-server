@@ -7,13 +7,13 @@ import {
   Post,
   Put,
 } from "routing-controllers"
-import { getRepository } from "typeorm"
+import { dataSource } from "../../../dataSource"
 import { ChampionRadar } from "../../../entities/LolRates/ChampionRadar"
 import { User } from "../../../entities/User"
 
 @JsonController("/lolrates/championRadar")
 export class ChampionRadarController {
-  constructor(private radarRepo = getRepository(ChampionRadar)) {}
+  constructor(private radarRepo = dataSource.getRepository(ChampionRadar)) {}
 
   @Get("/")
   async getChampionRadars(@CurrentUser({ required: true }) user: User) {

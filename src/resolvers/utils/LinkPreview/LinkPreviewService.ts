@@ -1,5 +1,4 @@
 import axios from "axios"
-import { getResourceRepository } from "../../../repositories/relearn/ResourceRepository"
 import { isValidUrl } from "../../../utils/isValidUrl"
 import { buildLinkPreviewDto, LinkPreviewDto } from "./types/LinkPreviewDto"
 
@@ -9,6 +8,7 @@ import metascraperDescription from "metascraper-description"
 import metascraperImage from "metascraper-image"
 import metascraperTitle from "metascraper-title"
 import { YOUTUBE_API_KEY } from "../../../config/config"
+import ResourceRepository from "../../../repositories/relearn/ResourceRepository"
 import { YoutubeDataDto } from "./types/YoutubeDataDto"
 
 const metascraper = createMetascraper([
@@ -18,7 +18,7 @@ const metascraper = createMetascraper([
 ])
 
 export default class LinkPreviewService {
-  constructor(private resourceRepo = getResourceRepository()) {}
+  constructor(private resourceRepo = ResourceRepository) {}
 
   getLinkPreview = async (
     url: string,
@@ -43,9 +43,11 @@ export default class LinkPreviewService {
       url,
     })
 
-    const foundResource = await getResourceRepository().findOne({
-      userId: userId,
-      url,
+    const foundResource = await this.resourceRepo.findOne({
+      where: {
+        userId: userId,
+        url,
+      },
     })
 
     if (foundResource) response.alreadySavedResource = foundResource

@@ -1,42 +1,43 @@
-import { EntityRepository, getCustomRepository, Repository } from "typeorm";
-import { Tag } from "../../entities/relearn/Tag";
-import { User } from "../../entities/User";
+import { dataSource } from "../../dataSource"
+import { Tag } from "../../entities/relearn/Tag"
+import { User } from "../../entities/User"
 
-export const getTagRepository = () => getCustomRepository(TagRepository);
+export const getTagRepository = () => TagRepository
 
-@EntityRepository(Tag)
-export default class TagRepository extends Repository<Tag> {
+export const TagRepository = dataSource.getRepository(Tag).extend({
   // PE 2/3 - rename to findAllTagsFromUser
   async getAllTagsFromUser(user: User): Promise<Tag[]> {
     return this.createQueryBuilder("tag")
       .where({ user })
       .leftJoinAndSelect("tag.resources", "resources")
       .orderBy("tag.createdAt", "ASC")
-      .getMany();
-  }
+      .getMany()
+  },
 
   async getFullTagFromUser(tagId: number, userId: number) {
     return this.createQueryBuilder("tag")
       .where({ id: tagId, userId })
       .leftJoinAndSelect("tag.resources", "resources")
       .orderBy("tag.createdAt", "ASC")
-      .getOne();
-  }
+      .getOne()
+  },
 
   async createExampleTagsForNewUser(user: User): Promise<Tag[]> {
     const exampleTag1 = await this.save({
       user,
       name: "[Example] Programming",
       color: "#14aaf5",
-    });
+    })
 
     const exampleTag2 = await this.save({
       user,
       name: "[Example] Soft Skills",
       color: "#6accbc",
       isPrivate: true,
-    });
+    })
 
-    return [exampleTag1, exampleTag2];
-  }
-}
+    return [exampleTag1, exampleTag2]
+  },
+})
+
+export default TagRepository
