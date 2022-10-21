@@ -173,13 +173,13 @@ export class AuthController {
     })
 
     // Signing in and returning  user's token
-    const ONE_DAY_IN_SECONDS = 3600 * 24
+    const ONE_MONTH_IN_SECONDS = 3600 * 24 * 30
 
     const authUser = await new Promise<AuthUserGetDto>((res, rej) => {
       sign(
         { userId: user.id },
         process.env[DotEnvKeys.JWT_SECRET],
-        { expiresIn: ONE_DAY_IN_SECONDS },
+        { expiresIn: ONE_MONTH_IN_SECONDS },
         (err, token) => {
           if (err) return rej(err)
           return res(new AuthUserGetDto(user, token, expireDate))
