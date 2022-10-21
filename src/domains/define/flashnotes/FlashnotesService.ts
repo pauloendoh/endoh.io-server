@@ -37,7 +37,7 @@ export class FlashnotesService {
     return this.noteRepository.createEmptyNotes({
       docId,
       userId: requesterId,
-      initialIndex: highestIndexNote.index + 1,
+      initialIndex: highestIndexNote ? highestIndexNote.index + 1 : 0,
       quantity: quantity,
     })
   }

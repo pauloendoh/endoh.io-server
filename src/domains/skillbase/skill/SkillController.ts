@@ -51,7 +51,7 @@ export class SkillController {
       const found = await this.skillRepo.findOne({
         where: {
           id: sentSkill.id,
-          user,
+          userId: user.id,
         },
       })
       if (!found) throw new NotFoundError("Not owner or skill not found.")
