@@ -34,7 +34,7 @@ export class ResourceController {
       const previousResource = await this.resourceRepo.findOne({
         where: {
           id: sentResource.id,
-          user,
+          userId: user.id,
         },
         relations: {
           tag: true,
