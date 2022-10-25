@@ -57,6 +57,7 @@ export class FlashnotesController {
     }
 
     sentNote.userId = user.id
+    sentNote.doc = undefined
 
     return this.noteRepo.save(sentNote)
   }
