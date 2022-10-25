@@ -98,13 +98,13 @@ export class AuthService {
       where: [{ email: sentUser.email }, { username: sentUser.email }],
     })
     if (!user) {
-      return new BadRequestError("Invalid email or username")
+      throw new BadRequestError("Invalid email or username")
     }
 
     // password is ok ?
     const passwordOk = await compare(sentUser.password, user.password)
     if (!passwordOk) {
-      throw new BadRequestError("Invalid password.")
+      throw new BadRequestError("Invalid password")
     }
 
     // Signing in and returning  user's token
