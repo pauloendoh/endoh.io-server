@@ -12,10 +12,11 @@ const NoteRepository = dataSource.getRepository(Note).extend({
       .orderBy("note.docId", "ASC")
       .addOrderBy("note.index", "ASC")
       .getMany()
-  }
-
-  ,async isOwner(notes: Note[], userId: number): Promise<boolean> {
+  },
+  async isOwner(notes: Note[], userId: number): Promise<boolean> {
     const ids = notes.map((note) => note.id)
+
+    if (ids.length === 0) return true
 
     const count = await this.createQueryBuilder("note")
       .where("note.id IN (:...ids)", { ids })
@@ -23,9 +24,9 @@ const NoteRepository = dataSource.getRepository(Note).extend({
       .getCount()
 
     return ids.length === count
-  }
+  },
 
-  ,async createNotesForNewUser(user: User, doc: Doc): Promise<Note[]> {
+  async createNotesForNewUser(user: User, doc: Doc): Promise<Note[]> {
     const notes: Note[] = []
 
     notes.push(
@@ -75,9 +76,9 @@ const NoteRepository = dataSource.getRepository(Note).extend({
     )
 
     return notes
-  }
+  },
 
-  ,async removeEmptyNotesFromDocId(docId: number, userId: number) {
+  async removeEmptyNotesFromDocId(docId: number, userId: number) {
     await this.createQueryBuilder()
       .delete()
       .where("docId = :docId", { docId })
@@ -90,9 +91,9 @@ const NoteRepository = dataSource.getRepository(Note).extend({
     const notes = await this.find({ where: { docId, userId } })
     const newNotes = notes.map((note, index) => ({ ...note, index }))
     await this.save(newNotes)
-  }
+  },
 
-  ,async searchNotes(text: string, userId: number) {
+  async searchNotes(text: string, userId: number) {
     console.log("searching notes")
     const words = text.split(" ")
 
@@ -113,9 +114,9 @@ const NoteRepository = dataSource.getRepository(Note).extend({
     query = query.leftJoinAndSelect("note.doc", "doc")
 
     return query.getMany()
-  }
+  },
 
-  ,async findNoteWithHighestIndex(docId: number) {
+  async findNoteWithHighestIndex(docId: number) {
     return this.findOne({
       where: {
         docId,
@@ -124,9 +125,9 @@ const NoteRepository = dataSource.getRepository(Note).extend({
         index: "DESC",
       },
     })
-  }
+  },
 
-  ,async createEmptyNotes(args: {
+  async createEmptyNotes(args: {
     quantity: number
     docId: number
     userId: number
@@ -149,7 +150,7 @@ const NoteRepository = dataSource.getRepository(Note).extend({
     })
 
     return notes
-  }
+  },
 })
 
 export default NoteRepository
