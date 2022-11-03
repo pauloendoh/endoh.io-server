@@ -56,10 +56,7 @@ export class FlashnotesController {
         throw new NotFoundError("Note doesn't exist or user is not owner")
     }
 
-    sentNote.userId = user.id
-    sentNote.doc = undefined
-
-    return this.noteRepo.save(sentNote)
+    return this.flashnotesService.createQuestion(sentNote, user.id)
   }
 
   @Put("/define/note/many")

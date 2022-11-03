@@ -61,13 +61,7 @@ export class DocController {
       return savedDoc
     }
 
-    const newDoc = new Doc()
-    newDoc.title = sentDoc.title
-    newDoc.userId = user.id
-    newDoc.folderId = sentDoc.folderId
-
-    const savedDoc = await this.docRepository.save(newDoc)
-    return savedDoc
+    return this.docService.createDoc(sentDoc, user.id)
   }
 
   @Put("/define/doc/:id/last-opened-at")

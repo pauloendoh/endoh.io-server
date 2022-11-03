@@ -117,7 +117,7 @@ const NoteRepository = dataSource.getRepository(Note).extend({
   },
 
   async findNoteWithHighestIndex(docId: number) {
-    return this.findOne({
+    return NoteRepository.findOne({
       where: {
         docId,
       },
