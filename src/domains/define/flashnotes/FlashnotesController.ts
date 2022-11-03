@@ -46,7 +46,8 @@ export class FlashnotesController {
     user: User,
     @Body() sentNote: Note
   ) {
-    if (sentNote.id) this.flashnotesService.updateQuestion(sentNote, user.id)
+    if (sentNote.id)
+      return this.flashnotesService.updateQuestion(sentNote, user.id)
 
     return this.flashnotesService.createQuestion(sentNote, user.id)
   }
