@@ -43,7 +43,7 @@
     "express-openid-connect": "^2.6.0",
     "got": "^12.1.0",
     "graphql": "^15.3.0",
-    "graphql-scalars": "^1.17.0",
+    "graphql-scalars": "^1.20.0",
     "ioredis": "^5.2.3",
     "jsonwebtoken": "^8.5.1",
     "kafkajs": "^2.0.0",
