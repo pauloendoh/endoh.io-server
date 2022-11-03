@@ -4,7 +4,6 @@ import {
   CurrentUser,
   Get,
   JsonController,
-  NotFoundError,
   Param,
   Post,
   Put,
@@ -47,14 +46,7 @@ export class FlashnotesController {
     user: User,
     @Body() sentNote: Note
   ) {
-    if (sentNote.id) {
-      const found = await getNoteRepository().findOne({
-        where: { userId: user.id, id: sentNote.id },
-      })
-
-      if (!found)
-        throw new NotFoundError("Note doesn't exist or user is not owner")
-    }
+    if (sentNote.id) this.flashnotesService.updateQuestion(sentNote, user.id)
 
     return this.flashnotesService.createQuestion(sentNote, user.id)
   }

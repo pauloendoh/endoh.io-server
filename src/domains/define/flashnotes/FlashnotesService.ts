@@ -22,6 +22,20 @@ export class FlashnotesService {
     return this.noteRepository.save(sentNote)
   }
 
+  async updateQuestion(sentNote: Note, requesterId: number) {
+    const found = await this.noteRepository.findOne({
+      where: { userId: requesterId, id: sentNote.id },
+    })
+
+    if (!found)
+      throw new NotFoundError("Note doesn't exist or user is not owner")
+
+    sentNote.userId = requesterId
+    sentNote.doc = undefined
+
+    return this.noteRepository.save(sentNote)
+  }
+
   async searchFlashnotes(query: string, requesterId: number) {
     const [docs, notes] = await Promise.all([
       this.docRepo.searchDocs(query, requesterId),
