@@ -3,6 +3,7 @@ import {
   CurrentUser,
   Delete,
   Get,
+  InternalServerError,
   JsonController,
   NotFoundError,
   Param,
@@ -109,10 +110,14 @@ export class FolderController {
     user: User,
     @Param("id") folderId: number
   ) {
-    const { affected } = await this.folderTreeRepo.delete({
-      userId: user.id,
-      id: folderId,
-    })
+    const { affected } = await this.folderTreeRepo
+      .delete({
+        userId: user.id,
+        id: folderId,
+      })
+      .catch((err) => {
+        throw new InternalServerError(err.message)
+      })
     if (affected === 0) throw new NotFoundError("Not found.")
 
     const userFolders = await findFoldersFromUser(user.id)

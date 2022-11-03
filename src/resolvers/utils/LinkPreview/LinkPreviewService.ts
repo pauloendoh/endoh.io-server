@@ -24,6 +24,7 @@ export default class LinkPreviewService {
     url: string,
     userId: number
   ): Promise<LinkPreviewDto> => {
+    url = url.trim()
     if (!isValidUrl(url)) throw new Error("Invalid URL")
 
     const { data: html } = await axios.get(url, {

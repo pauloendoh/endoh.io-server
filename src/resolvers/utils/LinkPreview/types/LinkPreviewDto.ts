@@ -3,22 +3,22 @@ import { Resource } from "../../../../entities/relearn/Resource"
 
 @ObjectType()
 export class LinkPreviewDto {
-  @Field()
+  @Field({ nullable: true })
   title: string
 
-  @Field()
+  @Field({ nullable: true })
   image: string
 
-  @Field()
+  @Field({ nullable: true })
   description: string
 
-  @Field()
+  @Field({ nullable: true })
   url: string
 
-  @Field()
+  @Field({ nullable: true })
   youtubeVideoLength: string
 
-  @Field()
+  @Field({ nullable: true })
   viewCount: number
 
   @Field(() => Resource, { nullable: true })
