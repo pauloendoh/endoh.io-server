@@ -17,13 +17,18 @@ const executeEvery15Min = async () => {
         myConsoleError("GET FAIL https://endohio-server.herokuapp.com/")
       })
 
-    fetch("https://clothes-server.onrender.com/ping").then((res) =>
-      myConsoleSuccess("GET OK https://clothes-server.onrender.com/ping")
-    )
+    fetch("https://clothes-server.onrender.com/ping")
+      .then((res) =>
+        myConsoleSuccess("GET OK https://clothes-server.onrender.com/ping")
+      )
+      .catch((err) => {
+        myConsoleError("GET FAIL https://clothes-server.onrender.com/ping")
+      })
 
     fetch("https://lolrates.vercel.app/")
       .then((res) => res.text())
       .then((text) => myConsoleSuccess("GET OK https://lolrates.vercel.app/"))
+      .catch(() => myConsoleError("GET FAIL https://lolrates.vercel.app/"))
 
     try {
       const userRepo = UserRepository
