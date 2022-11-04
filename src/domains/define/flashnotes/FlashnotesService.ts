@@ -17,7 +17,7 @@ export class FlashnotesService {
       sentNote.docId
     )
 
-    sentNote.index = noteWithHighestIndex.index + 1
+    sentNote.index = noteWithHighestIndex ? noteWithHighestIndex.index + 1 : 0
 
     return this.noteRepository.save(sentNote)
   }
