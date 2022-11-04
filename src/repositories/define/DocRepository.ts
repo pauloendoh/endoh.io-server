@@ -35,7 +35,7 @@ const DocRepository = dataSource.getRepository(Doc).extend({
     console.log("searching docs")
     const words = text.split(" ")
 
-    let query = this.createQueryBuilder("doc").where({ userId })
+    let query = DocRepository.createQueryBuilder("doc").where({ userId })
 
     // multi word search
     words.forEach((word, index) => {
@@ -47,6 +47,8 @@ const DocRepository = dataSource.getRepository(Doc).extend({
         }
       )
     })
+
+    query = query.orderBy('doc."updatedAt"', "DESC")
 
     return query.getMany()
   },

@@ -97,7 +97,7 @@ const NoteRepository = dataSource.getRepository(Note).extend({
     console.log("searching notes")
     const words = text.split(" ")
 
-    let query = this.createQueryBuilder("note").where({ userId })
+    let query = NoteRepository.createQueryBuilder("note").where({ userId })
 
     // multi word search
     words.forEach((word, index) => {
@@ -111,7 +111,9 @@ const NoteRepository = dataSource.getRepository(Note).extend({
       )
     })
 
-    query = query.leftJoinAndSelect("note.doc", "doc")
+    query = query
+      .leftJoinAndSelect("note.doc", "doc")
+      .orderBy('note."updatedAt"', "DESC")
 
     return query.getMany()
   },
