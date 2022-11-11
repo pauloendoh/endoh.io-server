@@ -33,6 +33,7 @@ import { UserTokenPostDto } from "../../interfaces/dtos/auth/UserTokenPostDto"
 import UserRepository from "../../repositories/UserRepository"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
 import { AuthService } from "./AuthService"
+import { RegisterDto } from "./types/RegisterDto"
 
 @JsonController("/auth")
 export class AuthController {
@@ -46,7 +47,7 @@ export class AuthController {
   @Post("/register")
   async register(
     @Body()
-    body: User
+    body: RegisterDto
   ) {
     return this.authService.register(body)
   }
@@ -163,7 +164,7 @@ export class AuthController {
   @Get("/temp-user")
   async getTempUser() {
     const username = uuidv4()
-    const expireDate = new Date(new Date().setDate(new Date().getDate() + 1))
+    const expireDate = new Date(new Date().setDate(new Date().getDate() + 30))
 
     const user = await this.userRepo.save({
       username: username,
@@ -187,6 +188,14 @@ export class AuthController {
       )
     })
     return authUser
+  }
+
+  @Post("/keep-temp-user")
+  async keepTempUser(
+    @Body() dto: RegisterDto,
+    @CurrentUser({ required: true }) user: User
+  ) {
+    return this.authService.keepTempUser(dto, user.id)
   }
 
   @Get("/user-preference")

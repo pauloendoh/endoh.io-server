@@ -7,13 +7,6 @@ import { EmailService } from "../domains/email/EmailService"
 import { Profile } from "../entities/feed/Profile"
 import { User } from "../entities/User"
 import { UserPreference } from "../entities/UserPreference"
-import DocRepository from "../repositories/define/DocRepository"
-import NoteRepository from "../repositories/define/NoteRepository"
-import UserSuggestionRepository from "../repositories/feed/UserSuggestionRepository"
-import ResourceRepository from "../repositories/relearn/ResourceRepository"
-import TagRepository from "../repositories/relearn/TagRepository"
-import SkillExpectationRepository from "../repositories/skillbase/SkillExpectationRepository"
-import SkillRepository from "../repositories/skillbase/SkillRepository"
 import { myConsoleError } from "../utils/myConsoleError"
 
 @EventSubscriber()
@@ -34,35 +27,35 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
       await event.manager.getRepository(UserPreference).save(preference)
 
       const profile = new Profile()
-      profile.user = event.entity
+      profile.userId = event.entity.id
       await event.manager.getRepository(Profile).save(profile)
 
       // Create user suggestions
-      await UserSuggestionRepository.createUserSuggestionsForUser(event.entity)
+      // await UserSuggestionRepository.createUserSuggestionsForUser(event.entity)
 
       // Create user tags
-      const tags = await TagRepository.createExampleTagsForNewUser(event.entity)
+      // const tags = await TagRepository.createExampleTagsForNewUser(event.entity)
 
       // Create resources
-      await ResourceRepository.createResourcesForNewUser(event.entity, tags)
+      // await ResourceRepository.createResourcesForNewUser(event.entity, tags)
 
       // Create skill to Programming tag
-      const skills = await SkillRepository.createSkillsForNewUser(
-        event.entity,
-        tags[0]
-      )
+      // const skills = await SkillRepository.createSkillsForNewUser(
+      //   event.entity,
+      //   tags[0]
+      // )
 
       // Create skill expectations
-      await SkillExpectationRepository.createExpectationsForNewUser(
-        event.entity,
-        skills
-      )
+      // await SkillExpectationRepository.createExpectationsForNewUser(
+      //   event.entity,
+      //   skills
+      // )
 
       // Create little prince doc
-      const doc = await DocRepository.createDocForNewUser(event.entity)
+      // const doc = await DocRepository.createDocForNewUser(event.entity)
 
       // Create little prince notes
-      await NoteRepository.createNotesForNewUser(event.entity, doc)
+      // await NoteRepository.createNotesForNewUser(event.entity, doc)
     } catch (e) {
       myConsoleError(e.message)
     }

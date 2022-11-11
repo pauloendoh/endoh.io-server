@@ -1,23 +1,25 @@
-import { UserPreference } from '../../../entities/UserPreference';
-import { User } from '../../../entities/User';
+import { User } from "../../../entities/User"
+import { UserPreference } from "../../../entities/UserPreference"
 
-// PE 3/3 
+// PE 3/3
 export class AuthUserGetDto {
-    id: number
-    username: string
-    email: string
+  id: number
+  username: string
+  email: string
+  userExpiresAt: string
 
-    preference: UserPreference
-    token: string
-    expiresAt: Date
+  preference: UserPreference
+  token: string
+  tokenExpiresAt: Date
 
-    constructor(user: User, token: string, expiresAt: Date) {
-        this.id = user.id
-        this.username = user.username
-        this.email = user.email
-        this.preference = user.preference
+  constructor(user: User, token: string, tokenExpiresAt: Date) {
+    this.id = user.id
+    this.username = user.username
+    this.email = user.email
+    this.preference = user.preference
+    this.userExpiresAt = user.expiresAt
 
-        this.token = token
-        this.expiresAt = expiresAt
-    }
+    this.token = token
+    this.tokenExpiresAt = tokenExpiresAt
+  }
 }

@@ -17,6 +17,7 @@ import { UserTokenPostDto } from "../../interfaces/dtos/auth/UserTokenPostDto"
 import UserRepository from "../../repositories/UserRepository"
 import { addMinutes } from "../../utils/time/addMinutes"
 import validateUserFields from "../../utils/validateUser"
+import { RegisterDto } from "./types/RegisterDto"
 
 export class AuthService {
   constructor(
@@ -24,12 +25,16 @@ export class AuthService {
     private tokenRepo = dataSource.getRepository(UserToken)
   ) {}
 
-  async register(userPayload: User) {
-    const sentUser = this.userRepo.create(userPayload)
+  async register(dto: RegisterDto) {
+    // only creates an instance. Doesn't save on DB
+    const sentUser = this.userRepo.create(dto)
     const userErrors = validateUserFields(sentUser)
     if (userErrors.length) {
       throw new BadRequestError(userErrors[0].message)
     }
+
+    if (dto.password !== dto.password2)
+      throw new BadRequestError("Passwords are different!")
 
     // Checking if email exists
     let userExists = await this.userRepo.findOne({
@@ -126,6 +131,78 @@ export class AuthService {
     const authUser = await promise
 
     return authUser
+  }
+
+  async keepTempUser(dto: RegisterDto, userId: number) {
+    const previousTempUser = await this.userRepo.findOne({
+      where: { id: userId },
+    })
+
+    // only creates an instance. Doesn't save on DB
+    const sentUser = this.userRepo.create(dto)
+    const userErrors = validateUserFields(sentUser)
+    if (userErrors.length) {
+      throw new BadRequestError(userErrors[0].message)
+    }
+
+    if (dto.password !== dto.password2)
+      throw new BadRequestError("Passwords are different!")
+
+    // Checking if email exists
+    let userExists = await this.userRepo.findOne({
+      where: {
+        email: sentUser.email,
+      },
+    })
+
+    if (userExists) {
+      throw new BadRequestError("Email already in use")
+    }
+
+    // Checking if username exists
+    userExists = await this.userRepo.findOne({
+      where: {
+        username: sentUser.username,
+      },
+    })
+    if (userExists) {
+      throw new BadRequestError("Username already in use")
+    }
+
+    // Checking if username is valid
+    const regex = new RegExp(/^[a-zA-Z0-9]+$/)
+    if (!regex.test(sentUser.username)) {
+      throw new BadRequestError(
+        "Invalid characters for username. Only use letters and numbers."
+      )
+    }
+
+    const salt = await genSalt(10)
+    sentUser.password = await hash(sentUser.password, salt)
+
+    previousTempUser.username = sentUser.username
+    previousTempUser.password = sentUser.password
+    previousTempUser.email = sentUser.email
+    previousTempUser.expiresAt = null
+
+    const savedUser = await this.userRepo.saveAndGetRelations(previousTempUser)
+
+    const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
+    const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
+
+    const promise = new Promise<AuthUserGetDto>((res, rej) => {
+      sign(
+        { userId: savedUser.id },
+        process.env[DotEnvKeys.JWT_SECRET],
+        { expiresIn: ONE_YEAR_IN_SECONDS },
+        (err, token) => {
+          if (err) throw err
+          res(new AuthUserGetDto(savedUser, token, expireDate))
+        }
+      )
+    })
+
+    return await promise
   }
 
   async saveGoogleTokenAndReturnRedirectURL(user: User) {
