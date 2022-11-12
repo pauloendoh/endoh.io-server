@@ -1,9 +1,13 @@
 import { ForbiddenError } from "routing-controllers"
 import { Doc } from "../../entities/define/Doc"
 import { getDocRepository } from "../../repositories/define/DocRepository"
+import { FlashnotesService } from "../define/flashnotes/FlashnotesService"
 
 export class DocService {
-  constructor(private docRepository = getDocRepository()) {}
+  constructor(
+    private docRepository = getDocRepository(),
+    private flashnotesService = new FlashnotesService()
+  ) {}
 
   async deleteDoc(docId: number, requesterId: number) {
     const isAllowed = await this.docRepository.userOwnsDoc(requesterId, docId)
@@ -20,6 +24,8 @@ export class DocService {
     newDoc.folderId = sentDoc.folderId
 
     const savedDoc = await this.docRepository.save(newDoc)
+
+    await this.flashnotesService.createManyNotes(savedDoc.id, 10, requesterId)
     return savedDoc
   }
 }
