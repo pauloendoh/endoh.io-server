@@ -28,7 +28,7 @@ export class ProgressController {
     user: User,
     @Param("id") id: number
   ) {
-    const result = await this.progressRepo.delete({ id, user })
+    const result = await this.progressRepo.delete({ id, userId: user.id })
     if (!result.affected)
       throw new BadRequestError("Progress not found, or user is not owner.")
 

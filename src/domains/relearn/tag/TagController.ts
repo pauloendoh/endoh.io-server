@@ -8,7 +8,7 @@ import {
   NotFoundError,
   Param,
   Post,
-  Put
+  Put,
 } from "routing-controllers"
 import { Tag } from "../../../entities/relearn/Tag"
 import { User } from "../../../entities/User"
@@ -29,22 +29,22 @@ export class TagController {
 
     // checking ownership
     if (body.id) {
-      const isOwner = await this.tagRepo.find({ 
-        where:{
-          id: body.id, user
-        }
-         })
+      const isOwner = await this.tagRepo.find({
+        where: {
+          id: body.id,
+          user,
+        },
+      })
       if (!isOwner) {
         throw new BadRequestError("User does not own this tag.")
       }
     } else {
       // checking if tag name already exists
       const nameExists = await this.tagRepo.findOne({
-        where:{
-
+        where: {
           name: body.name,
           user: user,
-        }
+        },
       })
       if (nameExists) {
         throw new BadRequestError("Tag name must be unique.")
@@ -72,8 +72,7 @@ export class TagController {
     user: User,
     @Param("id") tagId: number
   ) {
-
-    const result = await this.tagRepo.delete({ id: tagId, user })
+    const result = await this.tagRepo.delete({ id: tagId, userId: user.id })
     if (!result.affected) {
       throw new BadRequestError("Tag id not found, or user is not owner.")
     }
@@ -87,11 +86,11 @@ export class TagController {
     @Param("tagId") tagId: number
   ) {
     const found = await this.tagRepo.findOne({
-      where:{
-        userId: user.id, 
-        id: tagId
-      }
-    }) 
+      where: {
+        userId: user.id,
+        id: tagId,
+      },
+    })
 
     if (!found) {
       throw new NotFoundError("Tag not found.")

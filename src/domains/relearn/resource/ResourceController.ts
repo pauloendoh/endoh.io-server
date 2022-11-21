@@ -120,7 +120,10 @@ export class ResourceController {
     user: User,
     @Param("id") resourceId: number
   ) {
-    const result = await this.resourceRepo.delete({ id: resourceId, user })
+    const result = await this.resourceRepo.delete({
+      id: resourceId,
+      userId: user.id,
+    })
     if (!result.affected)
       throw new BadRequestError("Resource id not found, or user is not owner.")
     return `Resource ${resourceId} deleted.`
@@ -153,7 +156,7 @@ export class ResourceController {
     @Param("id") resourceId: number
   ) {
     const foundResource = await this.resourceRepo.findOne({
-      where: { id: resourceId, user },
+      where: { id: resourceId, userId: user.id },
     })
 
     if (!foundResource)

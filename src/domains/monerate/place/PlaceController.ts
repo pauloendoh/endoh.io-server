@@ -54,7 +54,7 @@ export class PlaceController {
     @CurrentUser({ required: true }) user: User,
     @Param("id") placeId: number
   ) {
-    const result = await this.placeRepo.delete({ id: placeId, user })
+    const result = await this.placeRepo.delete({ id: placeId, userId: user.id })
     if (!result.affected) {
       throw new BadRequestError("Place id not found.")
     }

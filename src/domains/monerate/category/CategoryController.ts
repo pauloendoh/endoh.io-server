@@ -54,7 +54,10 @@ export class CategoryController {
     @CurrentUser({ required: true }) user: User,
     @Param("id") categoryId: number
   ) {
-    const result = await this.categoryRepo.delete({ id: categoryId, user })
+    const result = await this.categoryRepo.delete({
+      id: categoryId,
+      userId: user.id,
+    })
     if (!result.affected)
       throw new BadRequestError("Category id not found, or user is not owner.")
 

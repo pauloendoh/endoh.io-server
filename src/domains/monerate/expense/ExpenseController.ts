@@ -73,7 +73,10 @@ export class ExpenseController {
     @CurrentUser({ required: true }) user: User,
     @Param("id") expenseId: number
   ) {
-    const result = await this.expenseRepo.delete({ id: expenseId, user })
+    const result = await this.expenseRepo.delete({
+      id: expenseId,
+      userId: user.id,
+    })
     if (!result.affected) {
       throw new BadRequestError("Expense id not found, or user is not owner.")
     }
