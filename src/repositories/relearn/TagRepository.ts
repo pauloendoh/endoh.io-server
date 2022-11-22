@@ -7,7 +7,7 @@ export const getTagRepository = () => TagRepository
 export const TagRepository = dataSource.getRepository(Tag).extend({
   // PE 2/3 - rename to findAllTagsFromUser
   async getAllTagsFromUser(user: User): Promise<Tag[]> {
-    return this.createQueryBuilder("tag")
+    return TagRepository.createQueryBuilder("tag")
       .where({ user })
       .leftJoinAndSelect("tag.resources", "resources")
       .orderBy("tag.createdAt", "ASC")
@@ -15,7 +15,7 @@ export const TagRepository = dataSource.getRepository(Tag).extend({
   },
 
   async getFullTagFromUser(tagId: number, userId: number) {
-    return this.createQueryBuilder("tag")
+    return TagRepository.createQueryBuilder("tag")
       .where({ id: tagId, userId })
       .leftJoinAndSelect("tag.resources", "resources")
       .orderBy("tag.createdAt", "ASC")
@@ -23,13 +23,13 @@ export const TagRepository = dataSource.getRepository(Tag).extend({
   },
 
   async createExampleTagsForNewUser(user: User): Promise<Tag[]> {
-    const exampleTag1 = await this.save({
+    const exampleTag1 = await TagRepository.save({
       user,
       name: "[Example] Programming",
       color: "#14aaf5",
     })
 
-    const exampleTag2 = await this.save({
+    const exampleTag2 = await TagRepository.save({
       user,
       name: "[Example] Soft Skills",
       color: "#6accbc",
@@ -37,6 +37,14 @@ export const TagRepository = dataSource.getRepository(Tag).extend({
     })
 
     return [exampleTag1, exampleTag2]
+  },
+
+  findPublicTags() {
+    return TagRepository.find({
+      where: {
+        isPrivate: !false,
+      },
+    })
   },
 })
 

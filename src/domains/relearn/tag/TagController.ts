@@ -102,4 +102,9 @@ export class TagController {
 
     return savedFull
   }
+
+  @Get("/playground/all-public-tags")
+  async findAllPublicTags() {
+    return this.tagRepo.findPublicTags()
+  }
 }
