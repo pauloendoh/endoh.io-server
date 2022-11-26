@@ -33,7 +33,7 @@ export default class LearningService {
 
   async findAvgLearningPerHour(userId: number) {
     const daysCount = await this.repo.getLearningDaysCountByUserId(userId)
-    const learnings = await this.repo.findLearningsByUserId(userId)
+    const learnings = await this.repo.findLearningsByUserIdExceptToday(userId)
     console.log({ daysCount })
 
     const hours: number[] = []

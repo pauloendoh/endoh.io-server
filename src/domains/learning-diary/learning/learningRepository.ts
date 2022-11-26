@@ -1,3 +1,4 @@
+import { LessThan } from "typeorm"
 import { dataSource } from "../../../dataSource"
 import { Learning } from "../../../entities/learning-diary/Learning"
 
@@ -7,7 +8,8 @@ const learningRepository = dataSource.getRepository(Learning).extend({
       `
       select count(distinct datetime::timestamp::date) 
 	      from learning l 
-	    where "userId"  = $1`,
+	    where "userId"  = $1 
+        and "createdAt" < current_date`,
       [userId]
     )
 
@@ -18,6 +20,15 @@ const learningRepository = dataSource.getRepository(Learning).extend({
     return learningRepository.find({
       where: {
         userId,
+      },
+    })
+  },
+
+  async findLearningsByUserIdExceptToday(userId: number) {
+    return learningRepository.find({
+      where: {
+        userId,
+        createdAt: LessThan("current_date"),
       },
     })
   },
