@@ -25,10 +25,11 @@ const learningRepository = dataSource.getRepository(Learning).extend({
   },
 
   async findLearningsByUserIdExceptToday(userId: number) {
+    const currentDate = new Date().toJSON().slice(0, 10)
     return learningRepository.find({
       where: {
         userId,
-        createdAt: LessThan("current_date"),
+        createdAt: LessThan(currentDate),
       },
     })
   },
