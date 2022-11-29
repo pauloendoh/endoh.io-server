@@ -7,6 +7,7 @@ export class AuthUserGetDto {
   username: string
   email: string
   userExpiresAt: string
+  isAdmin: boolean
 
   preference: UserPreference
   token: string
@@ -18,6 +19,7 @@ export class AuthUserGetDto {
     this.email = user.email
     this.preference = user.preference
     this.userExpiresAt = user.expiresAt
+    this.isAdmin = user.isAdmin
 
     this.token = token
     this.tokenExpiresAt = tokenExpiresAt
