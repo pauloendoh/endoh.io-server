@@ -1,4 +1,3 @@
-import { getManager } from "typeorm"
 import { dataSource } from "../../dataSource"
 import { FeedResourceDto } from "../../dtos/feed/FeedResourceDto"
 import { FollowerDto } from "../../dtos/feed/FollowerDto"
@@ -14,7 +13,7 @@ export const FollowingTagRepository = dataSource
   .getRepository(FollowingTag)
   .extend({
     async getFollowingUsers(follower: User): Promise<FollowingUserDto[]> {
-      return this.query(
+      return FollowingTagRepository.query(
         `
           SELECT json_build_object('userId', FUS.id,
                                    'username', FUS.username,
@@ -36,7 +35,7 @@ export const FollowingTagRepository = dataSource
     },
 
     async getFollowers(user: User): Promise<FollowerDto[]> {
-      return this.query(
+      return FollowingTagRepository.query(
         `
           SELECT json_build_object('userId', FUS.id,
                                    'username', FUS.username,
@@ -61,7 +60,7 @@ export const FollowingTagRepository = dataSource
       you: User,
       returnUpTo: number = 40
     ): Promise<MostFollowedUser[]> {
-      return this.query(
+      return FollowingTagRepository.query(
         `
           select (select json_build_object('userId', "user".id, 'username', "user".username) 
                     from "user" where "id" = "followingUserId") as user,
@@ -90,7 +89,7 @@ export const FollowingTagRepository = dataSource
       you: User,
       returnUpTo: number = 10
     ): Promise<MostFollowedUser[]> {
-      return this.query(
+      return FollowingTagRepository.query(
         `
           select (select json_build_object('userId', "user".id, 'username', "user".username)
                     from "user" 
@@ -110,7 +109,7 @@ export const FollowingTagRepository = dataSource
     },
 
     async findFeedResources(user: User): Promise<FeedResourceDto[]> {
-      return this.query(
+      return FollowingTagRepository.query(
         `
       select reso."id", 
              reso."title", 
@@ -146,40 +145,42 @@ export const FollowingTagRepository = dataSource
       tagOwnerId: number,
       tagFollows: TagFollowPostDto[]
     ) {
-      const toNotify = await getManager().transaction(async (manager) => {
-        const tagFollowsToNotify: TagFollowPostDto[] = []
+      const toNotify = await FollowingTagRepository.manager.transaction(
+        async (manager) => {
+          const tagFollowsToNotify: TagFollowPostDto[] = []
 
-        const repo = FollowingTagRepository
+          const repo = FollowingTagRepository
 
-        for (const tagFollow of tagFollows) {
-          if (tagFollow.isFollowing) {
-            const alreadyFollowing = await repo.findOne({
-              where: {
+          for (const tagFollow of tagFollows) {
+            if (tagFollow.isFollowing) {
+              const alreadyFollowing = await repo.findOne({
+                where: {
+                  followerId,
+                  tagId: tagFollow.tagId,
+                },
+              })
+
+              if (!alreadyFollowing) {
+                await repo.save({
+                  followerId,
+                  // infelizmente, mapeei mal os DTOs e as entidades, então isso daqui é required
+                  followingUserId: tagOwnerId,
+                  tagId: tagFollow.tagId,
+                })
+                tagFollowsToNotify.push(tagFollow)
+              }
+            } else {
+              await repo.delete({
                 followerId,
-                tagId: tagFollow.tagId,
-              },
-            })
 
-            if (!alreadyFollowing) {
-              await repo.save({
-                followerId,
-                // infelizmente, mapeei mal os DTOs e as entidades, então isso daqui é required
-                followingUserId: tagOwnerId,
                 tagId: tagFollow.tagId,
               })
-              tagFollowsToNotify.push(tagFollow)
             }
-          } else {
-            await repo.delete({
-              followerId,
-
-              tagId: tagFollow.tagId,
-            })
           }
-        }
 
-        return tagFollowsToNotify
-      })
+          return tagFollowsToNotify
+        }
+      )
 
       return toNotify
     },

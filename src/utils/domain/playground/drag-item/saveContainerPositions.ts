@@ -1,4 +1,4 @@
-import { getManager } from "typeorm"
+import { dataSource } from "../../../../dataSource"
 import DragContainerRepository from "../../../../repositories/playground/DragContainerRepository"
 import { INewDragContainerPosition } from "../../../../types/domain/playground/drag-container/INewDragContainerPosition"
 import { myConsoleError } from "../../../myConsoleError"
@@ -6,7 +6,7 @@ import { myConsoleError } from "../../../myConsoleError"
 export const saveContainerPositions = async (
   newPositions: INewDragContainerPosition[]
 ) => {
-  await getManager().transaction(async (manager) => {
+  await dataSource.manager.transaction(async (manager) => {
     try {
       const repo = DragContainerRepository
 
