@@ -118,8 +118,9 @@ export default class LearningService {
       count: Math.floor(total / totalDays),
       top25PercentDaysLearningCount:
         top25PercentDaysLearningCount / top25PercentDays.length,
-      top50PercentDaysLearningCount:
-        top50PercentDaysLearningCount / top50PercentDays.length,
+      top50PercentDaysLearningCount: Math.floor(
+        top50PercentDaysLearningCount / top50PercentDays.length
+      ),
     }
   }
 }
