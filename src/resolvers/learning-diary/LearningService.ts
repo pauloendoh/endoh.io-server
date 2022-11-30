@@ -31,7 +31,11 @@ export default class LearningService {
     return await this.repo.save({ ...found, ...data })
   }
 
-  async findAvgLearningPerHour(userId: number, clientHourOffset: number) {
+  async findAvgLearningPerHour(
+    userId: number,
+    clientHourOffset: number,
+    topPercent = 0
+  ) {
     const serverHourOffset = (new Date().getTimezoneOffset() / 60) * -1
     const diffHourOffset = clientHourOffset - serverHourOffset
 
@@ -51,9 +55,9 @@ export default class LearningService {
 
     const totalDays = countByDay.length
 
-    const top50Index = Math.floor(totalDays / 2)
-    const top50PercentDays = countByDay
-      .slice(0, top50Index)
+    const topIndex = Math.floor(totalDays / (100 / topPercent))
+    const topPercentDays = countByDay
+      .slice(0, topIndex)
       .map((c) => c.date)
       .map((d) => d.toJSON().slice(0, 10))
 
@@ -63,7 +67,7 @@ export default class LearningService {
           learnings,
           countByDay.length,
           hour,
-          top50PercentDays
+          topPercentDays
         )
       )
     )
@@ -75,7 +79,7 @@ export default class LearningService {
     allLearnings: Learning[],
     totalDays: number,
     hour: number,
-    top50PercentDays: string[]
+    topPercentDays: string[]
   ) {
     if (hour === 23) {
       console.log()
@@ -95,10 +99,10 @@ export default class LearningService {
       return total + 1
     }, 0)
 
-    const top50PercentDaysLearningCount = filteredLearnings
+    const topPercentDaysLearningCount = filteredLearnings
       .filter((l) => {
         const day = DateTime.fromJSDate(new Date(l.datetime)).toISODate()
-        return top50PercentDays.includes(day)
+        return topPercentDays.includes(day)
       })
       .reduce((total, l) => {
         if (l.isHighlight) return total + 2
@@ -109,8 +113,8 @@ export default class LearningService {
       hour,
       count: Math.floor(total / totalDays),
 
-      top50PercentDaysLearningCount: Math.floor(
-        top50PercentDaysLearningCount / top50PercentDays.length
+      topPercentDaysLearningCount: Math.floor(
+        topPercentDaysLearningCount / topPercentDays.length
       ),
     }
   }

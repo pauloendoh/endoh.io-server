@@ -14,8 +14,13 @@ export class ProgressController {
   @Get("/avg-learning-per-hour")
   async findAvgLearningPerHour(
     @CurrentUser({ required: true }) user: User,
-    @QueryParam("hourOffset", { required: true }) hourOffset: number
+    @QueryParam("hourOffset", { required: true }) hourOffset: number,
+    @QueryParam("topPercent", { required: true }) topPercent: number
   ) {
-    return this.learningService.findAvgLearningPerHour(user.id, hourOffset)
+    return this.learningService.findAvgLearningPerHour(
+      user.id,
+      hourOffset,
+      topPercent
+    )
   }
 }
