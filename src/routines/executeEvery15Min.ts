@@ -17,6 +17,15 @@ const executeEvery15Min = async () => {
         myConsoleError("GET FAIL https://endohio-server.herokuapp.com/")
       })
 
+    fetch("https://ration-server.herokuapp.com/ping")
+      .then((res) => res.json())
+      .then((json) =>
+        myConsoleSuccess("GET OK https://ration-server.herokuapp.com/ping")
+      )
+      .catch(() => {
+        myConsoleError("GET FAIL https://ration-server.herokuapp.com/ping")
+      })
+
     fetch("https://clothes-server.onrender.com/ping")
       .then((res) =>
         myConsoleSuccess("GET OK https://clothes-server.onrender.com/ping")
