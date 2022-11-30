@@ -43,6 +43,8 @@ export default class LearningService {
     const totalDays = countByDay.length
     const top25Index = Math.floor(totalDays / 4)
     const top25PercentDays = countByDay.slice(0, top25Index).map((c) => c.date)
+    const top50Index = Math.floor(totalDays / 2)
+    const top50PercentDays = countByDay.slice(0, top50Index).map((c) => c.date)
 
     const avgLearningByHour = Promise.all(
       hours.map((hour) =>
@@ -50,7 +52,8 @@ export default class LearningService {
           learnings,
           countByDay.length,
           hour,
-          top25PercentDays
+          top25PercentDays,
+          top50PercentDays
         )
       )
     )
@@ -62,11 +65,17 @@ export default class LearningService {
     allLearnings: Learning[],
     totalDays: number,
     hour: number,
-    top25PercentDays: Date[]
+    top25PercentDays: Date[],
+    top50PercentDays: Date[]
   ) {
     const top25PercentDaysAsString = top25PercentDays.map((d) =>
       d.toJSON().slice(0, 10)
     )
+
+    const top50PercentDaysAsString = top50PercentDays.map((d) =>
+      d.toJSON().slice(0, 10)
+    )
+
     if (hour === 24) {
       console.log()
     }
@@ -94,11 +103,23 @@ export default class LearningService {
         return total + 1
       }, 0)
 
+    const top50PercentDaysLearningCount = filteredLearnings
+      .filter((l) => {
+        const day = DateTime.fromJSDate(new Date(l.datetime)).toISODate()
+        return top50PercentDaysAsString.includes(day)
+      })
+      .reduce((total, l) => {
+        if (l.isHighlight) return total + 2
+        return total + 1
+      }, 0)
+
     return {
       hour,
       count: Math.floor(total / totalDays),
       top25PercentDaysLearningCount:
         top25PercentDaysLearningCount / top25PercentDays.length,
+      top50PercentDaysLearningCount:
+        top50PercentDaysLearningCount / top50PercentDays.length,
     }
   }
 }
