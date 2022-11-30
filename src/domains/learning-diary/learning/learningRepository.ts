@@ -3,17 +3,22 @@ import { dataSource } from "../../../dataSource"
 import { Learning } from "../../../entities/learning-diary/Learning"
 
 const learningRepository = dataSource.getRepository(Learning).extend({
-  async getLearningDaysCountByUserId(userId: number) {
+  async getLearningCountByDay(
+    userId: number
+  ): Promise<{ date: Date; learningCount: number }[]> {
     const result = await learningRepository.query(
       `
-      select count(distinct datetime::timestamp::date) 
+      select datetime::timestamp::date                              as "date", 
+             sum(case when "isHighlight" = true then 2 else 1 end)  as "learningCount"
 	      from learning l 
-	    where "userId"  = $1 
-        and "createdAt" < current_date`,
+	     where "userId"  = $1
+         and "createdAt" < current_date
+    group by datetime::timestamp::date
+    order by "learningCount" desc`,
       [userId]
     )
 
-    return Number(result[0]["count"])
+    return result
   },
 
   async findLearningsByUserId(userId: number) {

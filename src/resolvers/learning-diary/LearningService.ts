@@ -32,18 +32,26 @@ export default class LearningService {
   }
 
   async findAvgLearningPerHour(userId: number) {
-    const daysCount = await this.repo.getLearningDaysCountByUserId(userId)
+    const countByDay = await this.repo.getLearningCountByDay(userId)
     const learnings = await this.repo.findLearningsByUserIdExceptToday(userId)
-    console.log({ daysCount })
 
     const hours: number[] = []
     for (let i = 1; i <= 24; i++) {
       hours.push(i)
     }
 
+    const totalDays = countByDay.length
+    const top25Index = Math.floor(totalDays / 4)
+    const top25PercentDays = countByDay.slice(0, top25Index).map((c) => c.date)
+
     const avgLearningByHour = Promise.all(
       hours.map((hour) =>
-        this.filterAvgLearningByHour(learnings, daysCount, hour)
+        this.filterAvgLearningByHour(
+          learnings,
+          countByDay.length,
+          hour,
+          top25PercentDays
+        )
       )
     )
 
@@ -51,15 +59,19 @@ export default class LearningService {
   }
 
   private async filterAvgLearningByHour(
-    learnings: Learning[],
-    daysCount: number,
-    hour: number
+    allLearnings: Learning[],
+    totalDays: number,
+    hour: number,
+    top25PercentDays: Date[]
   ) {
+    const top25PercentDaysAsString = top25PercentDays.map((d) =>
+      d.toJSON().slice(0, 10)
+    )
     if (hour === 24) {
       console.log()
     }
 
-    const filteredLearnings = learnings.filter((l) => {
+    const filteredLearnings = allLearnings.filter((l) => {
       const dt = DateTime.fromJSDate(new Date(l.datetime))
 
       if (dt.hour === 0 && dt.minute === 0 && dt.second === 0) return false
@@ -72,9 +84,21 @@ export default class LearningService {
       return total + 1
     }, 0)
 
+    const top25PercentDaysLearningCount = filteredLearnings
+      .filter((l) => {
+        const day = DateTime.fromJSDate(new Date(l.datetime)).toISODate()
+        return top25PercentDaysAsString.includes(day)
+      })
+      .reduce((total, l) => {
+        if (l.isHighlight) return total + 2
+        return total + 1
+      }, 0)
+
     return {
       hour,
-      count: Math.floor(total / daysCount),
+      count: Math.floor(total / totalDays),
+      top25PercentDaysLearningCount:
+        top25PercentDaysLearningCount / top25PercentDays.length,
     }
   }
 }
