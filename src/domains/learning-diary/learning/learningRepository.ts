@@ -8,12 +8,12 @@ const learningRepository = dataSource.getRepository(Learning).extend({
   ): Promise<{ date: Date; learningCount: number }[]> {
     const result = await learningRepository.query(
       `
-      select datetime::timestamp::date                              as "date", 
-             sum(case when "isHighlight" = true then 2 else 1 end)  as "learningCount"
+      select ("datetime" + interval '${hourOffset}' hour)::timestamp::date  as "date", 
+             sum(case when "isHighlight" = true then 2 else 1 end)          as "learningCount"
 	      from learning l 
 	     where "userId"  = $1
          and ("datetime" + interval '${hourOffset}' hour) < current_date
-    group by datetime::timestamp::date
+    group by ("datetime" + interval '${hourOffset}' hour)::timestamp::date
     order by "learningCount" desc`,
       [userId]
     )

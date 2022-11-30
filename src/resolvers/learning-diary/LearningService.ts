@@ -84,6 +84,8 @@ export default class LearningService {
     const filteredLearnings = allLearnings.filter((l) => {
       const dt = DateTime.fromJSDate(new Date(l.datetime))
 
+      if (dt.hour === 0 && dt.minute === 0 && dt.second === 0) return false
+
       if (dt.hour >= hour) return false
       return true
     })
