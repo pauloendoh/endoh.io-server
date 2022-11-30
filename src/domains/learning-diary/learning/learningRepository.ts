@@ -1,10 +1,10 @@
-import { LessThan } from "typeorm"
 import { dataSource } from "../../../dataSource"
 import { Learning } from "../../../entities/learning-diary/Learning"
 
 const learningRepository = dataSource.getRepository(Learning).extend({
   async getLearningCountByDay(
-    userId: number
+    userId: number,
+    hourOffset: number
   ): Promise<{ date: Date; learningCount: number }[]> {
     const result = await learningRepository.query(
       `
@@ -12,7 +12,7 @@ const learningRepository = dataSource.getRepository(Learning).extend({
              sum(case when "isHighlight" = true then 2 else 1 end)  as "learningCount"
 	      from learning l 
 	     where "userId"  = $1
-         and "createdAt" < current_date
+         and ("datetime" + interval '${hourOffset}' hour) < current_date
     group by datetime::timestamp::date
     order by "learningCount" desc`,
       [userId]
@@ -29,14 +29,18 @@ const learningRepository = dataSource.getRepository(Learning).extend({
     })
   },
 
-  async findLearningsByUserIdExceptToday(userId: number) {
-    const currentDate = new Date().toJSON().slice(0, 10)
-    return learningRepository.find({
-      where: {
-        userId,
-        createdAt: LessThan(currentDate),
-      },
-    })
+  async findLearningsByUserIdExceptToday(userId: number, hourOffset: number) {
+    return learningRepository.query(
+      `
+      select ("datetime" + interval '${hourOffset}' hour) as "datetime", 
+        "isHighlight"
+       from learning l 
+      where ("datetime" + interval '${hourOffset}' hour) < current_date
+      and "userId" = $1
+      
+   `,
+      [userId]
+    )
   },
 })
 
