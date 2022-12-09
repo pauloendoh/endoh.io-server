@@ -14,6 +14,7 @@ import { User } from "../../../entities/User"
 import { getNoteRepository } from "../../../repositories/define/NoteRepository"
 import { FlashnotesService } from "./FlashnotesService"
 import { CreateManyNotesDto } from "./types/CreateManyNotesDto"
+import { FlashnotesSearchType } from "./types/FlashnotesSearchType"
 
 @JsonController()
 export class FlashnotesController {
@@ -27,9 +28,14 @@ export class FlashnotesController {
   async searchFlashnotes(
     @CurrentUser({ required: true })
     user: User,
-    @QueryParam("q", { required: true }) q: string
+    @QueryParam("q", { required: true }) q: string,
+    @QueryParam("type", { required: true }) type: FlashnotesSearchType
   ) {
-    return this.flashnotesService.searchFlashnotes(q, user.id)
+    return this.flashnotesService.searchFlashnotes({
+      query: q,
+      requesterId: user.id,
+      type,
+    })
   }
 
   @Get("/define/note")

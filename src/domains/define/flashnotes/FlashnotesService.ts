@@ -2,6 +2,7 @@ import { NotFoundError } from "routing-controllers"
 import { Note } from "../../../entities/define/Note"
 import DocRepository from "../../../repositories/define/DocRepository"
 import NoteRepository from "../../../repositories/define/NoteRepository"
+import { FlashnotesSearchType } from "./types/FlashnotesSearchType"
 
 export class FlashnotesService {
   constructor(
@@ -36,7 +37,23 @@ export class FlashnotesService {
     return this.noteRepository.save(sentNote)
   }
 
-  async searchFlashnotes(query: string, requesterId: number) {
+  async searchFlashnotes(options: {
+    query: string
+    requesterId: number
+    type: FlashnotesSearchType
+  }) {
+    const { query, requesterId, type } = options
+
+    if (type === "questions") {
+      return {
+        docs: [],
+        notes: await this.noteRepository.searchNotesByQuestionText(
+          query,
+          requesterId
+        ),
+      }
+    }
+
     const [docs, notes] = await Promise.all([
       this.docRepo.searchDocs(query, requesterId),
       this.noteRepository.searchNotes(query, requesterId),

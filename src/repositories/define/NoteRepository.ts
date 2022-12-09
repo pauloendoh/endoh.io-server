@@ -93,8 +93,28 @@ const NoteRepository = dataSource.getRepository(Note).extend({
     await this.save(newNotes)
   },
 
+  async searchNotesByQuestionText(text: string, userId: number) {
+    const words = text.split(" ")
+
+    let query = NoteRepository.createQueryBuilder("note").where({ userId })
+
+    words.forEach((word, index) => {
+      query = query.andWhere(
+        `(unaccent(note.question) ilike unaccent(:text${index}))`,
+        {
+          [`text${index}`]: `%${word}%`,
+        }
+      )
+    })
+
+    query = query
+      .leftJoinAndSelect("note.doc", "doc")
+      .orderBy('note."updatedAt"', "DESC")
+
+    return query.getMany()
+  },
+
   async searchNotes(text: string, userId: number) {
-    console.log("searching notes")
     const words = text.split(" ")
 
     let query = NoteRepository.createQueryBuilder("note").where({ userId })
