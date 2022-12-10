@@ -85,8 +85,7 @@ export class SkillController {
     await this.skillExpectationRepo.delete({ skillId: savedSkill.id })
     await this.skillExpectationRepo.save(expectations)
 
-    const allSkills = await this.skillRepo.getAllFromUser(user.id)
-    return allSkills
+    return savedSkill
   }
 
   @Put("/skillbase/skill/:id")
