@@ -39,7 +39,15 @@ export class Note {
   @Column({ default: "" })
   question: string
 
-  @Column("decimal", { default: 1, precision: 5, scale: 2 })
+  @Column("decimal", {
+    default: 1,
+    precision: 5,
+    scale: 2,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
+  })
   weight: number
 
   @Column({ default: 0 })
