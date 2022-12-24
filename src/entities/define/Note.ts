@@ -39,7 +39,7 @@ export class Note {
   @Column({ default: "" })
   question: string
 
-  @Column({ default: 1 })
+  @Column("decimal", { default: 1, precision: 5, scale: 2 })
   weight: number
 
   @Column({ default: 0 })
