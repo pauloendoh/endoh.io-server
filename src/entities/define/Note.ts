@@ -42,6 +42,9 @@ export class Note {
   @Column({ default: 1 })
   weight: number
 
+  @Column({ default: 0 })
+  testedTimes: number
+
   @Column({ default: false })
   toRefine: boolean
 
