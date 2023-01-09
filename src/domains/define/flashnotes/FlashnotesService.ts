@@ -86,4 +86,15 @@ export class FlashnotesService {
       quantity: quantity,
     })
   }
+
+  deleteQuestion = async (questionId: number, requesterId: number) => {
+    const found = await this.noteRepository.findOne({
+      where: { userId: requesterId, id: questionId },
+    })
+
+    if (!found)
+      throw new NotFoundError("Note doesn't exist or user is not owner")
+
+    return this.noteRepository.delete(questionId)
+  }
 }

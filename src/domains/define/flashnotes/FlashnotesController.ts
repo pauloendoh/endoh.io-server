@@ -2,6 +2,7 @@ import { ForbiddenError } from "apollo-server-core"
 import {
   Body,
   CurrentUser,
+  Delete,
   Get,
   JsonController,
   Param,
@@ -83,5 +84,14 @@ export class FlashnotesController {
       body.notesQuantity,
       user.id
     )
+  }
+
+  @Delete("/question/:questionId")
+  async deleteQuestion(
+    @CurrentUser({ required: true })
+    user: User,
+    @Param("questionId") questionId: number
+  ) {
+    return this.flashnotesService.deleteQuestion(questionId, user.id)
   }
 }
