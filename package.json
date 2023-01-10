@@ -47,7 +47,7 @@
     "ioredis": "^5.2.3",
     "jsonwebtoken": "^8.5.1",
     "kafkajs": "^2.0.0",
-    "luxon": "^1.27.0",
+    "luxon": "^1.28.1",
     "metascraper": "^5.29.8",
     "metascraper-description": "^5.29.7",
     "metascraper-image": "^5.29.7",
