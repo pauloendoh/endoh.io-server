@@ -122,10 +122,15 @@ export default class LearningService {
   async findLearningsPerDay(userId: number) {
     const countByDay = await this.repo.getLearningCountByDay(userId, 0)
 
-    return countByDay.sort(
-      (a, b) =>
-        // date desc
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
+    return countByDay
+      .filter(
+        // should not include today
+        (c) => c.date.toJSON().slice(0, 10) !== new Date().toJSON().slice(0, 10)
+      )
+      .sort(
+        (a, b) =>
+          // date desc
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+      )
   }
 }
