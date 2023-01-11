@@ -29,7 +29,10 @@ const learningRepository = dataSource.getRepository(Learning).extend({
     })
   },
 
-  async findLearningsByUserIdExceptToday(userId: number, hourOffset: number) {
+  async findLearningsByUserIdExceptToday(
+    userId: number,
+    hourOffset: number
+  ): Promise<Learning[]> {
     return learningRepository.query(
       `
       select ("datetime" + interval '${hourOffset}' hour) as "datetime", 

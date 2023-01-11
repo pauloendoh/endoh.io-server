@@ -23,4 +23,9 @@ export class ProgressController {
       topPercent
     )
   }
+
+  @Get("/learnings-per-day")
+  async findLearningsPerDay(@CurrentUser({ required: true }) user: User) {
+    return this.learningService.findLearningsPerDay(user.id)
+  }
 }
