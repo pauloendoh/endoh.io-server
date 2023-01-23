@@ -19,7 +19,6 @@ import ResourceRepository from "../../../repositories/relearn/ResourceRepository
 export class ResourceController {
   constructor(private resourceRepo = ResourceRepository) {}
 
-  // PE 1/3 - it's getting way too slow
   @Post("/relearn/resource")
   async saveResource(
     @CurrentUser({ required: true })
@@ -28,6 +27,8 @@ export class ResourceController {
   ) {
     if (sentResource.tag === null)
       throw new BadRequestError("Resource must have a tag.")
+
+    if (sentResource.thumbnail === null) sentResource.thumbnail = ""
 
     // If updating
     if (sentResource.id) {

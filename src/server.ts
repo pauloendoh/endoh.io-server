@@ -35,6 +35,7 @@ import bodyParser = require("body-parser")
 import responseTime = require("response-time")
 import path = require("path")
 import compression = require("compression")
+const partialResponse = require("express-partial-response")
 require("./utils/passport-setup")
 require(`dotenv`).config()
 const stripe: Stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
@@ -73,6 +74,7 @@ dataSource
 
     // app.use(cors());
 
+    app.use(partialResponse())
     app.use(saveResponseTime())
     app.use(
       compression({
@@ -86,7 +88,27 @@ dataSource
     // For testing
     app.get("/", async (req, res) => {
       res.statusMessage = "zimbabwe"
-      res.status(404).json("nice?")
+      res.status(200).json({
+        message: "nice",
+        data: [
+          {
+            id: 1,
+            cat: {
+              favoriteFoods: [
+                {
+                  name: "pizza",
+                  calories: 1000,
+                },
+                {
+                  name: "burger",
+                  calories: 1000,
+                },
+              ],
+            },
+          },
+          { id: 2, cat: "xd" },
+        ],
+      })
     })
 
     // https://stackoverflow.com/questions/38306569/what-does-body-parser-do-with-express
