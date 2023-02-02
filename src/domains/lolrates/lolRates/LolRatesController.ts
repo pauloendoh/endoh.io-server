@@ -2,7 +2,7 @@ import { Get, JsonController } from "routing-controllers"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 
 @JsonController()
-export class DocController {
+export class LolRatesController {
   constructor(private lolRateRepo = LolRateRepository) {}
 
   @Get("/lolRates")
