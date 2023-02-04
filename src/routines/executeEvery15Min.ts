@@ -26,6 +26,14 @@ const executeEvery15Min = async () => {
         myConsoleError("GET FAIL https://ration-server.herokuapp.com/ping")
       })
 
+    const ideameter = "https://ideameter.vercel.app/group/123"
+    fetch(ideameter)
+      .then((res) => res.json())
+      .then((json) => myConsoleSuccess("GET OK " + ideameter))
+      .catch(() => {
+        myConsoleSuccess("GET FAIL BUT OK " + ideameter)
+      })
+
     fetch("https://monerate-server.herokuapp.com/ping")
       .then((res) => res.json())
       .then((json) =>
