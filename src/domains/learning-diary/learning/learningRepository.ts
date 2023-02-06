@@ -9,7 +9,7 @@ const learningRepository = dataSource.getRepository(Learning).extend({
     const result = await learningRepository.query(
       `
       select ("datetime" + interval '${hourOffset}' hour)::timestamp::date  as "date", 
-             sum(case when "isHighlight" = true then 2 else 1 end)          as "learningCount"
+             sum("points")          as "learningCount"
 	      from learning l 
 	     where "userId"  = $1
          and ("datetime" + interval '${hourOffset}' hour) < current_date
@@ -36,7 +36,7 @@ const learningRepository = dataSource.getRepository(Learning).extend({
     return learningRepository.query(
       `
       select ("datetime" + interval '${hourOffset}' hour) as "datetime", 
-        "isHighlight"
+        "points"
        from learning l 
       where ("datetime" + interval '${hourOffset}' hour) < current_date
       and "userId" = $1

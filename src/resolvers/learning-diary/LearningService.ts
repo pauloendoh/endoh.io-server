@@ -95,8 +95,7 @@ export default class LearningService {
     })
 
     const total = filteredLearnings.reduce((total, l) => {
-      if (l.isHighlight) return total + 2
-      return total + 1
+      return total + l.points
     }, 0)
 
     const topPercentDaysLearningCount = filteredLearnings
@@ -105,8 +104,7 @@ export default class LearningService {
         return topPercentDays.includes(day)
       })
       .reduce((total, l) => {
-        if (l.isHighlight) return total + 2
-        return total + 1
+        return total + l.points
       }, 0)
 
     return {

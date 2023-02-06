@@ -1,6 +1,6 @@
-import { DateTimeResolver } from "graphql-scalars";
+import { DateTimeResolver } from "graphql-scalars"
 
-import { Field, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "type-graphql"
 import {
   Column,
   CreateDateColumn,
@@ -8,40 +8,44 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { User } from "../User";
+} from "typeorm"
+import { User } from "../User"
 
 @Entity()
 @ObjectType()
 export class Learning {
   @PrimaryGeneratedColumn()
   @Field()
-  id: number;
+  id: number
 
   @ManyToOne((type) => User, (user) => user.learnings, { onDelete: "CASCADE" })
-  user: User;
+  user: User
 
   @Column()
   @Field()
-  userId: number;
+  userId: number
 
   @Column({ default: "" })
   @Field()
-  description: string;
+  description: string
 
   @Column({ default: false })
   @Field()
-  isHighlight: boolean;
+  isHighlight: boolean
+
+  @Column({ default: 1 })
+  @Field(() => Int)
+  points: number
 
   @CreateDateColumn()
   @Field(() => DateTimeResolver)
-  datetime: string;
+  datetime: string
 
   @CreateDateColumn()
   @Field(() => DateTimeResolver)
-  createdAt: string;
+  createdAt: string
 
   @UpdateDateColumn()
   @Field(() => DateTimeResolver)
-  updatedAt: string;
+  updatedAt: string
 }

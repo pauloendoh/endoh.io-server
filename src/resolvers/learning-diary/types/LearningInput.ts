@@ -1,18 +1,22 @@
-import { IsDateString } from "class-validator";
-import { Field, InputType } from "type-graphql";
+import { IsDateString, IsNumber } from "class-validator"
+import { Field, InputType, Int } from "type-graphql"
 
 @InputType()
 export default class LearningInput {
   @Field({ nullable: true })
-  id?: number;
+  id?: number
 
   @Field()
-  description: string;
+  description: string
 
   @Field()
-  isHighlight: boolean;
+  isHighlight: boolean
 
   @Field()
   @IsDateString()
-  datetime: string;
+  datetime: string
+
+  @Field(() => Int)
+  @IsNumber()
+  points: number
 }
