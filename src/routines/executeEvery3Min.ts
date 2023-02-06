@@ -12,7 +12,7 @@ const executeEvery3Min = async () => {
       .catch(() => {
         myConsoleSuccess("GET FAIL BUT OK " + ideameter)
       })
-  }, 60 * 1000 * 3)
+  }, 60 * 1000 * 2.5)
 }
 
 export default executeEvery3Min
