@@ -32,7 +32,6 @@ const DocRepository = dataSource.getRepository(Doc).extend({
   },
 
   async searchDocs(text: string, userId: number) {
-    console.log("searching docs")
     const words = text.split(" ")
 
     let query = DocRepository.createQueryBuilder("doc").where({ userId })
