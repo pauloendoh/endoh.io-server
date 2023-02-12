@@ -86,4 +86,12 @@ export class UtilsController {
   ) {
     return this.linkPreviewService.getLinkPreview(url, user.id)
   }
+
+  @Get("/already-saved-resource")
+  async findAlreadySavedResource(
+    @CurrentUser({ required: true }) user: User,
+    @QueryParam("url", { required: true }) url: string
+  ) {
+    return this.linkPreviewService.findAlreadySavedResource(user.id, url)
+  }
 }

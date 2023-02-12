@@ -108,4 +108,25 @@ export default class LinkPreviewService {
       viewCount,
     }
   }
+
+  async findAlreadySavedResource(userId: number, url: string) {
+    const foundResource = await this.resourceRepo.findOne({
+      where: {
+        userId,
+        url,
+      },
+    })
+
+    if (foundResource) {
+      return {
+        found: true,
+        resource: foundResource,
+      }
+    }
+
+    return {
+      found: false,
+      resource: null,
+    }
+  }
 }
