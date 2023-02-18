@@ -109,7 +109,7 @@ export default class LearningService {
 
     return {
       hour,
-      count: Math.floor(total / totalDays),
+      avgCount: Math.floor(total / totalDays),
 
       topPercentDaysLearningCount: Math.floor(
         topPercentDaysLearningCount / topPercentDays.length
