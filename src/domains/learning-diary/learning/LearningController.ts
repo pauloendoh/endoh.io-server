@@ -25,7 +25,10 @@ export class ProgressController {
   }
 
   @Get("/learnings-per-day")
-  async findLearningsPerDay(@CurrentUser({ required: true }) user: User) {
-    return this.learningService.findLearningsPerDay(user.id)
+  async findLearningsPerDay(
+    @CurrentUser({ required: true }) user: User,
+    @QueryParam("hourOffset", { required: true }) hourOffset: number
+  ) {
+    return this.learningService.findLearningsPerDay(user.id, hourOffset)
   }
 }

@@ -117,8 +117,14 @@ export default class LearningService {
     }
   }
 
-  async findLearningsPerDay(userId: number) {
-    const countByDay = await this.repo.getLearningCountByDay(userId, 0)
+  async findLearningsPerDay(userId: number, clientHourOffset: number) {
+    const serverHourOffset = (new Date().getTimezoneOffset() / 60) * -1
+    const diffHourOffset = clientHourOffset - serverHourOffset
+
+    const countByDay = await this.repo.getLearningCountByDay(
+      userId,
+      diffHourOffset
+    )
 
     return countByDay
       .filter(
