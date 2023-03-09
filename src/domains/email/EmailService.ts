@@ -14,8 +14,8 @@ export class EmailService {
     const devsEmails = devsEmailsString.split(";").map((s) => s.trim())
 
     const subject = user.expiresAt
-      ? "[endoh.io] - New TEMP user"
-      : "[endoh.io] - New user: " + user.username
+      ? "[relearn.to] - New TEMP user"
+      : "[relearn.to] - New user: " + user.username
 
     this.sendgridService
       .send({

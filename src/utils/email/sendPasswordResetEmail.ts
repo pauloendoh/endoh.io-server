@@ -42,7 +42,7 @@ export async function sendPasswordResetEmail(user: User) {
   const responses = await sgMail.send({
     from: "endohpa@gmail.com",
     to: user.email, // list of receivers
-    subject: "Endoh.io - Password reset", // Subject line
+    subject: "relearn.to - Password reset", // Subject line
     text: "Enter this link to complete your password reset: ",
     html: `Enter this link to complete your password reset: <br/>
             <a href="${url}">${url}</a>

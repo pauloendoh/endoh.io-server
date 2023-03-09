@@ -2,18 +2,16 @@
 
 Endoh.io contains tools for autodidacts
 
-[Site](https://endoh.io/ )
+[Site](https://relearn.to/)
 <br>
-[Client repo](https://github.com/pauloendoh/endoh.io-client)
-
+[Front repo](https://github.com/pauloendoh/relearn-front)
 
 ## Installation:
 
 - Install dependencies: `npm i`
 - Run docker compose: `docker compose up`
 
-
-- Ask for .env file 
+- Ask for .env file
 - Run migrations: `npm run migrate`
 
 - Restart docker compose
