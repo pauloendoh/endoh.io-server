@@ -19,6 +19,7 @@ import { UserSuggestion } from "./feed/UserSuggestion"
 import { Learning } from "./learning-diary/Learning"
 import { ChampionRadar } from "./LolRates/ChampionRadar"
 import { Player } from "./LolRates/Player"
+import { UserAramChampion } from "./LolRates/UserAramChampion"
 import Category from "./monerate/Category"
 import { Expense } from "./monerate/Expense"
 import Place from "./monerate/Place"
@@ -182,4 +183,7 @@ export class User {
 
   @OneToMany((type) => Friend, (friend) => friend.user)
   friends: Friend[]
+
+  @OneToMany((type) => UserAramChampion, (aramChampion) => aramChampion.user)
+  aramChampions: UserAramChampion[]
 }

@@ -5,37 +5,41 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { ChampionRadar } from "./ChampionRadar";
-import { PlayerChampion } from "./PlayerChampion";
+} from "typeorm"
+import { ChampionRadar } from "./ChampionRadar"
+import { PlayerChampion } from "./PlayerChampion"
+import { UserAramChampion } from "./UserAramChampion"
 
 @Entity()
 export class Champion {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column()
-  name: string;
+  name: string
 
   @Column()
-  iconUrl: string;
+  iconUrl: string
 
   @CreateDateColumn()
-  createdAt: string;
+  createdAt: string
 
   @UpdateDateColumn()
-  updatedAt: string;
+  updatedAt: string
 
   // relations
   @OneToMany(
     (type) => PlayerChampion,
     (playerChampion) => playerChampion.champion
   )
-  playerChampions: PlayerChampion[];
+  playerChampions: PlayerChampion[]
+
+  @OneToMany((type) => ChampionRadar, (cRadar) => cRadar.champion)
+  championRadars: ChampionRadar[]
 
   @OneToMany(
-    (type) => ChampionRadar,
-    (cRadar) => cRadar.champion
+    (type) => UserAramChampion,
+    (userAramChampion) => userAramChampion.champion
   )
-  championRadars: ChampionRadar[];
+  userAramChampions: UserAramChampion[]
 }

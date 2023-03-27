@@ -80,6 +80,14 @@ export class LolRate {
   @Column({ nullable: true })
   uggUpdatedAt: string
 
+  @Column("double precision", { nullable: true })
+  aramWin: number
+
+  @Column({
+    nullable: true,
+  })
+  aramUpdatedAt: string
+
   @CreateDateColumn()
   createdAt: string
 

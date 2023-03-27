@@ -92,7 +92,7 @@ export class AuthService {
 
   async login(sentUser: User) {
     sentUser.username = sentUser.email // We just use email here, but we don't want to validate empty username
-
+ 
     const fieldErrors = validateUserFields(sentUser)
     if (fieldErrors.length) {
       throw new BadRequestError(fieldErrors[0].message)

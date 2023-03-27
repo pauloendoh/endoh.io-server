@@ -4,6 +4,7 @@ import { WinratesUpdatedAtDTO } from "../../dtos/lolrates/WinratesUpdatedAtDTO"
 import { Champion } from "../../entities/LolRates/Champion"
 import { LolRate } from "../../entities/LolRates/LolRate"
 import { RoleTypes } from "../../types/domain/lolates/RoleTypes"
+import { AramChampionData } from "../../utils/lolrates/scrapeLolRates/scrapeAram"
 import { IChampion } from "../../utils/lolrates/scrapeLolRates/scrapeChampions"
 import { IOpggResult as ScrapeResult } from "../../utils/lolrates/scrapeLolRates/scrapeOpgg"
 import { myConsoleError } from "../../utils/myConsoleError"
@@ -130,6 +131,33 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
           })
           .where("championName = :championName", { championName })
           .andWhere("role = :role", { role })
+          .execute()
+      }
+    } catch (err) {
+      myConsoleError(err.message)
+    }
+  },
+  async saveAramScrapedChampion(results: AramChampionData[]) {
+    try {
+      // resetting all from aram
+      await this.createQueryBuilder()
+        .update()
+        .set({
+          aramWin: null,
+          aramUpdatedAt: new Date().toISOString(),
+        })
+        .execute()
+
+      for (const { championName, winRate } of results) {
+        const aramWin = Number(winRate.trim().replace(/%/g, ""))
+
+        await this.createQueryBuilder()
+          .update()
+          .set({
+            aramWin,
+            aramUpdatedAt: new Date().toISOString(),
+          })
+          .where("championName = :championName", { championName })
           .execute()
       }
     } catch (err) {
