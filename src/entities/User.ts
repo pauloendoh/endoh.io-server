@@ -20,6 +20,7 @@ import { Learning } from "./learning-diary/Learning"
 import { ChampionRadar } from "./LolRates/ChampionRadar"
 import { Player } from "./LolRates/Player"
 import { UserAramChampion } from "./LolRates/UserAramChampion"
+import { MalUser } from "./MAL/MalUser"
 import Category from "./monerate/Category"
 import { Expense } from "./monerate/Expense"
 import Place from "./monerate/Place"
@@ -186,4 +187,7 @@ export class User {
 
   @OneToMany((type) => UserAramChampion, (aramChampion) => aramChampion.user)
   aramChampions: UserAramChampion[]
+
+  @OneToOne((type) => MalUser, (malUser) => malUser.user, { nullable: true })
+  malUser: MalUser | null
 }

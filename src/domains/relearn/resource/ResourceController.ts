@@ -11,13 +11,17 @@ import {
 } from "routing-controllers"
 import { In } from "typeorm"
 import { IdsDto } from "../../../dtos/IdsDto"
-import { Resource } from "../../../entities/relearn/Resource"
 import { User } from "../../../entities/User"
+import { Resource } from "../../../entities/relearn/Resource"
 import ResourceRepository from "../../../repositories/relearn/ResourceRepository"
+import { ResourceService } from "./ResourceService"
 
 @JsonController()
 export class ResourceController {
-  constructor(private resourceRepo = ResourceRepository) {}
+  constructor(
+    private resourceRepo = ResourceRepository,
+    private service = new ResourceService()
+  ) {}
 
   @Post("/relearn/resource")
   async saveResource(
@@ -222,5 +226,21 @@ export class ResourceController {
 
     const allResources = await this.resourceRepo.findAllResourcesFromUser(user)
     return allResources
+  }
+
+  @Post("/move-resource-to-first/:resourceId")
+  async moveResourceToFirst(
+    @CurrentUser({ required: true }) user: User,
+    @Param("resourceId") resourceId: number
+  ) {
+    return this.service.moveResourceToFirst(resourceId, user.id)
+  }
+
+  @Post("/move-resource-to-last/:resourceId")
+  async moveResourceToLast(
+    @CurrentUser({ required: true }) user: User,
+    @Param("resourceId") resourceId: number
+  ) {
+    return this.service.moveResourceToLast(resourceId, user.id)
   }
 }
