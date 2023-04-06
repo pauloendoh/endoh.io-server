@@ -1,5 +1,6 @@
 import axios from "axios"
 import { JSDOM } from "jsdom"
+import { notify } from "node-notifier"
 import { Page } from "puppeteer"
 import { IsNull } from "typeorm"
 import { dataSource } from "../../../dataSource"
@@ -71,6 +72,10 @@ export async function scrapeMalUser(page: Page) {
             },
           })
           .then((res) => res.data)
+          .catch((e) => {
+            notify(e.message)
+            throw e
+          })
 
         const jsdom = new JSDOM(html)
         const document = jsdom.window.document
