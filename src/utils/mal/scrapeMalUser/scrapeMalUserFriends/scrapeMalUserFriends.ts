@@ -4,6 +4,7 @@ import { dataSource } from "../../../../dataSource"
 import { MalUser } from "../../../../entities/MAL/MalUser"
 import { MalUserSimilarity } from "../../../../entities/MAL/MalUserSimilarity"
 import { myConsoleSuccess } from "../../../myConsoleSuccess"
+import urls from "../../../urls"
 
 export const scrapeMalUserFriends = async (params: {
   malUserA: MalUser
@@ -13,7 +14,7 @@ export const scrapeMalUserFriends = async (params: {
   const { malUserA, usernameB } = params
 
   const html = await axios
-    .get(`https://myanimelist.net/profile/${usernameB}/friends`, {
+    .get(urls.malFriends(usernameB), {
       headers: {
         cookie: params.cookiesStr,
       },

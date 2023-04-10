@@ -1,4 +1,4 @@
-import { IsNull, Not } from "typeorm"
+import { IsNull, MoreThanOrEqual, Not } from "typeorm"
 import { dataSource } from "../../../dataSource"
 import { MalUser } from "../../../entities/MAL/MalUser"
 import { MalUserSimilarity } from "../../../entities/MAL/MalUserSimilarity"
@@ -40,6 +40,10 @@ export class MalRepository {
       where: {
         usernameA,
         lastScraped: Not(IsNull()),
+        animeCount: MoreThanOrEqual(15),
+        animePercentage: MoreThanOrEqual(15),
+        mangaCount: MoreThanOrEqual(15),
+        mangaPercentage: MoreThanOrEqual(15),
       },
     })
   }

@@ -1,6 +1,3 @@
-import axios from "axios"
-import { JSDOM } from "jsdom"
-import { notify } from "node-notifier"
 import { Page } from "puppeteer"
 import { IsNull } from "typeorm"
 import { dataSource } from "../../../dataSource"
@@ -10,8 +7,7 @@ import { MalUserSimilarity } from "../../../entities/MAL/MalUserSimilarity"
 import { myConsoleError } from "../../myConsoleError"
 import { myConsoleSuccess } from "../../myConsoleSuccess"
 import { sleep } from "../../sleep"
-import urls from "../../urls"
-import { scrapeMalUserFriends } from "./scrapeMalUserFriends/scrapeMalUserFriends"
+import { scrapeUser } from "./scrapeUser/scrapeUser"
 
 export type AramChampionData = {
   championName: string
@@ -44,7 +40,7 @@ export async function scrapeMalUser(page: Page) {
     const cookies = await page.cookies()
     const cookiesStr = cookies.map((c) => `${c.name}=${c.value}`).join(";")
 
-    const uncheckedUsers = await dataSource
+    const usersToScrape = await dataSource
       .getRepository(MalUserSimilarity)
       .find({
         where: {
@@ -54,116 +50,39 @@ export async function scrapeMalUser(page: Page) {
         },
       })
 
-    if (uncheckedUsers.length === 0) {
-      scrapeMalUserFriends({
-        malUserA: malUser,
-        usernameB: malUser.username,
-        cookiesStr: cookiesStr,
-      })
-      return
-    }
+    // if (usersToScrape.length === 0) {
+    //   scrapeMalUserFriends({
+    //     malUserA: malUser,
+    //     usernameB: malUser.username,
+    //     cookiesStr: cookiesStr,
+    //   })
+    //   return
+    // }
 
-    for (const uncheckedUser of uncheckedUsers) {
-      try {
-        const html = await axios
-          .get<string>(urls.malProfile(uncheckedUser.usernameB), {
-            headers: {
-              cookie: cookies.map((c) => `${c.name}=${c.value}`).join(";"),
-            },
-          })
-          .then((res) => res.data)
-          .catch((e) => {
-            notify(e.message)
-            throw e
-          })
-
-        const jsdom = new JSDOM(html)
-        const document = jsdom.window.document
-
-        const titlesSpans = document.querySelectorAll(".user-status-title")
-
-        const genderSpan = Array.from(titlesSpans).find((span) =>
-          span.textContent.includes("Gender")
-        )
-
-        const birthdaySpan = Array.from(titlesSpans).find((span) =>
-          span.textContent.includes("Birthday")
-        )
-
-        const locationSpan = Array.from(titlesSpans).find((span) =>
-          span.textContent.includes("Location")
-        )
-
-        const compatibilitySpans = document.querySelectorAll(
-          ".user-compatability-data"
-        )
-
-        const animeCount = parseInt(compatibilitySpans[0].textContent)
-        const mangaCount = parseInt(compatibilitySpans[1].textContent)
-
-        const animeSimilarity = parseFloat(
-          document
-            .querySelector(".bar-outer.anime")
-            ?.querySelector(".bar-outer-positive")?.textContent || "0"
-        )
-        const mangaSimilarity = parseFloat(
-          document
-            .querySelector(".bar-outer.manga")
-            ?.querySelector(".bar-outer-positive")?.textContent || "0"
-        )
-
-        const img = document.querySelector(".user-image")?.querySelector("img")
-
-        const lastOnlineSpan = Array.from(titlesSpans).find((span) =>
-          span.textContent.includes("Last Online")
-        )
-
-        const infos = {
-          gender: genderSpan?.nextElementSibling?.textContent || "",
-          birthday: birthdaySpan?.nextElementSibling?.textContent || "",
-          location: locationSpan?.nextElementSibling?.textContent || "",
-          animeCount,
-          mangaCount,
-          animeSimilarity,
-          mangaSimilarity,
-          //img data-src
-          img: img?.dataset?.src || "",
-          lastOnline: lastOnlineSpan?.nextElementSibling?.textContent || "",
+    // parallel for loop with max of N at a time
+    const N = 10
+    let i = 0
+    while (i < usersToScrape.length) {
+      const promises = []
+      for (let j = 0; j < N; j++) {
+        if (i + j >= usersToScrape.length) {
+          break
         }
-
-        // go to friends
-
-        scrapeMalUserFriends({
-          malUserA: malUser,
-          cookiesStr: cookiesStr,
-          usernameB: uncheckedUser.usernameB,
-        })
-
-        await dataSource
-          .getRepository(MalUserSimilarity)
-          .update(uncheckedUser.id, {
-            gender: infos.gender,
-            birthday: infos.birthday,
-            location: infos.location,
-            animeCount: infos.animeCount,
-            mangaCount: infos.mangaCount,
-            animePercentage: infos.animeSimilarity,
-            mangaPercentage: infos.mangaSimilarity,
-            lastScraped: new Date().toISOString(),
-            lastOnlineAt: infos.lastOnline,
-            imageUrl: infos.img,
+        promises.push(
+          scrapeUser({
+            malUser,
+            cookiesStr,
+            userToScrape: usersToScrape[i + j],
+            repo,
           })
-
-        myConsoleSuccess(`Finished scraping ${uncheckedUser.usernameB}`)
-      } catch (e) {
-        await repo.updateErrorMalSimilarity(uncheckedUser.id)
-        myConsoleError(`Error scraping ${uncheckedUser.usernameB}`)
-        continue
+        )
       }
+      await Promise.all(promises)
+      i += N
     }
 
-    // for each
+    myConsoleSuccess("Finished scrapeMalUser")
   } catch (err) {
-    myConsoleError(err.message)
+    myConsoleError(err)
   }
 }

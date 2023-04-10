@@ -14,6 +14,15 @@ export class AramService {
   }
 
   async saveUserAramChampion(userId: number, data: UserAramChampion) {
+    const userAramChampion = await this.aramRepository.findByUserAndChampionId(
+      userId,
+      data.championId
+    )
+
+    if (userAramChampion) {
+      data.id = userAramChampion.id
+    }
+
     return this.aramRepository.saveUserAramChampion(userId, data)
   }
 }

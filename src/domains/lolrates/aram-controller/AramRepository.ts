@@ -29,16 +29,19 @@ export class AramRepository {
     })
   }
 
-  async saveUserAramChampion(userId: number, data: UserAramChampion) {
-    const userAramChampion = new UserAramChampion()
-    userAramChampion.id = data.id || undefined
-    userAramChampion.userId = userId
-    userAramChampion.championId = data.championId
-    userAramChampion.fun = data.fun
-    userAramChampion.items = data.items
-    userAramChampion.runes = data.runes
-    userAramChampion.extraNotes = data.extraNotes
+  async findByUserAndChampionId(userId: number, championId: number) {
+    return this.db.getRepository(UserAramChampion).findOne({
+      where: {
+        userId,
+        championId,
+      },
+    })
+  }
 
-    return this.db.getRepository(UserAramChampion).save(userAramChampion)
+  async saveUserAramChampion(userId: number, data: UserAramChampion) {
+    data.id = data.id || undefined
+    data.userId = userId
+
+    return this.db.getRepository(UserAramChampion).save(data)
   }
 }
