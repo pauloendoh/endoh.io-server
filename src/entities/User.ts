@@ -22,6 +22,7 @@ import { Doc } from "./define/Doc"
 import { Note } from "./define/Note"
 import { Follow } from "./feed/Follow"
 import { FollowingTag } from "./feed/FollowingTag"
+import { LastSeenResource } from "./feed/LastSeenResource"
 import { Notification } from "./feed/Notification"
 import { Profile } from "./feed/Profile"
 import { UserSuggestion } from "./feed/UserSuggestion"
@@ -71,56 +72,56 @@ export class User {
   expiresAt: string
 
   // Relations ----------------------------------------------------------------
-  @OneToOne((type) => UserPreference, (preference) => preference.user, {
+  @OneToOne((_) => UserPreference, (preference) => preference.user, {
     eager: true,
   })
   preference: UserPreference
 
-  @OneToOne((type) => UserGotIt, (userGotIt) => userGotIt.user)
+  @OneToOne((_) => UserGotIt, (userGotIt) => userGotIt.user)
   gotIt: UserGotIt
 
-  @OneToOne((type) => Profile, (profile) => profile.user)
+  @OneToOne((_) => Profile, (profile) => profile.user)
   profile: Profile
 
-  @OneToMany((type) => Expense, (expense) => expense.user)
+  @OneToMany((_) => Expense, (expense) => expense.user)
   expenses: Expense[]
 
-  @OneToMany((type) => Learning, (learning) => learning.user)
+  @OneToMany((_) => Learning, (learning) => learning.user)
   learnings: Learning[]
 
-  @OneToMany((type) => Category, (category) => category.user)
+  @OneToMany((_) => Category, (category) => category.user)
   categories: Category[]
 
-  @OneToMany((type) => Place, (place) => place.user)
+  @OneToMany((_) => Place, (place) => place.user)
   places: Place[]
 
-  @OneToMany((type) => UserToken, (oauthToken) => oauthToken.user)
+  @OneToMany((_) => UserToken, (oauthToken) => oauthToken.user)
   tokens: UserToken[]
 
-  @OneToMany((type) => Tag, (tag) => tag.user)
+  @OneToMany((_) => Tag, (tag) => tag.user)
   tags: Tag[]
 
   // Skillbase
-  @OneToMany((type) => Skill, (skill) => skill.user)
+  @OneToMany((_) => Skill, (skill) => skill.user)
   skills: Skill[]
 
-  @OneToMany(() => SkillHistory, (skillHistory) => skillHistory.user)
+  @OneToMany((_) => SkillHistory, (skillHistory) => skillHistory.user)
   skillHistories: SkillHistory[]
 
-  @OneToMany((type) => Label, (label) => label.user)
+  @OneToMany((_) => Label, (label) => label.user)
   labels: Label[]
 
   @OneToMany(
-    (type) => SkillExpectation,
+    (_) => SkillExpectation,
     (skillExpectation) => skillExpectation.user
   )
   skillExpectations: SkillExpectation[]
 
-  @OneToMany((type) => SkillProgress, (progress) => progress.user)
+  @OneToMany((_) => SkillProgress, (progress) => progress.user)
   skillProgresses: SkillProgress[]
 
   // Feed
-  @OneToMany((type) => FollowingTag, (followingTag) => followingTag.follower)
+  @OneToMany((_) => FollowingTag, (followingTag) => followingTag.follower)
   followingTags: FollowingTag[]
 
   @OneToMany((_) => Follow, (follow) => follow.follower)
@@ -129,72 +130,75 @@ export class User {
   @OneToMany((_) => Follow, (follow) => follow.followedUser)
   followedBy: Follow[]
 
-  @OneToMany(
-    (type) => FollowingTag,
-    (followingTag) => followingTag.followingUser
-  )
+  @OneToMany((_) => FollowingTag, (followingTag) => followingTag.followingUser)
   followerTags: FollowingTag[]
 
-  @OneToMany((type) => UserSuggestion, (userSuggestion) => userSuggestion.user)
+  @OneToMany((_) => UserSuggestion, (userSuggestion) => userSuggestion.user)
   userSuggestions: UserSuggestion[]
 
   @OneToMany(
-    (type) => UserSuggestion,
+    (_) => UserSuggestion,
     (userSuggestion) => userSuggestion.suggestedUser
   )
   suggestedBy: UserSuggestion[]
 
-  @OneToMany((type) => Notification, (notification) => notification.user)
+  @OneToMany((_) => Notification, (notification) => notification.user)
   notifications: Notification[]
 
-  @OneToMany((type) => Notification, (notification) => notification.follower)
+  @OneToMany((_) => Notification, (notification) => notification.follower)
   followingNotifications: Notification[]
 
+  @OneToOne(
+    (_) => LastSeenResource,
+    (lastSeenResource) => lastSeenResource.user
+  )
+  lastSeenResource: LastSeenResource
+
   // Define
-  @OneToMany(() => Doc, (doc) => doc.user)
+  @OneToMany((_) => Doc, (doc) => doc.user)
   docs: Doc[]
 
-  @OneToMany(() => Note, (note) => note.user)
+  @OneToMany((_) => Note, (note) => note.user)
   notes: Note[]
 
   // BigDecisions
-  @OneToMany(() => Decision, (decision) => decision.user)
+  @OneToMany((_) => Decision, (decision) => decision.user)
   decisions: Decision[]
 
-  @OneToMany(() => DecisionTable, (table) => table.user)
+  @OneToMany((_) => DecisionTable, (table) => table.user)
   decisionTables: DecisionTable[]
 
-  @OneToMany(() => DecisionTableItem, (item) => item.user)
+  @OneToMany((_) => DecisionTableItem, (item) => item.user)
   decisionTableItems: DecisionTableItem[]
 
   // lolrates
-  @OneToMany((type) => Player, (player) => player.user)
+  @OneToMany((_) => Player, (player) => player.user)
   players: Player[]
 
-  @OneToMany((type) => ChampionRadar, (cRadar) => cRadar.user)
+  @OneToMany((_) => ChampionRadar, (cRadar) => cRadar.user)
   championRadars: ChampionRadar[]
 
-  @OneToMany((type) => Test, (test) => test.user)
+  @OneToMany((_) => Test, (test) => test.user)
   tests: Test[]
 
-  @OneToMany((type) => DragContainer, (dragContainer) => dragContainer.user)
+  @OneToMany((_) => DragContainer, (dragContainer) => dragContainer.user)
   dragContainers: DragContainer[]
 
-  @OneToMany((type) => DragItem, (dragItem) => dragItem.user)
+  @OneToMany((_) => DragItem, (dragItem) => dragItem.user)
   dragItems: DragItem[]
 
-  @OneToMany((type) => Folder, (folder) => folder.user)
+  @OneToMany((_) => Folder, (folder) => folder.user)
   folders: Folder[]
 
-  @OneToMany((type) => File, (file) => file.user)
+  @OneToMany((_) => File, (file) => file.user)
   files: File[]
 
-  @OneToMany((type) => Friend, (friend) => friend.user)
+  @OneToMany((_) => Friend, (friend) => friend.user)
   friends: Friend[]
 
-  @OneToMany((type) => UserAramChampion, (aramChampion) => aramChampion.user)
+  @OneToMany((_) => UserAramChampion, (aramChampion) => aramChampion.user)
   aramChampions: UserAramChampion[]
 
-  @OneToOne((type) => MalUser, (malUser) => malUser.user, { nullable: true })
+  @OneToOne((_) => MalUser, (malUser) => malUser.user, { nullable: true })
   malUser: MalUser | null
 }

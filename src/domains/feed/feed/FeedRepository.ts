@@ -22,7 +22,7 @@ export class FeedRepository {
         completedAt: Not(IsNull()),
         rating: Not(IsNull()),
       },
-      relations: ["tag", "user"],
+      relations: ["tag", "user", "user.profile"],
       order: {
         completedAt: "DESC",
       },
