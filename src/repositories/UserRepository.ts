@@ -1,8 +1,9 @@
-import { DeleteResult } from "typeorm"
+import { DeleteResult, In } from "typeorm"
 import { dataSource } from "../dataSource"
 import { UserProfileDto } from "../dtos/feed/UserProfileDto"
 import { User } from "../entities/User"
 
+// PE 1/3 - transform in a proper Repository
 const UserRepository = dataSource.getRepository(User).extend({
   async getAvailableUsernameByEmail(email: string) {
     const emailArr = email.split("@")
@@ -99,6 +100,14 @@ inner join profile pro on pro."userId" = use."id"
       username,
       email: username + "@" + username,
       password: username,
+    })
+  },
+
+  async findByUserIds(userIds: number[]): Promise<User[]> {
+    return dataSource.getRepository(User).find({
+      where: {
+        id: In(userIds),
+      },
     })
   },
 })

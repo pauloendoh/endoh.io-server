@@ -10,35 +10,36 @@ import {
 import { Decision } from "./BigDecisions/Decision"
 import { DecisionTable } from "./BigDecisions/DecisionTable"
 import { DecisionTableItem } from "./BigDecisions/DecisionTableItem"
+import { ChampionRadar } from "./LolRates/ChampionRadar"
+import { Player } from "./LolRates/Player"
+import { UserAramChampion } from "./LolRates/UserAramChampion"
+import { MalUser } from "./MAL/MalUser"
+import { UserToken } from "./OAuthToken"
+import { Test } from "./Test"
+import { UserGotIt } from "./UserGotIt"
+import { UserPreference } from "./UserPreference"
 import { Doc } from "./define/Doc"
 import { Note } from "./define/Note"
+import { Follow } from "./feed/Follow"
 import { FollowingTag } from "./feed/FollowingTag"
 import { Notification } from "./feed/Notification"
 import { Profile } from "./feed/Profile"
 import { UserSuggestion } from "./feed/UserSuggestion"
 import { Learning } from "./learning-diary/Learning"
-import { ChampionRadar } from "./LolRates/ChampionRadar"
-import { Player } from "./LolRates/Player"
-import { UserAramChampion } from "./LolRates/UserAramChampion"
-import { MalUser } from "./MAL/MalUser"
 import Category from "./monerate/Category"
 import { Expense } from "./monerate/Expense"
 import Place from "./monerate/Place"
-import { UserToken } from "./OAuthToken"
 import { DragContainer } from "./playground/DragContainer"
 import { DragItem } from "./playground/DragItem"
+import { Friend } from "./playground/Friend"
 import { File } from "./playground/file-system/File"
 import { Folder } from "./playground/file-system/Folder"
-import { Friend } from "./playground/Friend"
 import { Tag } from "./relearn/Tag"
 import { Label } from "./skillbase/Label"
 import { Skill } from "./skillbase/Skill"
 import { SkillExpectation } from "./skillbase/SkillExpectation"
 import { SkillHistory } from "./skillbase/SkillHistory"
 import { SkillProgress } from "./skillbase/SkillProgress"
-import { Test } from "./Test"
-import { UserGotIt } from "./UserGotIt"
-import { UserPreference } from "./UserPreference"
 
 @Entity()
 export class User {
@@ -121,6 +122,12 @@ export class User {
   // Feed
   @OneToMany((type) => FollowingTag, (followingTag) => followingTag.follower)
   followingTags: FollowingTag[]
+
+  @OneToMany((_) => Follow, (follow) => follow.follower)
+  follows: Follow[]
+
+  @OneToMany((_) => Follow, (follow) => follow.followedUser)
+  followedBy: Follow[]
 
   @OneToMany(
     (type) => FollowingTag,

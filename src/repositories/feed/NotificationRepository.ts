@@ -8,7 +8,9 @@ import ResourceRepository from "../relearn/ResourceRepository"
 import TagRepository from "../relearn/TagRepository"
 import UserRepository from "../UserRepository"
 
+// PE 1/3 - transform in a proper Repository
 const NotificationRepository = dataSource.getRepository(Notification).extend({
+  async createFollowNotificationV2(followId: number) {},
   async createFollowingNotification(
     follower: User,
     followedUser: User,

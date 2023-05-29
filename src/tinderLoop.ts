@@ -92,7 +92,7 @@ async function scrapeTinder() {
           return true
         }
 
-        let bannedWords = ["🏳️‍⚧️", "trans"]
+        let bannedWords = ["relacionamento aberto"]
         if (
           Array.from(divs).some((d) => {
             let text = d.innerText.toLowerCase()
