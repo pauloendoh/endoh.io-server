@@ -22,4 +22,30 @@ export class FeedService {
 
     return resources
   }
+
+  async updateLastSeenResource(userId: number, lastSeenAt: string) {
+    return this.feedRepository.updateLastSeenResource({
+      userId,
+      lastSeenAt,
+    })
+  }
+
+  async getLastSeenResource(userId: number) {
+    return this.feedRepository.getLastSeenResource(userId)
+  }
+
+  async findNewResourcesCount(userId: number) {
+    const [lastSeenResource, feedResources] = await Promise.all([
+      this.feedRepository.getLastSeenResource(userId),
+      this.findFeedResources(userId),
+    ])
+
+    const lastSeenAt = lastSeenResource?.lastSeenAt
+
+    const newResources = feedResources.filter((resource) => {
+      return resource.completedAt > lastSeenAt
+    })
+
+    return newResources.length
+  }
 }

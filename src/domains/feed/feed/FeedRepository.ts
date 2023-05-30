@@ -1,5 +1,6 @@
 import { In, IsNull, Not } from "typeorm"
 import { dataSource } from "../../../dataSource"
+import { LastSeenResource } from "../../../entities/feed/LastSeenResource"
 import { Resource } from "../../../entities/relearn/Resource"
 import { Tag } from "../../../entities/relearn/Tag"
 import { clearUserFields } from "../../../utils/domain/user/clearUserFields"
@@ -33,5 +34,23 @@ export class FeedRepository {
       ...r,
       user: clearUserFields(r.user),
     }))
+  }
+
+  async updateLastSeenResource(params: { userId: number; lastSeenAt: string }) {
+    return this.db.getRepository(LastSeenResource).upsert(
+      {
+        lastSeenAt: params.lastSeenAt,
+        userId: params.userId,
+      },
+      ["userId"]
+    )
+  }
+
+  async getLastSeenResource(userId: number) {
+    return this.db.getRepository(LastSeenResource).findOne({
+      where: {
+        userId,
+      },
+    })
   }
 }
