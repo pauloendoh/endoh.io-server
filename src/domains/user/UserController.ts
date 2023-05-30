@@ -5,7 +5,6 @@ import {
   CurrentUser,
   Get,
   JsonController,
-  NotFoundError,
   Param,
   Post,
   Put,
@@ -14,15 +13,13 @@ import {
 import { multerConfig } from "../../config/multer"
 import { dataSource } from "../../dataSource"
 import { TagFollowPostDto } from "../../dtos/feed/TagFollowPostDto"
-import { newUserInfo } from "../../dtos/UserInfoDto"
-import { Profile } from "../../entities/feed/Profile"
 import { User } from "../../entities/User"
+import { Profile } from "../../entities/feed/Profile"
+import UserRepository from "../../repositories/UserRepository"
 import FollowingTagRepository from "../../repositories/feed/FollowingTagRepository"
 import NotificationRepository from "../../repositories/feed/NotificationRepository"
 import ResourceRepository from "../../repositories/relearn/ResourceRepository"
-import TagRepository from "../../repositories/relearn/TagRepository"
-import SkillRepository from "../../repositories/skillbase/SkillRepository"
-import UserRepository from "../../repositories/UserRepository"
+import { UserService } from "./UserService"
 
 @JsonController("/user")
 export class UserController {
@@ -30,68 +27,18 @@ export class UserController {
     private userRepo = UserRepository,
     private resourceRepo = ResourceRepository,
     private profileRepo = dataSource.getRepository(Profile),
-    private tagRepo = TagRepository,
     private followingTagRepo = FollowingTagRepository,
-    private skillRepo = SkillRepository,
-    private notificationRepo = NotificationRepository
+    private notificationRepo = NotificationRepository,
+    private userService = new UserService()
   ) {}
 
+  // PE 1/3 - put inside service
   @Get("/:username/all")
   async getUserInfo(
     @CurrentUser({ required: true }) requester: User,
     @Param("username") username: string
   ) {
-    const userInfo = newUserInfo()
-
-    // username exists?
-    const foundUser = await this.userRepo.findOne({
-      where: {
-        username,
-      },
-    })
-    if (!foundUser) throw new NotFoundError("User not found.")
-
-    // get all resources (if req.user === user); otherwise, just get from public lists
-    userInfo.resources = await this.resourceRepo.getRatedResourcesFromUser(
-      foundUser,
-      foundUser.id === requester.id
-    )
-
-    // profile
-    userInfo.profile = await this.profileRepo.findOne({
-      where: {
-        userId: foundUser.id,
-      },
-    })
-
-    // public lists
-    userInfo.publicLists = await this.tagRepo.find({
-      where: {
-        userId: foundUser.id,
-        isPrivate: false,
-      },
-    })
-
-    // private tags
-    if (foundUser.id === requester.id) {
-      userInfo.privateLists = await this.tagRepo.find({
-        where: {
-          userId: foundUser.id,
-          isPrivate: true,
-        },
-      })
-    }
-
-    userInfo.followingUsers = await this.followingTagRepo.getFollowingUsers(
-      foundUser
-    )
-    userInfo.followers = await this.followingTagRepo.getFollowers(foundUser)
-
-    userInfo.publicSkills = await this.skillRepo.findPublicSkillsFromUser(
-      foundUser.id
-    )
-
-    return userInfo
+    return this.userService.getUserInfo(username, requester.id)
   }
 
   @Get("/:username/rated-resources")

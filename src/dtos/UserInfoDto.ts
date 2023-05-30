@@ -1,21 +1,25 @@
-import { Profile } from "../entities/feed/Profile";
-import { Resource } from "../entities/relearn/Resource";
-import { Tag } from "../entities/relearn/Tag";
-import { Skill } from "../entities/skillbase/Skill";
-import { FollowerDto } from "./feed/FollowerDto";
-import { FollowingUserDto } from "./feed/FollowingUserDto";
+import { FeedRepository } from "../domains/feed/feed/FeedRepository"
+import { Profile } from "../entities/feed/Profile"
+import { Tag } from "../entities/relearn/Tag"
+import { Skill } from "../entities/skillbase/Skill"
+import { FollowerDto } from "./feed/FollowerDto"
+import { FollowingUserDto } from "./feed/FollowingUserDto"
 
 export interface UserInfoDto {
-  profile: Profile;
-  resources: Resource[];
+  profile: Profile
 
-  publicLists: Tag[];
-  privateLists: Tag[];
+  // return type of feedRepo.findResourcesByTagIds
+  resources: Awaited<
+    ReturnType<(typeof FeedRepository)["prototype"]["findResourcesByTagIds"]>
+  >
 
-  followingUsers: FollowingUserDto[];
-  followers: FollowerDto[];
+  publicLists: Tag[]
+  privateLists: Tag[]
 
-  publicSkills: Skill[];
+  followingUsers: FollowingUserDto[]
+  followers: FollowerDto[]
+
+  publicSkills: Skill[]
 }
 
 export const newUserInfo = (partial?: Partial<UserInfoDto>): UserInfoDto => ({
@@ -31,4 +35,4 @@ export const newUserInfo = (partial?: Partial<UserInfoDto>): UserInfoDto => ({
   publicSkills: [],
 
   ...partial,
-});
+})

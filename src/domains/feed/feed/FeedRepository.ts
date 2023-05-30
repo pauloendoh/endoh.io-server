@@ -17,6 +17,14 @@ export class FeedRepository {
     })
   }
 
+  async findAllTagsFromUserIds(userIds: number[]) {
+    return this.db.getRepository(Tag).find({
+      where: {
+        userId: In(userIds),
+      },
+    })
+  }
+
   async findResourcesByTagIds(tagIds: number[]) {
     const resources = await this.db.getRepository(Resource).find({
       where: {
