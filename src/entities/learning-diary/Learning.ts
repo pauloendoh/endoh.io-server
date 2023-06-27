@@ -1,6 +1,6 @@
 import { DateTimeResolver } from "graphql-scalars"
 
-import { Field, Int, ObjectType } from "type-graphql"
+import { Field, ObjectType } from "type-graphql"
 import {
   Column,
   CreateDateColumn,
@@ -33,8 +33,8 @@ export class Learning {
   @Field()
   isHighlight: boolean
 
-  @Column({ default: 1 })
-  @Field(() => Int)
+  @Column({ default: 1, type: "decimal", precision: 5, scale: 2 })
+  @Field()
   points: number
 
   @CreateDateColumn()

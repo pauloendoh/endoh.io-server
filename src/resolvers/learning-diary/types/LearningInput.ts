@@ -1,5 +1,5 @@
 import { IsDateString, IsNumber } from "class-validator"
-import { Field, InputType, Int } from "type-graphql"
+import { Field, Float, InputType } from "type-graphql"
 
 @InputType()
 export default class LearningInput {
@@ -16,7 +16,7 @@ export default class LearningInput {
   @IsDateString()
   datetime: string
 
-  @Field(() => Int)
+  @Field(() => Float)
   @IsNumber()
   points: number
 }

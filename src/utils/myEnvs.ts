@@ -1,6 +1,8 @@
 import { myConsoleError } from "./myConsoleError"
 
-export const myEnvs = {}
+export const myEnvs = {
+  REDIS_URL: envToStringOrThrow(process.env.REDIS_URL),
+}
 
 function envToStringOrThrow(env: string | undefined): string {
   if (env === undefined) {
