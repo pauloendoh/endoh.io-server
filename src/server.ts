@@ -19,6 +19,10 @@ import { pagination } from "typeorm-pagination"
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS"
 import { dataSource } from "./dataSource"
 import saveResponseTime from "./middlewares/saveResponseTime"
+import { LearningResolver } from "./resolvers/learning-diary/LearningResolver"
+import { ResourceResolver } from "./resolvers/ResourceResolver"
+import { SkillProgressResolver } from "./resolvers/skillbase/SkillProgress/SkillProgressResolver"
+import { LinkPreviewResolver } from "./resolvers/utils/LinkPreview/LinkPreviewResolver"
 import executeEvery15Min from "./routines/executeEvery15Min"
 import executeEvery3Min from "./routines/executeEvery3Min"
 import executeEveryHour from "./routines/executeEveryHour"
@@ -61,7 +65,12 @@ dataSource
     try {
       const apolloServer = new ApolloServer({
         schema: await buildSchema({
-          resolvers: [__dirname + "/resolvers/**/*Resolver.{ts,js}"],
+          resolvers: [
+            LearningResolver,
+            LinkPreviewResolver,
+            SkillProgressResolver,
+            ResourceResolver,
+          ],
         }),
         csrfPrevention: true,
         context: ({ req, res }) => ({ req, res }),
