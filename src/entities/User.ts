@@ -27,6 +27,7 @@ import { Notification } from "./feed/Notification"
 import { Profile } from "./feed/Profile"
 import { UserSuggestion } from "./feed/UserSuggestion"
 import { Learning } from "./learning-diary/Learning"
+import { RecurrentLearning } from "./learning-diary/RecurrentLearning"
 import Category from "./monerate/Category"
 import { Expense } from "./monerate/Expense"
 import Place from "./monerate/Place"
@@ -88,6 +89,12 @@ export class User {
 
   @OneToMany((_) => Learning, (learning) => learning.user)
   learnings: Learning[]
+
+  @OneToMany(
+    (_) => RecurrentLearning,
+    (recurrentLearning) => recurrentLearning.user
+  )
+  recurrentLearnings: RecurrentLearning[]
 
   @OneToMany((_) => Category, (category) => category.user)
   categories: Category[]

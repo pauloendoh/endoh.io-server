@@ -1,7 +1,7 @@
-import DocRepository from "../repositories/define/DocRepository"
 import { DocController } from "./doc/DocController"
 import { DocService } from "./doc/DocService"
+import { RecurrentLearningRepository } from "./learning-diary/recurrent-learning/RecurrentLearningRepository"
 
-const repo = DocRepository
+const repo = RecurrentLearningRepository
 const service = new DocService()
 const controller = new DocController()
