@@ -53,20 +53,21 @@ export default class LinkPreviewService {
 
     if (foundResource) response.alreadySavedResource = foundResource
 
-    if (url.includes("youtube.com")) {
-      const videoInfo = await this.getYoutubeVideoInfo(url)
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      const videoInfo = await this.#getYoutubeVideoInfo(url)
       response.youtubeVideoLength = videoInfo.duration
       response.viewCount = videoInfo.viewCount
+      response.url = `https://www.youtube.com/watch?v=${videoInfo.videoId}`
     }
 
     return response
   }
 
   // PE 1/3 - remove elses
-  getYoutubeVideoInfo = async (
-    url: string
-  ): Promise<{ duration: string; viewCount: number }> => {
-    const videoId = new URLSearchParams(url.split("?")[1]).get("v")
+  async #getYoutubeVideoInfo(url: string) {
+    const videoId = url.includes("youtube.com")
+      ? new URLSearchParams(url.split("?")[1]).get("v")
+      : url.split("/")[url.split("/").length - 1].split("?")[0] // eg: https://youtu.be/ZV5yTm4pT8g?t=1
     let durationStr = "00:00h"
     let viewCount = 0
 
@@ -76,7 +77,7 @@ export default class LinkPreviewService {
       )
 
       .then((res) => {
-        viewCount = Number(res.data.items[0].statistics.viewCount)
+        viewCount = Number(res.data.items[0].statistics?.viewCount || 0)
         const durationObj = Duration.fromISO(
           res.data.items[0].contentDetails.duration
         ).toObject()
@@ -106,6 +107,7 @@ export default class LinkPreviewService {
     return {
       duration: durationStr,
       viewCount,
+      videoId,
     }
   }
 
