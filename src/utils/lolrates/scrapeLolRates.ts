@@ -9,31 +9,35 @@ import { scrapeUgg } from "./scrapeLolRates/scrapeUgg"
 config()
 
 export async function scrapeLolRates() {
-  if (process.env.IS_DOCKER) {
-    return
-  }
-  const browser = await pup.launch({
-    // devtools: true, // if you want to debug https://stackoverflow.com/a/49887254/8060650
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  })
-
   try {
-    const page = await browser.newPage()
+    if (process.env.IS_DOCKER) {
+      return
+    }
+    const browser = await pup.launch({
+      // devtools: true, // if you want to debug https://stackoverflow.com/a/49887254/8060650
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    })
 
-    await page.setUserAgent(
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
-    )
-    await page.setViewport({ width: 1000, height: 1000 })
+    try {
+      const page = await browser.newPage()
 
-    await scrapeAram(page)
+      await page.setUserAgent(
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36"
+      )
+      await page.setViewport({ width: 1000, height: 1000 })
 
-    await scrapeChampions(page)
-    await scrapeOpgg(page)
-    await scrapeLolGraphs(page)
-    await scrapeUgg(page)
+      await scrapeAram(page)
+
+      await scrapeChampions(page)
+      await scrapeOpgg(page)
+      await scrapeLolGraphs(page)
+      await scrapeUgg(page)
+    } catch (err) {
+      myConsoleError(err.message)
+    }
+
+    await browser.close()
   } catch (err) {
     myConsoleError(err.message)
   }
-
-  await browser.close()
 }
