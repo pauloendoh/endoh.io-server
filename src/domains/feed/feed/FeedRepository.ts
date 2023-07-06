@@ -1,4 +1,4 @@
-import { In, IsNull, Not } from "typeorm"
+import { In, Not } from "typeorm"
 import { dataSource } from "../../../dataSource"
 import { LastSeenResource } from "../../../entities/feed/LastSeenResource"
 import { Resource } from "../../../entities/relearn/Resource"
@@ -29,8 +29,7 @@ export class FeedRepository {
     const resources = await this.db.getRepository(Resource).find({
       where: {
         tagId: In(tagIds),
-        completedAt: Not(IsNull()),
-        rating: Not(IsNull()),
+        url: Not(""),
       },
       relations: ["tag", "user", "user.profile"],
       order: {

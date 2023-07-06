@@ -32,7 +32,6 @@ export class UserController {
     private userService = new UserService()
   ) {}
 
-  // PE 1/3 - put inside service
   @Get("/:username/all")
   async getUserInfo(
     @CurrentUser({ required: true }) requester: User,
