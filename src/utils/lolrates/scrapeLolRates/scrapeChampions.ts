@@ -1,4 +1,4 @@
-import pup from "puppeteer"
+import { Page } from "puppeteer"
 import { myConsoleError } from "../../myConsoleError"
 
 export interface IChampion {
@@ -6,7 +6,7 @@ export interface IChampion {
   iconUrl: string
 }
 
-export async function scrapeChampions(page: pup.Page) {
+export async function scrapeChampions(page: Page) {
   try {
     await page.goto("https://blitz.gg/lol/champions/overview")
 

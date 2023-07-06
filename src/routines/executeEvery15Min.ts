@@ -1,5 +1,5 @@
-import fetch from "node-fetch"
 // Why did I import this for?
+import axios from "axios"
 import "reflect-metadata"
 import UserRepository from "../repositories/UserRepository"
 import { myConsoleLoading } from "../utils/console/myConsoleLoading"
@@ -8,34 +8,31 @@ import { myConsoleSuccess } from "../utils/myConsoleSuccess"
 
 const executeEvery15Min = async () => {
   setInterval(async () => {
-    fetch("https://endohio-server.herokuapp.com/")
-      .then((res) => res.json())
-      .then((json) =>
+    axios("https://endohio-server.herokuapp.com/")
+      .then((res) =>
         myConsoleSuccess("GET OK https://endohio-server.herokuapp.com/")
       )
       .catch(() => {
         myConsoleError("GET FAIL https://endohio-server.herokuapp.com/")
       })
 
-    fetch("https://ration-server.herokuapp.com/ping")
-      .then((res) => res.json())
-      .then((json) =>
+    axios("https://ration-server.herokuapp.com/ping")
+      .then((res) =>
         myConsoleSuccess("GET OK https://ration-server.herokuapp.com/ping")
       )
       .catch(() => {
         myConsoleError("GET FAIL https://ration-server.herokuapp.com/ping")
       })
 
-    fetch("https://monerate-server.herokuapp.com/ping")
-      .then((res) => res.json())
-      .then((json) =>
+    axios("https://monerate-server.herokuapp.com/ping")
+      .then((res) =>
         myConsoleSuccess("GET OK https://monerate-server.herokuapp.com/ping")
       )
       .catch(() => {
         myConsoleSuccess("GET OK? https://monerate-server.herokuapp.com/ping")
       })
 
-    fetch("https://clothes-server.onrender.com/ping")
+    axios("https://clothes-server.onrender.com/ping")
       .then((res) =>
         myConsoleSuccess("GET OK https://clothes-server.onrender.com/ping")
       )
@@ -43,9 +40,8 @@ const executeEvery15Min = async () => {
         myConsoleError("GET FAIL https://clothes-server.onrender.com/ping")
       })
 
-    fetch("https://lolrates.vercel.app/")
-      .then((res) => res.text())
-      .then((text) => myConsoleSuccess("GET OK https://lolrates.vercel.app/"))
+    axios("https://lolrates.vercel.app/")
+      .then((res) => myConsoleSuccess("GET OK https://lolrates.vercel.app/"))
       .catch(() => myConsoleError("GET FAIL https://lolrates.vercel.app/"))
 
     try {

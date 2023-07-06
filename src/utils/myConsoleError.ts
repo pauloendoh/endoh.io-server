@@ -1,10 +1,8 @@
-import chalk from "chalk";
-
 export function myConsoleError(text: any) {
   if (typeof text === "string") {
-    console.log("❌", chalk.redBright(text));
+    console.log("❌", text)
   } else {
-    console.log("❌", chalk.redBright(JSON.stringify(text)));
+    console.log("❌", JSON.stringify(text))
   }
-  return;
+  return
 }

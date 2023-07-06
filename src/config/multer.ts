@@ -2,7 +2,6 @@ const multer = require("multer")
 const path = require("path")
 const multerS3 = require("multer-s3")
 const aws = require("aws-sdk")
-import { cyanBright } from "chalk"
 import crypto = require("crypto")
 require("dotenv").config()
 
@@ -15,7 +14,7 @@ const storageTypes = {
       // garantir que os nomes não se sobreponham
       // usa-se um hash
       crypto.randomBytes(16, (err, hash) => {
-        if (err) cyanBright(err)
+        if (err) console.error(err)
 
         file.key = `${hash.toString("hex")}-${file.originalname}`
 
@@ -32,7 +31,7 @@ const storageTypes = {
       // garantir que os nomes não se sobreponham
       // usa-se um hash
       crypto.randomBytes(16, (err, hash) => {
-        if (err) cyanBright(err)
+        if (err) console.error(err)
 
         const fileName = `${hash.toString("hex")}-${file.originalname}`
 

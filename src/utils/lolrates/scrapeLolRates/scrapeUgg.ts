@@ -1,4 +1,4 @@
-import pup from "puppeteer"
+import { Page } from "puppeteer"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 import { RoleTypes } from "../../../types/domain/lolates/RoleTypes"
 import { myConsoleError } from "../../myConsoleError"
@@ -28,7 +28,7 @@ const roles: { url: string; role: RoleTypes }[] = [
   },
 ]
 
-export async function scrapeUgg(page: pup.Page) {
+export async function scrapeUgg(page: Page) {
   try {
     myConsoleSuccess("Starting scrapeUgg")
 
