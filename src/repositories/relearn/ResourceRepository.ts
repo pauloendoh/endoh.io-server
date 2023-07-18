@@ -1,8 +1,8 @@
 import { FindOptionsWhere, In } from "typeorm"
 import { dataSource } from "../../dataSource"
+import { User } from "../../entities/User"
 import { Resource } from "../../entities/relearn/Resource"
 import { Tag } from "../../entities/relearn/Tag"
-import { User } from "../../entities/User"
 import { myConsoleSuccess } from "../../utils/myConsoleSuccess"
 
 const ResourceRepository = dataSource.getRepository(Resource).extend({
@@ -44,13 +44,13 @@ const ResourceRepository = dataSource.getRepository(Resource).extend({
       // remover o campo privateNote se usuario não for dono
       return resources.map((resource) => ({
         ...resource,
-        privateNote: undefined,
+        privateNote: "",
       }))
     }
   },
 
   async getLastPosition(tag: Tag, user: User): Promise<number> {
-    let lastResource: Resource
+    let lastResource: Resource | null
     if (tag) {
       lastResource = await this.createQueryBuilder("resource")
         .where({ tag })
@@ -66,7 +66,7 @@ const ResourceRepository = dataSource.getRepository(Resource).extend({
         .getOne()
     }
 
-    if (lastResource?.position >= 0) {
+    if (lastResource && lastResource.position >= 0) {
       return lastResource.position + 1
     }
     return 0

@@ -49,12 +49,13 @@ export async function scrapeOpgg(page: Page) {
 
           const roleResults: IOpggResult[] = []
           const tbody = document.querySelector("tbody")
-          const trs = Array.from(tbody.querySelectorAll("tr"))
+          const trs = Array.from(tbody?.querySelectorAll("tr") || [])
 
           for (const tr of trs) {
             const tds = tr.querySelectorAll("td")
             const championTd = tds[1]
-            const championName = championTd.querySelector("strong").textContent
+            const championName =
+              championTd?.querySelector("strong")?.textContent || ""
             const winRate = tds[3].innerText
             const pickRate = tds[4].innerText
 

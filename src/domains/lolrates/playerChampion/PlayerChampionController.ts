@@ -60,8 +60,13 @@ export class PlayerChampionController {
     const found = await this.playerChampionRepo.findOneOrFail({
       where: { userId: user.id, id },
     })
+    if (!found) {
+      return false
+    }
 
-    await this.playerChampionRepo.delete(found)
+    await this.playerChampionRepo.delete({
+      id: found.id,
+    })
 
     return true
   }

@@ -24,6 +24,10 @@ export class ResourceService {
     )
 
     const resource = tagResources.find((r) => r.id === resourceId)
+    if (!resource) {
+      throw new NotFoundError("Resource does not exist.")
+    }
+
     resource.position = 0
 
     const sortedResources = tagResources
@@ -66,6 +70,9 @@ export class ResourceService {
     )
 
     const resource = tagResources.find((r) => r.id === resourceId)
+    if (!resource) {
+      throw new NotFoundError("Resource does not exist.")
+    }
     resource.position = tagResources.length + 1
 
     const sortedResources = tagResources

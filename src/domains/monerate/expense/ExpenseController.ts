@@ -12,8 +12,8 @@ import {
   Res,
   UseBefore,
 } from "routing-controllers"
-import { Expense } from "../../../entities/monerate/Expense"
 import { User } from "../../../entities/User"
+import { Expense } from "../../../entities/monerate/Expense"
 import { MyAuthMiddleware } from "../../../middlewares/MyAuthMiddleware"
 import { MyAuthRequest } from "../../../utils/MyAuthRequest"
 import ExpenseRepository from "./ExpenseRepository"
@@ -46,7 +46,7 @@ export class ExpenseController {
       const isOwner = await this.expenseRepo.find({
         where: {
           id: sentExpense.id,
-          user,
+          userId: user.id,
         },
       })
       if (!isOwner) {

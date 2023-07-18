@@ -6,6 +6,11 @@
     "outDir": "./build",
     "declaration": false, // don't generate d.ts files
 
+    "strict": true,
+    "useUnknownInCatchVariables": false,
+    "noImplicitAny": false,
+    "strictPropertyInitialization": false,
+
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true, // do i still need this?
     "sourceMap": false, // don't generate js.map files

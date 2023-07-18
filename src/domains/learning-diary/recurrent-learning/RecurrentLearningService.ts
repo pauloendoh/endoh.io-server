@@ -11,7 +11,8 @@ export class RecurrentLearningService {
         recurrentLearningId: data.id,
         userId: requesterId,
       })
-      if (found.userId !== requesterId) {
+
+      if (found?.userId !== requesterId) {
         throw new UnauthorizedError("Unauthorized")
       }
       return this.repo.update(data)
@@ -28,7 +29,7 @@ export class RecurrentLearningService {
       recurrentLearningId: id,
       userId: requesterId,
     })
-    if (found.userId !== requesterId) {
+    if (found?.userId !== requesterId) {
       throw new UnauthorizedError("Unauthorized")
     }
     return this.repo.delete(id)

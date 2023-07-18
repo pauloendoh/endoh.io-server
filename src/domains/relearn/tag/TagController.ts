@@ -10,8 +10,8 @@ import {
   Post,
   Put,
 } from "routing-controllers"
-import { Tag } from "../../../entities/relearn/Tag"
 import { User } from "../../../entities/User"
+import { Tag } from "../../../entities/relearn/Tag"
 import TagRepository from "../../../repositories/relearn/TagRepository"
 
 @JsonController()
@@ -32,7 +32,7 @@ export class TagController {
       const isOwner = await this.tagRepo.find({
         where: {
           id: body.id,
-          user,
+          userId: user.id,
         },
       })
       if (!isOwner) {
@@ -43,7 +43,7 @@ export class TagController {
       const nameExists = await this.tagRepo.findOne({
         where: {
           name: body.name,
-          user: user,
+          userId: user.id,
         },
       })
       if (nameExists) {

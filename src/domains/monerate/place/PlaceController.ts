@@ -8,8 +8,8 @@ import {
   Param,
   Post,
 } from "routing-controllers"
-import Place from "../../../entities/monerate/Place"
 import { User } from "../../../entities/User"
+import Place from "../../../entities/monerate/Place"
 import PlaceRepository from "../../../repositories/monerate/PlaceRepository"
 
 @JsonController("/monerate/place")
@@ -25,7 +25,7 @@ export class PlaceController {
       const results = await this.placeRepo.find({
         where: {
           id: sentPlace.id,
-          user,
+          userId: user.id,
         },
       })
       if (!results.length) {

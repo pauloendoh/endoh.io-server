@@ -8,8 +8,8 @@ import {
   Param,
   Post,
 } from "routing-controllers"
-import Category from "../../../entities/monerate/Category"
 import { User } from "../../../entities/User"
+import Category from "../../../entities/monerate/Category"
 import CategoryRepository from "../../../repositories/monerate/CategoryRepository"
 
 @JsonController("/monerate/category")
@@ -25,7 +25,7 @@ export class CategoryController {
       const results = await this.categoryRepo.find({
         where: {
           id: sentCategory.id,
-          user,
+          userId: user.id,
         },
       })
       if (!results.length) {

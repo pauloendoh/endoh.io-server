@@ -26,9 +26,9 @@ export async function scrapeChampions(page: Page) {
 
       const table = document.querySelector(".infinite-table")
 
-      const divsParent = table.querySelector("div[style='flex: 1 1 0%;']")
+      const divsParent = table?.querySelector("div[style='flex: 1 1 0%;']")
 
-      let championDivs = divsParent.children
+      let championDivs = divsParent?.children || []
 
       for (const div of Array.from(championDivs)) {
         if (!div.className.includes("⚡")) continue
@@ -39,8 +39,8 @@ export async function scrapeChampions(page: Page) {
 
         const img = championDiv.querySelector("img")
         if (!img) continue
-        const iconUrl = img.getAttribute("src")
-        const name = championDiv.querySelector("span").textContent
+        const iconUrl = img.getAttribute("src") || ""
+        const name = championDiv?.querySelector("span")?.textContent || ""
 
         // 23/apr 2022 - it was returning fallback images
         // like https://blitz-cdn-plain.blitz.gg/blitz/ui/img/fallback.svg

@@ -12,7 +12,8 @@ import { myConsoleError } from "../utils/myConsoleError"
 
 @EventSubscriber()
 export class DecisionTableSubscriber
-  implements EntitySubscriberInterface<DecisionTable> {
+  implements EntitySubscriberInterface<DecisionTable>
+{
   listenTo() {
     return DecisionTable
   }
@@ -28,7 +29,7 @@ export class DecisionTableSubscriber
         relations: ["tables"],
       })
       // since it's an after insert, you gotta get all -1
-      event.entity.index = decision.tables.length - 1
+      event.entity.index = (decision?.tables.length || 0) - 1
       const thisRepo = event.manager.getRepository(DecisionTable)
       await thisRepo.save(event.entity)
 
@@ -49,7 +50,9 @@ export class DecisionTableSubscriber
   async afterRemove(event: RemoveEvent<DecisionTable>) {
     try {
       const repo = DecisionTableRepository
-      const ok = await repo.normalizeTablesPositions(event.entity.decisionId)
+      const ok = await repo.normalizeTablesPositions(
+        event.entity?.decisionId || 0
+      )
       return
     } catch (e) {
       myConsoleError(e.message)

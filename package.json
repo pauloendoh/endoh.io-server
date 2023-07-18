@@ -18,6 +18,7 @@
     "typeorm": "typeorm-ts-node-commonjs -d ./src/dataSource.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.370.0",
     "@babel/core": "^7.22.8",
     "@sendgrid/mail": "^7.7.0",
     "apollo-server": "^3.9.0",

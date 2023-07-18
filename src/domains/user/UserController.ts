@@ -5,6 +5,7 @@ import {
   CurrentUser,
   Get,
   JsonController,
+  NotFoundError,
   Param,
   Post,
   Put,
@@ -51,6 +52,10 @@ export class UserController {
       },
     })
 
+    if (!user) {
+      throw new NotFoundError("User not found")
+    }
+
     const resources = await this.resourceRepo.getRatedResourcesFromUser(
       user,
       user.id === requester.id
@@ -63,10 +68,9 @@ export class UserController {
     @CurrentUser({ required: true }) requester: User,
     @Body() profile: Profile
   ) {
-    delete profile["pictureName"]
-    delete profile["pictureUrl"]
+    const { pictureName, pictureUrl, ...data } = profile
 
-    await this.profileRepo.save(profile)
+    await this.profileRepo.save(data)
 
     // do this so we can retrieve the profile picture altogether
     const savedProfile = await this.profileRepo.findOne({
@@ -88,6 +92,8 @@ export class UserController {
         username,
       },
     })
+
+    if (!foundOwner) throw new NotFoundError("User not found")
 
     const tagFollowsToNotify = await this.followingTagRepo.saveTagFollows(
       requester.id,
@@ -120,6 +126,9 @@ export class UserController {
     @Param("username") username: string
   ) {
     const user = await this.userRepo.findOne({ where: { username } })
+    if (!user) {
+      throw new NotFoundError("User not found")
+    }
 
     const followingTags = await this.followingTagRepo.find({
       where: {
@@ -144,16 +153,21 @@ export class UserController {
       where: { userId: requester.id },
     })
 
-    // deletando a imagem anterior do usuário
-    const s3 = new S3()
-    const deletePromise = s3
-      .deleteObject({
-        Bucket: "endoh",
-        Key: profile.pictureName,
-      })
-      .promise()
+    if (!profile) {
+      throw new NotFoundError("Profile not found")
+    }
 
-    // continuando..
+    // deletando a imagem anterior do usuário
+    if (profile.pictureName) {
+      const s3 = new S3()
+      await s3
+        .deleteObject({
+          Bucket: "endoh",
+          Key: profile.pictureName,
+        })
+        .promise()
+    }
+
     profile.pictureName = key
     profile.pictureUrl = location
 

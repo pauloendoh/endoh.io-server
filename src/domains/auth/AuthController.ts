@@ -23,15 +23,15 @@ import { dataSource } from "../../dataSource"
 import { UserToken } from "../../entities/OAuthToken"
 import { User } from "../../entities/User"
 import { UserPreference } from "../../entities/UserPreference"
-import { DotEnvKeys } from "../../enums/DotEnvKeys"
 import { AuthChangePasswordPostDto } from "../../interfaces/dtos/auth/AuthChangePasswordPostDto"
 import { AuthUserGetDto } from "../../interfaces/dtos/auth/AuthUserGetDto"
 import { PasswordResetPostDto } from "../../interfaces/dtos/auth/PasswordResetPostDto"
 import { UserDeleteDto } from "../../interfaces/dtos/auth/UserDeleteDto"
-import { UsernamePutDto } from "../../interfaces/dtos/auth/UsernamePutDto"
 import { UserTokenPostDto } from "../../interfaces/dtos/auth/UserTokenPostDto"
+import { UsernamePutDto } from "../../interfaces/dtos/auth/UsernamePutDto"
 import UserRepository from "../../repositories/UserRepository"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
+import { myEnvs } from "../../utils/myEnvs"
 import { AuthService } from "./AuthService"
 import { RegisterDto } from "./types/RegisterDto"
 
@@ -73,9 +73,8 @@ export class AuthController {
   @Get("/google/callback")
   @UseBefore(passport.authenticate("google"))
   async googleCallback(@Req() req: MyAuthRequest, @Res() res: Response) {
-    const redirectTo = await this.authService.saveGoogleTokenAndReturnRedirectURL(
-      req.user
-    )
+    const redirectTo =
+      await this.authService.saveGoogleTokenAndReturnRedirectURL(req.user)
 
     res.redirect(redirectTo)
 
@@ -179,11 +178,11 @@ export class AuthController {
     const authUser = await new Promise<AuthUserGetDto>((res, rej) => {
       sign(
         { userId: user.id },
-        process.env[DotEnvKeys.JWT_SECRET],
+        myEnvs.JWT_SECRET,
         { expiresIn: ONE_MONTH_IN_SECONDS },
         (err, token) => {
           if (err) return rej(err)
-          return res(new AuthUserGetDto(user, token, expireDate))
+          return res(new AuthUserGetDto(user, token || null, expireDate))
         }
       )
     })

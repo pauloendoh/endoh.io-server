@@ -2,9 +2,9 @@ import { NextFunction, Response } from "express"
 import { verify as validateJwt } from "jsonwebtoken"
 import { dataSource } from "../dataSource"
 import { User } from "../entities/User"
-import { DotEnvKeys } from "../enums/DotEnvKeys"
 import { MyErrorsResponse } from "../utils/ErrorMessage"
 import { MyAuthRequest } from "../utils/MyAuthRequest"
+import { myEnvs } from "../utils/myEnvs"
 
 // PE 2/3
 export default function authMiddleware(
@@ -25,25 +25,28 @@ export default function authMiddleware(
 
   // Verify token
   try {
-    validateJwt(
-      authToken,
-      process.env[DotEnvKeys.JWT_SECRET],
-      async (error, decodedObj) => {
-        //if userId is string, it means it is getting the token from another cookie..
-        if (error || typeof decodedObj["userId"] === "string") {
-          return res
-            .status(401)
-            .json({ msg: "Token is not valid. Sign in and try again." })
-        } else {
-          req.user = await dataSource.getRepository(User).findOne({
-            where: {
-              id: decodedObj["userId"],
-            },
-          })
-          next()
-        }
+    validateJwt(authToken, myEnvs.JWT_SECRET, async (error, decodedObj) => {
+      //if userId is string, it means it is getting the token from another cookie..
+      if (error || !decodedObj || typeof decodedObj["userId"] === "string") {
+        return res
+          .status(401)
+          .json({ msg: "Token is not valid. Sign in and try again." })
       }
-    )
+      const user = await dataSource.getRepository(User).findOne({
+        where: {
+          id: decodedObj["userId"],
+        },
+      })
+
+      if (!user) {
+        return res
+          .status(401)
+          .json({ msg: "Token is not valid. Sign in and try again." })
+      }
+
+      req.user = user
+      next()
+    })
   } catch (err) {
     res.status(500).json(new MyErrorsResponse("Server Error"))
   }

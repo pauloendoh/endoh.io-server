@@ -5,7 +5,11 @@ import CategoryPostDto from "../../interfaces/dtos/monerate/Category/CategoryPos
 
 const CategoryRepository = dataSource.getRepository(Category).extend({
   async getCategoriesFromUser(user: User): Promise<Category[]> {
-    return this.find({ userId: user.id })
+    return this.find({
+      where: {
+        userId: user.id,
+      },
+    })
   },
   async saveCategoryPostDto(
     category: CategoryPostDto,

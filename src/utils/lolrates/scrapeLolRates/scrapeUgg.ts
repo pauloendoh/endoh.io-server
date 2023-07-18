@@ -63,9 +63,9 @@ export async function scrapeUgg(page: Page) {
         const trs = Array.from(document.querySelectorAll(".rt-tr-group"))
         for (const tr of trs) {
           objects.push({
-            championName: tr.querySelector(".champion-name").textContent,
-            winRate: tr.querySelector(".winrate").textContent,
-            pickRate: tr.querySelector(".pickrate").textContent,
+            championName: tr.querySelector(".champion-name")?.textContent || "",
+            winRate: tr.querySelector(".winrate")?.textContent || "",
+            pickRate: tr.querySelector(".pickrate")?.textContent || "",
             role,
           })
         }

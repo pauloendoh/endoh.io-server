@@ -5,6 +5,7 @@ import { dataSource } from "../../dataSource"
 import { UserToken } from "../../entities/OAuthToken"
 import { User } from "../../entities/User"
 import { myConsoleSuccess } from "../myConsoleSuccess"
+import { myEnvs } from "../myEnvs"
 import { addMinutes } from "../time/addMinutes"
 
 require("dotenv").config()
@@ -37,7 +38,7 @@ export async function sendPasswordResetEmail(user: User) {
     "&userId=" +
     user.id
 
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+  sgMail.setApiKey(myEnvs.SENDGRID_API_KEY)
 
   const responses = await sgMail.send({
     from: "endohpa@gmail.com",

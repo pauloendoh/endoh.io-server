@@ -1,4 +1,4 @@
-import express from "express"
+import express, { Request, Response } from "express"
 import { createServer } from "http"
 import { memoryUsage } from "process"
 
@@ -6,7 +6,6 @@ import { memoryUsage } from "process"
 import { ApolloServer } from "apollo-server-express"
 import "reflect-metadata"
 import { Server } from "socket.io"
-import * as swaggerUi from "swagger-ui-express"
 
 import {
   Action,
@@ -79,7 +78,7 @@ dataSource
       await apolloServer.start()
       apolloServer.applyMiddleware({ app, path: "/graphql" })
       myConsoleSuccess("Apollo server started")
-    } catch (e) {
+    } catch (e: any) {
       myConsoleError(e.message)
     }
 
@@ -97,7 +96,7 @@ dataSource
     app.use(pagination)
 
     // For testing
-    app.get("/", async (req, res) => {
+    app.get("/", async (_: Request, res: Response) => {
       res.statusMessage = "zimbabwe"
       res.status(200).json({
         message: "nice",
@@ -146,49 +145,6 @@ dataSource
     app.use(passport.session())
 
     app.use(express.static("public"))
-
-    const storeItems = new Map([
-      [1, { priceInCents: 10000, name: "Learn React Today" }],
-      [2, { priceInCents: 20000, name: "Learn CSS Today" }],
-    ])
-    app.post("/create-checkout-session", async (req, res) => {
-      try {
-        const session = await stripe.checkout.sessions.create({
-          payment_method_types: ["card"],
-          mode: "payment",
-          line_items: req.body.items.map((item) => {
-            const storeItem = storeItems.get(item.id)
-            return {
-              price_data: {
-                currency: "usd",
-                product_data: {
-                  name: storeItem.name,
-                },
-                unit_amount: storeItem.priceInCents,
-              },
-              quantity: item.quantity,
-            }
-          }),
-          success_url: `${process.env.SERVER_BASE_URL}/success`,
-
-          cancel_url: `${process.env.SERVER_BASE_URL}/cancel`,
-        })
-        res.json({ url: session.url })
-      } catch (e) {
-        res.status(500).json({ errors: e.message })
-      }
-    })
-
-    // PE 1/3 - delete?..
-    app.use(
-      "/docs",
-      swaggerUi.serve,
-      swaggerUi.setup(undefined, {
-        swaggerOptions: {
-          url: "/swagger.json",
-        },
-      })
-    )
 
     // Automatically connect with /routes folder and subfolders
     myConsoleInfo("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB")

@@ -13,7 +13,7 @@ const ExpenseRepository = dataSource.getRepository(Expense).extend({
   },
 
   // simple 'save()' was not returning 'createdAt' field...
-  async saveAndGetEntireModel(expense: Expense): Promise<Expense> {
+  async saveAndGetEntireModel(expense: Expense): Promise<Expense | null> {
     const savedExpense = await this.save(expense)
     return await this.findOne({
       where: { id: savedExpense.id },

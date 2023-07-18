@@ -1,8 +1,8 @@
 import { verify as validateJwt } from "jsonwebtoken"
 
 import { MiddlewareFn } from "type-graphql"
-import { DotEnvKeys } from "../../enums/DotEnvKeys"
 import UserRepository from "../../repositories/UserRepository"
+import { myEnvs } from "../../utils/myEnvs"
 import { MyContext } from "./MyContext"
 
 export const isAuth: MiddlewareFn<MyContext> = async ({ context }, next) => {
@@ -16,23 +16,25 @@ export const isAuth: MiddlewareFn<MyContext> = async ({ context }, next) => {
   // Verify token
   try {
     const promise = new Promise<MyContext>((res, rej) => {
-      validateJwt(
-        authToken,
-        process.env[DotEnvKeys.JWT_SECRET],
-        async (error, decodedObj) => {
-          //if userId is string, it means it is getting the token from another cookie..
-          if (error || typeof decodedObj["userId"] === "string") {
-            throw new Error("Token is not valid. Sign in and try again.")
-          } else {
-            context.req.user = await UserRepository.findOne({
-              where: {
-                id: decodedObj["userId"],
-              },
-            })
-            return res(context)
-          }
+      validateJwt(authToken, myEnvs.JWT_SECRET, async (error, decodedObj) => {
+        //if userId is string, it means it is getting the token from another cookie..
+        if (error || !decodedObj || typeof decodedObj["userId"] === "string") {
+          throw new Error("Token is not valid. Sign in and try again.")
         }
-      )
+
+        const user = await UserRepository.findOne({
+          where: {
+            id: decodedObj["userId"],
+          },
+        })
+
+        if (!user) {
+          throw new Error("Token is not valid. Sign in and try again.")
+        }
+
+        context.req.user = user
+        return res(context)
+      })
     })
 
     await promise

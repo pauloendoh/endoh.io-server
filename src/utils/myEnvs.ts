@@ -2,6 +2,8 @@ import { myConsoleError } from "./myConsoleError"
 
 export const myEnvs = {
   REDIS_URL: envToStringOrThrow(process.env.REDIS_URL),
+  JWT_SECRET: envToStringOrThrow(process.env.JWT_SECRET),
+  SENDGRID_API_KEY: envToStringOrThrow(process.env.SENDGRID_API_KEY),
 }
 
 function envToStringOrThrow(env: string | undefined): string {

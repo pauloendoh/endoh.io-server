@@ -63,7 +63,7 @@ export async function scrapeMalUser(page: Page) {
     const N = 10
     let i = 0
     while (i < usersToScrape.length) {
-      const promises = []
+      const promises: Promise<void>[] = []
       for (let j = 0; j < N; j++) {
         if (i + j >= usersToScrape.length) {
           break

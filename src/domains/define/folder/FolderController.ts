@@ -11,8 +11,8 @@ import {
   Put,
 } from "routing-controllers"
 import { dataSource } from "../../../dataSource"
-import { Folder } from "../../../entities/playground/file-system/Folder"
 import { User } from "../../../entities/User"
+import { Folder } from "../../../entities/playground/file-system/Folder"
 import findFoldersFromUser from "../../../utils/domain/playground/file-system/findFoldersFromUser"
 import { FolderService } from "./FolderService"
 
@@ -37,7 +37,9 @@ export class FolderController {
       const parentFolder = await this.folderRepo.findOne({
         where: { id: sent.parentFolderId },
       })
-      sent.parentFolder = parentFolder
+      if (parentFolder) {
+        sent.parentFolder = parentFolder
+      }
     }
 
     const folderRepo = dataSource.getTreeRepository(Folder)
@@ -68,7 +70,9 @@ export class FolderController {
       const parentFolder = await this.folderRepo.findOne({
         where: { id: sent.parentFolderId },
       })
-      sent.parentFolder = parentFolder
+      if (parentFolder) {
+        sent.parentFolder = parentFolder
+      }
     }
 
     await this.folderTreeRepo.save(sent)

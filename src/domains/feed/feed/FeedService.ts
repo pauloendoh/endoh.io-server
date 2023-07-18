@@ -43,7 +43,10 @@ export class FeedService {
     const lastSeenAt = lastSeenResource?.lastSeenAt
 
     const newResources = feedResources.filter((resource) => {
-      return resource.completedAt > lastSeenAt
+      if (lastSeenAt) {
+        return resource.completedAt > lastSeenAt
+      }
+      return true
     })
 
     return newResources.length

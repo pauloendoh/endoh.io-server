@@ -6,14 +6,14 @@ export class AuthUserGetDto {
   id: number
   username: string
   email: string
-  userExpiresAt: string
+  userExpiresAt: string | null
   isAdmin: boolean
 
   preference: UserPreference
-  token: string
-  tokenExpiresAt: Date
+  token: string | null
+  tokenExpiresAt: Date | null
 
-  constructor(user: User, token: string, tokenExpiresAt: Date) {
+  constructor(user: User, token: string | null, tokenExpiresAt: Date | null) {
     this.id = user.id
     this.username = user.username
     this.email = user.email

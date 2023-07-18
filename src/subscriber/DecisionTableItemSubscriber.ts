@@ -1,3 +1,4 @@
+import { NotFoundError } from "routing-controllers"
 import {
   EntitySubscriberInterface,
   EventSubscriber,
@@ -9,7 +10,8 @@ import { myConsoleError } from "../utils/myConsoleError"
 
 @EventSubscriber()
 export class DecisionTableItemSubscriber
-  implements EntitySubscriberInterface<DecisionTableItem> {
+  implements EntitySubscriberInterface<DecisionTableItem>
+{
   listenTo() {
     return DecisionTableItem
   }
@@ -22,6 +24,8 @@ export class DecisionTableItemSubscriber
         where: { id: event.entity.decisionTableId },
         relations: ["items"],
       })
+
+      if (!table) throw new NotFoundError("Table not found")
 
       // since it's after an insert, you gotta disconsider this same item
       event.entity.index = table.items.length - 1

@@ -110,7 +110,7 @@ async function scrapeTinder() {
         }
 
         let passionsDiv = passionsH2.nextSibling
-        let passionsText = passionsDiv.textContent.toLowerCase()
+        let passionsText = passionsDiv?.textContent?.toLowerCase() || ""
         let validPassions = [
           "anime",
           "manga",

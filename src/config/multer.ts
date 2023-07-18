@@ -1,33 +1,34 @@
-const multer = require("multer")
-const path = require("path")
-const multerS3 = require("multer-s3")
-const aws = require("aws-sdk")
-import crypto = require("crypto")
+import { S3Client } from "@aws-sdk/client-s3"
+import crypto from "crypto"
+import multer from "multer"
+import multerS3 from "multer-s3"
+import path from "path"
+
 require("dotenv").config()
 
 const storageTypes = {
   local: multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (_req, _file, cb) => {
       cb(null, path.resolve(__dirname, "..", "tmp", "uploads"))
     },
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
       // garantir que os nomes não se sobreponham
       // usa-se um hash
       crypto.randomBytes(16, (err, hash) => {
         if (err) console.error(err)
 
-        file.key = `${hash.toString("hex")}-${file.originalname}`
-
-        cb(null, file.key)
+        const key = `${hash.toString("hex")}-${file.originalname}`
+        cb(null, key)
       })
     },
   }),
   s3: multerS3({
-    s3: new aws.S3(),
+    s3: new S3Client({}),
+
     bucket: "endoh",
     contentType: multerS3.AUTO_CONTENT_TYPE,
     acl: "public-read", // permissão
-    key: (req, file, cb) => {
+    key: (_req, file, cb) => {
       // garantir que os nomes não se sobreponham
       // usa-se um hash
       crypto.randomBytes(16, (err, hash) => {
@@ -47,13 +48,13 @@ export const multerConfig = {
   limits: {
     fileSize: 2 * 1024 * 1024,
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (_req: any, file: any, cb: any) => {
     const allowedMimes = ["image/jpeg", "image/pjpeg", "image/png", "image/gif"]
 
     if (allowedMimes.includes(file.mimetype)) {
       cb(null, true)
-    } else {
-      cb(new Error("Invalid file type."))
+      return
     }
+    cb(new Error("Invalid file type."))
   },
 }

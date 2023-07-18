@@ -70,7 +70,7 @@ export class User {
   updatedAt: Date
 
   @Column({ type: "timestamptz", nullable: true })
-  expiresAt: string
+  expiresAt: string | null
 
   // Relations ----------------------------------------------------------------
   @OneToOne((_) => UserPreference, (preference) => preference.user, {

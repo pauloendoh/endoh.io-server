@@ -39,9 +39,10 @@ export class AramRepository {
   }
 
   async saveUserAramChampion(userId: number, data: UserAramChampion) {
-    data.id = data.id || undefined
-    data.userId = userId
-
-    return this.db.getRepository(UserAramChampion).save(data)
+    return this.db.getRepository(UserAramChampion).save({
+      ...data,
+      id: data.id || undefined,
+      userId,
+    })
   }
 }

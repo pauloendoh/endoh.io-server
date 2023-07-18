@@ -68,7 +68,7 @@ export class ResourceController {
         )
 
         sentResource.completedAt = new Date().toISOString()
-        sentResource.position = null
+        // sentResource.position = null
 
         // TODO: reduce by 1 the others' positions
       }
@@ -181,7 +181,7 @@ export class ResourceController {
     // insere uma cópia na próxima posição
     await this.resourceRepo.save({
       ...foundResource,
-      id: null,
+      id: undefined,
       position: foundResource.position + 1,
       createdAt: undefined,
       updatedAt: undefined,

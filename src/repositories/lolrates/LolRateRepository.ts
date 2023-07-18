@@ -46,6 +46,7 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
       return winrates
     } catch (e) {
       myConsoleError(e.message)
+      throw e
     }
   },
 
@@ -109,9 +110,9 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
       await this.createQueryBuilder()
         .update()
         .set({
-          opggPick: null,
-          opggWin: null,
-          opggAvg: null,
+          opggPick: 0,
+          opggWin: 0,
+          opggAvg: 0,
           opggUpdatedAt: new Date().toISOString(),
         })
         .execute()
@@ -143,7 +144,7 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
       await this.createQueryBuilder()
         .update()
         .set({
-          aramWin: null,
+          aramWin: 0,
           aramUpdatedAt: new Date().toISOString(),
         })
         .execute()
@@ -171,9 +172,9 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
       await this.createQueryBuilder()
         .update()
         .set({
-          lolgraphsPick: null,
-          lolgraphsWin: null,
-          lolgraphsAvg: null,
+          lolgraphsPick: 0,
+          lolgraphsWin: 0,
+          lolgraphsAvg: 0,
           lolgraphsUpdatedAt: new Date().toISOString(),
         })
         .execute()
@@ -206,9 +207,9 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
       await this.createQueryBuilder()
         .update()
         .set({
-          uggPick: null,
-          uggWin: null,
-          uggAvg: null,
+          uggPick: 0,
+          uggWin: 0,
+          uggAvg: 0,
           uggUpdatedAt: new Date().toISOString(),
         })
         .execute()

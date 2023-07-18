@@ -56,10 +56,16 @@ export class MalUserSimilarity {
   })
   birthday: string
 
-  @Column({ nullable: true })
+  @Column({
+    type: "timestamptz",
+    nullable: true,
+  })
   lastScraped: string | null
 
-  @Column({ nullable: true })
+  @Column({
+    type: "timestamptz",
+    nullable: true,
+  })
   friendsScrapedAt: string | null
 
   @Column({ default: "" })

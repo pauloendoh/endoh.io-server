@@ -1,9 +1,10 @@
 import { MailService } from "@sendgrid/mail"
 import { User } from "../../entities/User"
+import { myEnvs } from "../../utils/myEnvs"
 
 export class EmailService {
   constructor(private sendgridService = new MailService()) {
-    this.sendgridService.setApiKey(process.env.SENDGRID_API_KEY)
+    this.sendgridService.setApiKey(myEnvs.SENDGRID_API_KEY)
   }
 
   notifyNewUserToDevs(user: User) {

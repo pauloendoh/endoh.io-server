@@ -12,15 +12,16 @@ export class FlashnotesService {
 
   async createQuestion(sentNote: Note, requesterId: number) {
     sentNote.userId = requesterId
-    sentNote.doc = undefined
 
-    const noteWithHighestIndex = await this.noteRepository.findNoteWithHighestIndex(
-      sentNote.docId
-    )
+    const noteWithHighestIndex =
+      await this.noteRepository.findNoteWithHighestIndex(sentNote.docId)
 
     sentNote.index = noteWithHighestIndex ? noteWithHighestIndex.index + 1 : 0
 
-    return this.noteRepository.save(sentNote)
+    return this.noteRepository.save({
+      ...sentNote,
+      doc: undefined,
+    })
   }
 
   async updateQuestion(sentNote: Note, requesterId: number) {
@@ -31,10 +32,11 @@ export class FlashnotesService {
     if (!found)
       throw new NotFoundError("Note doesn't exist or user is not owner")
 
-    sentNote.userId = requesterId
-    sentNote.doc = undefined
-
-    return this.noteRepository.save(sentNote)
+    return this.noteRepository.save({
+      ...sentNote,
+      userId: requesterId,
+      doc: undefined,
+    })
   }
 
   async searchFlashnotes(options: {

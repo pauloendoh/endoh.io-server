@@ -35,23 +35,23 @@ export const scrapeUser = async (params: {
     const titlesSpans = document.querySelectorAll(".user-status-title")
 
     const genderSpan = Array.from(titlesSpans).find((span) =>
-      span.textContent.includes("Gender")
+      span.textContent?.includes("Gender")
     )
 
     const birthdaySpan = Array.from(titlesSpans).find((span) =>
-      span.textContent.includes("Birthday")
+      span.textContent?.includes("Birthday")
     )
 
     const locationSpan = Array.from(titlesSpans).find((span) =>
-      span.textContent.includes("Location")
+      span.textContent?.includes("Location")
     )
 
     const compatibilitySpans = document.querySelectorAll(
       ".user-compatability-data"
     )
 
-    const animeCount = parseInt(compatibilitySpans[0].textContent)
-    const mangaCount = parseInt(compatibilitySpans[1].textContent)
+    const animeCount = parseInt(compatibilitySpans[0].textContent || "0")
+    const mangaCount = parseInt(compatibilitySpans[1].textContent || "0")
 
     const animeSimilarity = parseFloat(
       document
@@ -67,7 +67,7 @@ export const scrapeUser = async (params: {
     const img = document.querySelector(".user-image")?.querySelector("img")
 
     const lastOnlineSpan = Array.from(titlesSpans).find((span) =>
-      span.textContent.includes("Last Online")
+      span.textContent?.includes("Last Online")
     )
 
     const infos = {

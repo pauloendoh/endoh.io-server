@@ -4,7 +4,11 @@ import { User } from "../../entities/User"
 
 const PlaceRepository = dataSource.getRepository(Place).extend({
   async getPlacesFromUser(user: User): Promise<Place[]> {
-    return this.find({ userId: user.id })
+    return this.find({
+      where: {
+        userId: user.id,
+      },
+    })
   },
 })
 

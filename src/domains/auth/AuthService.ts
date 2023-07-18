@@ -10,11 +10,11 @@ import { USER_TOKEN_TYPES } from "../../consts/USER_TOKEN_TYPES"
 import { dataSource } from "../../dataSource"
 import { UserToken } from "../../entities/OAuthToken"
 import { User } from "../../entities/User"
-import { DotEnvKeys } from "../../enums/DotEnvKeys"
 import { AuthUserGetDto } from "../../interfaces/dtos/auth/AuthUserGetDto"
 import { PasswordResetPostDto } from "../../interfaces/dtos/auth/PasswordResetPostDto"
 import { UserTokenPostDto } from "../../interfaces/dtos/auth/UserTokenPostDto"
 import UserRepository from "../../repositories/UserRepository"
+import { myEnvs } from "../../utils/myEnvs"
 import { addMinutes } from "../../utils/time/addMinutes"
 import validateUserFields from "../../utils/validateUser"
 import { RegisterDto } from "./types/RegisterDto"
@@ -75,14 +75,16 @@ export class AuthService {
     const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
     const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
 
+    if (!savedUser) throw new Error("User not saved")
+
     const promise = new Promise<AuthUserGetDto>((res, rej) => {
       sign(
         { userId: savedUser.id },
-        process.env[DotEnvKeys.JWT_SECRET],
+        myEnvs.JWT_SECRET,
         { expiresIn: ONE_YEAR_IN_SECONDS },
         (err, token) => {
           if (err) throw err
-          res(new AuthUserGetDto(savedUser, token, expireDate))
+          res(new AuthUserGetDto(savedUser, token || null, expireDate))
         }
       )
     })
@@ -92,14 +94,14 @@ export class AuthService {
 
   async login(sentUser: User) {
     sentUser.username = sentUser.email // We just use email here, but we don't want to validate empty username
- 
+
     const fieldErrors = validateUserFields(sentUser)
     if (fieldErrors.length) {
       throw new BadRequestError(fieldErrors[0].message)
     }
 
     // username or email exists ?
-    let user = await this.userRepo.findOne({
+    const user = await this.userRepo.findOne({
       where: [{ email: sentUser.email }, { username: sentUser.email }],
     })
     if (!user) {
@@ -119,11 +121,11 @@ export class AuthService {
     const promise = new Promise<AuthUserGetDto>((res, rej) => {
       sign(
         { userId: user.id },
-        process.env[DotEnvKeys.JWT_SECRET],
+        myEnvs.JWT_SECRET,
         { expiresIn: ONE_YEAR_IN_SECONDS },
         (err, token) => {
           if (err) return rej(err)
-          return res(new AuthUserGetDto(user, token, expireDate))
+          return res(new AuthUserGetDto(user, token || null, expireDate))
         }
       )
     })
@@ -137,6 +139,7 @@ export class AuthService {
     const previousTempUser = await this.userRepo.findOne({
       where: { id: userId },
     })
+    if (!previousTempUser) throw new BadRequestError("User not found")
 
     // only creates an instance. Doesn't save on DB
     const sentUser = this.userRepo.create(dto)
@@ -186,6 +189,9 @@ export class AuthService {
     previousTempUser.expiresAt = null
 
     const savedUser = await this.userRepo.saveAndGetRelations(previousTempUser)
+    if (!savedUser) {
+      throw new Error("User not saved")
+    }
 
     const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
     const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
@@ -193,11 +199,11 @@ export class AuthService {
     const promise = new Promise<AuthUserGetDto>((res, rej) => {
       sign(
         { userId: savedUser.id },
-        process.env[DotEnvKeys.JWT_SECRET],
+        myEnvs.JWT_SECRET,
         { expiresIn: ONE_YEAR_IN_SECONDS },
         (err, token) => {
           if (err) throw err
-          res(new AuthUserGetDto(savedUser, token, expireDate))
+          res(new AuthUserGetDto(savedUser, token || null, expireDate))
         }
       )
     })
@@ -244,6 +250,9 @@ export class AuthService {
         id: userId,
       },
     })
+    if (!user) {
+      throw new BadRequestError("User not found")
+    }
 
     const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
     const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
@@ -257,11 +266,11 @@ export class AuthService {
     const authUser = await new Promise<AuthUserGetDto>((res, rej) => {
       sign(
         { userId: user.id },
-        process.env[DotEnvKeys.JWT_SECRET],
+        myEnvs.JWT_SECRET,
         { expiresIn: ONE_YEAR_IN_SECONDS },
         (err, token) => {
           if (err) return rej(err)
-          return res(new AuthUserGetDto(user, token, expireDate))
+          return res(new AuthUserGetDto(user, token || null, expireDate))
         }
       )
     })
@@ -290,6 +299,7 @@ export class AuthService {
         id: userId,
       },
     })
+    if (!user) throw new BadRequestError("User not found")
 
     const salt = await genSalt(10)
     user.password = await hash(password, salt)

@@ -9,8 +9,8 @@ import {
   Post,
 } from "routing-controllers"
 import { dataSource } from "../../../dataSource"
-import { Label } from "../../../entities/skillbase/Label"
 import { User } from "../../../entities/User"
+import { Label } from "../../../entities/skillbase/Label"
 import SkillRepository from "../../../repositories/skillbase/SkillRepository"
 
 @JsonController("/v2/skillbase")
@@ -75,13 +75,18 @@ export class LabelController {
     @Param("skillId") skillId: number,
     @Body({ required: true }) body: { labelId: number }
   ) {
-    const foundSkill = await this.skillRepo.findOne({
-      where: { userId: user.id, id: skillId },
-      relations: ["labels"],
-    })
-    const foundLabel = await dataSource.getRepository(Label).findOne({
-      where: { id: body.labelId },
-    })
+    const [foundSkill, foundLabel] = await Promise.all([
+      this.skillRepo.findOne({
+        where: { userId: user.id, id: skillId },
+        relations: ["labels"],
+      }),
+      dataSource.getRepository(Label).findOne({
+        where: { id: body.labelId },
+      }),
+    ])
+
+    if (!foundSkill) throw new NotFoundError("Skill not found.")
+    if (!foundLabel) throw new NotFoundError("Label not found.")
 
     foundSkill.labels.push(foundLabel)
     const savedSkill = await this.skillRepo.save(foundSkill)
@@ -95,15 +100,19 @@ export class LabelController {
     @Param("skillId") skillId: number,
     @Body({ required: true }) body: { labelId: number }
   ) {
-    const foundSkill = await this.skillRepo.findOne({
-      where: { userId: user.id, id: skillId },
-      relations: ["labels"],
-    })
-    const foundLabel = await dataSource.getRepository(Label).findOne({
-      where: { id: body.labelId },
-    })
+    const [foundSkill, foundLabel] = await Promise.all([
+      this.skillRepo.findOne({
+        where: { userId: user.id, id: skillId },
+        relations: ["labels"],
+      }),
+      dataSource.getRepository(Label).findOne({
+        where: { id: body.labelId },
+      }),
+    ])
 
-    // remove label from skill
+    if (!foundSkill) throw new NotFoundError("Skill not found.")
+    if (!foundLabel) throw new NotFoundError("Label not found.")
+
     foundSkill.labels = foundSkill.labels.filter(
       (label) => label.id !== foundLabel.id
     )

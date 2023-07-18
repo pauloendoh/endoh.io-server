@@ -57,13 +57,16 @@ export async function scrapeLolGraphs(page: Page) {
           document.querySelectorAll(".data_table.with_sortable_column tbody tr")
         )
         for (const tr of trs) {
-          if (tr.textContent.includes("KDA") || !tr.querySelector(".name"))
+          if (tr.textContent?.includes("KDA") || !tr.querySelector(".name"))
             continue
 
           const tds = tr.querySelectorAll("td")
-          const championName = tds[1].querySelector(".name").textContent.trim()
-          const pickRate = tds[2].querySelector(".progressBarTxt").textContent
-          const winRate = tds[3].querySelector(".progressBarTxt").textContent
+          const championName =
+            tds[1]?.querySelector(".name")?.textContent?.trim() || ""
+          const pickRate =
+            tds[2].querySelector(".progressBarTxt")?.textContent || ""
+          const winRate =
+            tds[3].querySelector(".progressBarTxt")?.textContent || ""
 
           results.push({ role, championName, pickRate, winRate })
         }

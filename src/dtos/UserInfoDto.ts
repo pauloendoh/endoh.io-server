@@ -6,7 +6,7 @@ import { FollowerDto } from "./feed/FollowerDto"
 import { FollowingUserDto } from "./feed/FollowingUserDto"
 
 export interface UserInfoDto {
-  profile: Profile
+  profile: Profile | null
 
   // return type of feedRepo.findResourcesByTagIds
   resources: Awaited<

@@ -1,12 +1,13 @@
+import { NotFoundError } from "routing-controllers"
 import { dataSource } from "../../dataSource"
 import { TagFollowPostDto } from "../../dtos/feed/TagFollowPostDto"
 import { NotificationDto } from "../../dtos/utils/NotificationDto"
+import { User } from "../../entities/User"
 import { Notification } from "../../entities/feed/Notification"
 import { Profile } from "../../entities/feed/Profile"
-import { User } from "../../entities/User"
+import UserRepository from "../UserRepository"
 import ResourceRepository from "../relearn/ResourceRepository"
 import TagRepository from "../relearn/TagRepository"
-import UserRepository from "../UserRepository"
 
 // PE 1/3 - transform in a proper Repository
 const NotificationRepository = dataSource.getRepository(Notification).extend({
@@ -27,6 +28,10 @@ const NotificationRepository = dataSource.getRepository(Notification).extend({
     let index = 0
     for (const followingTag of followingTags) {
       const tag = await tagRepo.findOne({ where: { id: followingTag.tagId } })
+
+      if (!tag) {
+        continue
+      }
 
       if (followingTags.length === 1) {
         // if only one
@@ -67,7 +72,15 @@ const NotificationRepository = dataSource.getRepository(Notification).extend({
       const resource = await resourceRepo.findOne({
         where: { id: resourceId },
       })
+
+      if (!resource) {
+        throw new NotFoundError("Resource not found")
+      }
+
       const owner = await userRepo.findOne({ where: { id: resource.userId } })
+      if (!owner) {
+        throw new NotFoundError("Owner not found")
+      }
 
       const saver = await userRepo.findOne({
         where: {
@@ -75,13 +88,19 @@ const NotificationRepository = dataSource.getRepository(Notification).extend({
         },
       })
 
+      if (!saver) {
+        throw new NotFoundError("Saver not found")
+      }
+
       return this.save({
         type: "userSavedYourResource",
         userId: owner.id,
         message: `${saver.username} saved your resource: ${resource.title}`,
         followerId: saverId,
       })
-    } catch (err) {}
+    } catch (err) {
+      throw err
+    }
   },
 
   async getNotifications(userId: number): Promise<NotificationDto[]> {

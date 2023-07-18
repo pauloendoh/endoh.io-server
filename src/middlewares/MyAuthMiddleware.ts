@@ -1,9 +1,9 @@
 import { verify as validateJwt } from "jsonwebtoken"
 
 import { ExpressMiddlewareInterface } from "routing-controllers"
-import { DotEnvKeys } from "../enums/DotEnvKeys"
 import UserRepository from "../repositories/UserRepository"
 import { MyErrorsResponse } from "../utils/ErrorMessage"
+import { myEnvs } from "../utils/myEnvs"
 
 export class MyAuthMiddleware implements ExpressMiddlewareInterface {
   // interface implementation is optional
@@ -23,25 +23,24 @@ export class MyAuthMiddleware implements ExpressMiddlewareInterface {
 
       // Verify token
       try {
-        validateJwt(
-          authToken,
-          process.env[DotEnvKeys.JWT_SECRET],
-          async (error, decodedObj) => {
-            //if userId is string, it means it is getting the token from another cookie..
-            if (error || typeof decodedObj["userId"] === "string") {
-              return res
-                .status(401)
-                .json({ msg: "Token is not valid. Sign in and try again." })
-            } else {
-              req.user = await UserRepository.findOne({
-                where: {
-                  id: decodedObj["userId"],
-                },
-              })
+        validateJwt(authToken, myEnvs.JWT_SECRET, async (error, decodedObj) => {
+          //if userId is string, it means it is getting the token from another cookie..
+          if (error || typeof decodedObj["userId"] === "string") {
+            return res
+              .status(401)
+              .json({ msg: "Token is not valid. Sign in and try again." })
+          } else {
+            req.user = await UserRepository.findOne({
+              where: {
+                id: decodedObj["userId"],
+              },
+            })
+
+            if (next) {
               next()
             }
           }
-        )
+        })
       } catch (err) {
         res.status(500).json(new MyErrorsResponse("Server Error"))
       }

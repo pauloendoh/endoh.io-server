@@ -101,6 +101,7 @@ export default class LearningService {
     const topPercentDaysLearningCount = filteredLearnings
       .filter((l) => {
         const day = DateTime.fromJSDate(new Date(l.datetime)).toISODate()
+        if (!day) throw new Error("Day not found.")
         return topPercentDays.includes(day)
       })
       .reduce((total, l) => {

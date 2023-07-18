@@ -14,7 +14,7 @@ const DecisionRepository = dataSource.getRepository(Decision).extend({
       .getMany()
   },
 
-  async getFullDecision(id: number): Promise<Decision> {
+  async getFullDecision(id: number): Promise<Decision | null> {
     return this.createQueryBuilder("decision")
       .where({ id })
       .leftJoinAndSelect("decision.tables", "table")
