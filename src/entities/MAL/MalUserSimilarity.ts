@@ -57,13 +57,13 @@ export class MalUserSimilarity {
   birthday: string
 
   @Column({
-    type: "timestamptz",
+    type: "varchar",
     nullable: true,
   })
   lastScraped: string | null
 
   @Column({
-    type: "timestamptz",
+    type: "varchar",
     nullable: true,
   })
   friendsScrapedAt: string | null
