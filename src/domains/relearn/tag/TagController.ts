@@ -13,10 +13,14 @@ import {
 import { User } from "../../../entities/User"
 import { Tag } from "../../../entities/relearn/Tag"
 import TagRepository from "../../../repositories/relearn/TagRepository"
+import { TagService } from "./TagService"
 
 @JsonController()
 export class TagController {
-  constructor(private tagRepo = TagRepository) {}
+  constructor(
+    private tagRepo = TagRepository,
+    private tagService = new TagService()
+  ) {}
 
   @Post("/relearn/tag/")
   async saveTag(
@@ -24,38 +28,7 @@ export class TagController {
     user: User,
     @Body() body: Tag
   ) {
-    // trimming tag.name
-    body.name = body.name.trim()
-
-    // checking ownership
-    if (body.id) {
-      const isOwner = await this.tagRepo.find({
-        where: {
-          id: body.id,
-          userId: user.id,
-        },
-      })
-      if (!isOwner) {
-        throw new BadRequestError("User does not own this tag.")
-      }
-    } else {
-      // checking if tag name already exists
-      const nameExists = await this.tagRepo.findOne({
-        where: {
-          name: body.name,
-          userId: user.id,
-        },
-      })
-      if (nameExists) {
-        throw new BadRequestError("Tag name must be unique.")
-      }
-    }
-
-    body.user = user
-    body.userId = user.id
-
-    await this.tagRepo.save(body)
-    return this.tagRepo.getAllTagsFromUser(user)
+    return this.tagService.saveTag({ data: body, userId: user.id })
   }
 
   @Get("/relearn/tag")
