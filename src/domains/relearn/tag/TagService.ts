@@ -34,6 +34,8 @@ export class TagService {
       ...data,
       user: undefined,
       userId,
+      resources: undefined,
+      updatedAt: undefined,
     })
 
     return saved
