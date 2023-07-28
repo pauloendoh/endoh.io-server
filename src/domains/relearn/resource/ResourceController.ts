@@ -244,7 +244,7 @@ export class ResourceController {
     return this.service.moveResourceToLast(resourceId, user.id)
   }
 
-  @Get("/scan-urls")
+  @Post("/scan-urls")
   async scanUrls(
     @CurrentUser({ required: true }) user: User,
     @Body() body: { urls: string[] }
