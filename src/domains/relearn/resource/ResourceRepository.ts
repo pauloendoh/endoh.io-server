@@ -59,4 +59,15 @@ export class ResourceRepository {
       .orderBy("resource.position", "ASC")
       .getMany()
   }
+
+  async findByUrlsAndUser(params: { urls: string[]; userId: number }) {
+    const resources = await this.repo.find({
+      where: {
+        userId: params.userId,
+        url: In(params.urls),
+      },
+    })
+
+    return resources
+  }
 }

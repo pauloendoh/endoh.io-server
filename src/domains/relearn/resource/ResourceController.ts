@@ -243,4 +243,19 @@ export class ResourceController {
   ) {
     return this.service.moveResourceToLast(resourceId, user.id)
   }
+
+  @Get("/scan-urls")
+  async scanUrls(
+    @CurrentUser({ required: true }) user: User,
+    @Body() body: { urls: string[] }
+  ) {
+    const { urls } = body
+
+    const resources = await this.service.scanUrls({
+      urls,
+      userId: user.id,
+    })
+
+    return resources
+  }
 }

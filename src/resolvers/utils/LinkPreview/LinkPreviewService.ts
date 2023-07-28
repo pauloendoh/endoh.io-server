@@ -10,6 +10,7 @@ import metascraperTitle from "metascraper-title"
 import { YOUTUBE_API_KEY } from "../../../config/config"
 import ResourceRepository from "../../../repositories/relearn/ResourceRepository"
 import { YoutubeDataDto } from "./types/YoutubeDataDto"
+import { $GetYoutubeVideoId } from "./use-cases/$GetYoutubeVideoId"
 
 const metascraper = createMetascraper([
   metascraperDescription(),
@@ -18,7 +19,10 @@ const metascraper = createMetascraper([
 ])
 
 export default class LinkPreviewService {
-  constructor(private resourceRepo = ResourceRepository) {}
+  constructor(
+    private resourceRepo = ResourceRepository,
+    private $getYoutubeVideoId = new $GetYoutubeVideoId()
+  ) {}
 
   getLinkPreview = async (
     url: string,
@@ -68,7 +72,7 @@ export default class LinkPreviewService {
 
   // PE 1/3 - remove elses
   async #getYoutubeVideoInfo(url: string) {
-    const videoId = this.#getYoutubeVideoId(url)
+    const videoId = this.$getYoutubeVideoId.exec(url)
     let durationStr = "00:00h"
     let viewCount = 0
 
@@ -110,18 +114,6 @@ export default class LinkPreviewService {
       viewCount,
       videoId,
     }
-  }
-
-  #getYoutubeVideoId(url: string) {
-    if (url.includes("/shorts")) {
-      // eg: https://www.youtube.com/shorts/eexmdt3Q8yk/ or https://www.youtube.com/shorts/eexmdt3Q8yk  or https://youtube.com/shorts/eexmdt3Q8yk?feature=share
-      return url.split("/")[url.split("/").length - 2]
-    }
-
-    const videoId = url.includes("youtube.com")
-      ? new URLSearchParams(url.split("?")[1]).get("v")
-      : url.split("/")[url.split("/").length - 1].split("?")[0] // eg: https://youtu.be/ZV5yTm4pT8g?t=1
-    return videoId
   }
 
   async findAlreadySavedResource(userId: number, url: string) {

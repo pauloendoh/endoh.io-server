@@ -1,8 +1,12 @@
 import { ForbiddenError, NotFoundError } from "routing-controllers"
+import { $GetYoutubeVideoId } from "../../../resolvers/utils/LinkPreview/use-cases/$GetYoutubeVideoId"
 import { ResourceRepository } from "./ResourceRepository"
 
 export class ResourceService {
-  constructor(private resourceRepo = new ResourceRepository()) {}
+  constructor(
+    private resourceRepo = new ResourceRepository(),
+    private $getYoutubeVideoId = new $GetYoutubeVideoId()
+  ) {}
 
   async moveResourceToFirst(resourceId: number, requesterId: number) {
     const isAllowed = await this.resourceRepo.userOwnsResource(
@@ -93,5 +97,26 @@ export class ResourceService {
     )
 
     return updated
+  }
+
+  async scanUrls(params: { urls: string[]; userId: number }) {
+    params.urls = params.urls.map((url) => {
+      if (url.includes("youtube.com?watch=") || url.includes("youtu.be/")) {
+        return `https://www.youtube.com/watch?v=${this.$getYoutubeVideoId.exec(
+          url
+        )}`
+      }
+      return url
+    })
+
+    const resources = await this.resourceRepo.findByUrlsAndUser(params)
+
+    return params.urls.map((url) => {
+      const foundResource = resources.find((r) => r.url === url)
+      return {
+        url,
+        resource: foundResource || null,
+      }
+    })
   }
 }
