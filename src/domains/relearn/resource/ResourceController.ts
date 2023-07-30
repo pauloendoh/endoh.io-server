@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  QueryParam,
 } from "routing-controllers"
 import { In } from "typeorm"
 import { IdsDto } from "../../../dtos/IdsDto"
@@ -15,100 +16,28 @@ import { User } from "../../../entities/User"
 import { Resource } from "../../../entities/relearn/Resource"
 import ResourceRepository from "../../../repositories/relearn/ResourceRepository"
 import { ResourceService } from "./ResourceService"
+import { _SaveResource } from "./use-cases/_SaveResource/_SaveResource"
 
 @JsonController()
 export class ResourceController {
   constructor(
     private resourceRepo = ResourceRepository,
-    private service = new ResourceService()
+    private service = new ResourceService(),
+    private _saveResource = new _SaveResource()
   ) {}
 
   @Post("/relearn/resource")
   async saveResource(
     @CurrentUser({ required: true })
     user: User,
-    @Body() sentResource: Resource
+    @Body() sentResource: Resource,
+    @QueryParam("returnAll") returnAll?: boolean
   ) {
-    if (sentResource.tag === null)
-      throw new BadRequestError("Resource must have a tag.")
-
-    if (sentResource.thumbnail === null) sentResource.thumbnail = ""
-
-    // If updating
-    if (sentResource.id) {
-      const previousResource = await this.resourceRepo.findOne({
-        where: {
-          id: sentResource.id,
-          userId: user.id,
-        },
-        relations: {
-          tag: true,
-        },
-      })
-
-      // Check ownership
-      if (!previousResource) {
-        throw new BadRequestError("User does not own this resource.")
-      }
-
-      // if updating a rating
-      if (
-        previousResource.rating !== sentResource.rating &&
-        sentResource.rating > 0
-      )
-        sentResource.completedAt = new Date().toISOString()
-
-      // PE 1/3 - Maybe it would be better to create a specific route for that...
-      // If adding a rating
-      if (!previousResource.rating && sentResource.rating > 0) {
-        await this.resourceRepo.reducePosition(
-          sentResource.tag,
-          user,
-          sentResource.position + 1
-        )
-
-        sentResource.completedAt = new Date().toISOString()
-        // sentResource.position = null
-
-        // TODO: reduce by 1 the others' positions
-      }
-      // If removing a rating
-      else if (previousResource.rating > 0 && sentResource.rating === null) {
-        sentResource.completedAt = ""
-        sentResource.position = await this.resourceRepo.getLastPosition(
-          sentResource.tag,
-          user
-        )
-      }
-
-      if (
-        ((previousResource.tag === null && sentResource.tag !== null) || // adding tag
-          (previousResource.tag !== null && sentResource.tag === null) || // removing tag
-          previousResource.tag?.id != sentResource.tag?.id) && // changing tag
-        previousResource.position
-      ) {
-        await this.resourceRepo.reducePosition(
-          previousResource.tag,
-          user,
-          previousResource.position + 1
-        )
-
-        sentResource.position = await this.resourceRepo.getLastPosition(
-          sentResource.tag,
-          user
-        )
-      }
-    } else {
-      // if adding resource, check tag's last resource's position
-      sentResource.position = await this.resourceRepo.getLastPosition(
-        sentResource.tag,
-        user
-      )
-      sentResource.userId = user.id
-    }
-
-    await this.resourceRepo.save({ ...sentResource })
-    return this.resourceRepo.findAllResourcesFromUser(user)
+    return this._saveResource.exec({
+      sentResource,
+      user,
+      returnAll,
+    })
   }
 
   @Get("/relearn/resource/")
