@@ -22,21 +22,14 @@ export const TagRepository = dataSource.getRepository(Tag).extend({
       .getOne()
   },
 
-  async createExampleTagsForNewUser(user: User): Promise<Tag[]> {
+  async createExampleTag(user: User): Promise<Tag[]> {
     const exampleTag1 = await TagRepository.save({
       user,
-      name: "[Example] Programming",
+      name: "General",
       color: "#14aaf5",
     })
 
-    const exampleTag2 = await TagRepository.save({
-      user,
-      name: "[Example] Soft Skills",
-      color: "#6accbc",
-      isPrivate: true,
-    })
-
-    return [exampleTag1, exampleTag2]
+    return [exampleTag1]
   },
 
   findPublicTags() {

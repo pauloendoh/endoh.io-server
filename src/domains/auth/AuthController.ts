@@ -1,7 +1,3 @@
-import { v4 as uuidv4 } from "uuid"
-
-import { sign } from "jsonwebtoken"
-
 import { compare, genSalt, hash } from "bcryptjs"
 
 import { Response } from "express"
@@ -20,7 +16,6 @@ import {
   UseBefore,
 } from "routing-controllers"
 import { dataSource } from "../../dataSource"
-import { UserToken } from "../../entities/OAuthToken"
 import { User } from "../../entities/User"
 import { UserPreference } from "../../entities/UserPreference"
 import { AuthChangePasswordPostDto } from "../../interfaces/dtos/auth/AuthChangePasswordPostDto"
@@ -31,17 +26,17 @@ import { UserTokenPostDto } from "../../interfaces/dtos/auth/UserTokenPostDto"
 import { UsernamePutDto } from "../../interfaces/dtos/auth/UsernamePutDto"
 import UserRepository from "../../repositories/UserRepository"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
-import { myEnvs } from "../../utils/myEnvs"
+import { $SaveUser } from "../user/use-cases/$SaveUser"
 import { AuthService } from "./AuthService"
 import { RegisterDto } from "./types/RegisterDto"
 
 @JsonController("/auth")
 export class AuthController {
   constructor(
-    private tokenRepo = dataSource.getRepository(UserToken),
     private userRepo = UserRepository,
     private preferenceRepo = dataSource.getRepository(UserPreference),
-    private authService = new AuthService()
+    private authService = new AuthService(),
+    private $saveUser = new $SaveUser()
   ) {}
 
   @Post("/register")
@@ -104,7 +99,7 @@ export class AuthController {
       const salt = await genSalt(10)
       const newPasswordHashed = await hash(newPassword, salt)
       requester.password = newPasswordHashed
-      await this.userRepo.save(requester)
+      await this.$saveUser.exec(requester)
 
       return true
     }
@@ -155,38 +150,14 @@ export class AuthController {
     }
 
     requester.username = newUsername
-    await this.userRepo.save(requester)
+    await this.$saveUser.exec(requester)
 
     return true
   }
 
   @Get("/temp-user")
   async getTempUser() {
-    const username = uuidv4()
-    const expireDate = new Date(new Date().setDate(new Date().getDate() + 30))
-
-    const user = await this.userRepo.save({
-      username: username,
-      email: username + "@" + username + ".com",
-      password: username,
-      expiresAt: expireDate.toISOString(),
-    })
-
-    // Signing in and returning  user's token
-    const ONE_MONTH_IN_SECONDS = 3600 * 24 * 30
-
-    const authUser = await new Promise<AuthUserGetDto>((res, rej) => {
-      sign(
-        { userId: user.id },
-        myEnvs.JWT_SECRET,
-        { expiresIn: ONE_MONTH_IN_SECONDS },
-        (err, token) => {
-          if (err) return rej(err)
-          return res(new AuthUserGetDto(user, token || null, expireDate))
-        }
-      )
-    })
-    return authUser
+    return this.authService.createTempUser()
   }
 
   @Post("/keep-temp-user")

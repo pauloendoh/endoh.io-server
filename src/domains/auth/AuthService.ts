@@ -1,4 +1,4 @@
-import { randomBytes } from "crypto"
+import { randomBytes, randomUUID } from "crypto"
 
 import { compare, genSalt, hash } from "bcryptjs"
 
@@ -17,12 +17,14 @@ import UserRepository from "../../repositories/UserRepository"
 import { myEnvs } from "../../utils/myEnvs"
 import { addMinutes } from "../../utils/time/addMinutes"
 import validateUserFields from "../../utils/validateUser"
+import { $SaveUser } from "../user/use-cases/$SaveUser"
 import { RegisterDto } from "./types/RegisterDto"
 
 export class AuthService {
   constructor(
     private userRepo = UserRepository,
-    private tokenRepo = dataSource.getRepository(UserToken)
+    private tokenRepo = dataSource.getRepository(UserToken),
+    private $saveUser = new $SaveUser()
   ) {}
 
   async register(dto: RegisterDto) {
@@ -69,8 +71,7 @@ export class AuthService {
     const salt = await genSalt(10)
     sentUser.password = await hash(sentUser.password, salt)
 
-    const savedUser = await this.userRepo.saveAndGetRelations(sentUser)
-    //  = await userRepo.save(sentUser)
+    const savedUser = await this.$saveUser.exec(sentUser)
 
     const expireDate = new Date(new Date().setDate(new Date().getDate() + 365))
     const ONE_YEAR_IN_SECONDS = 3600 * 24 * 365
@@ -188,7 +189,7 @@ export class AuthService {
     previousTempUser.email = sentUser.email
     previousTempUser.expiresAt = null
 
-    const savedUser = await this.userRepo.saveAndGetRelations(previousTempUser)
+    const savedUser = await this.$saveUser.exec(previousTempUser)
     if (!savedUser) {
       throw new Error("User not saved")
     }
@@ -304,12 +305,41 @@ export class AuthService {
     const salt = await genSalt(10)
     user.password = await hash(password, salt)
 
-    await this.userRepo.save(user)
+    await this.$saveUser.exec(user)
     await this.tokenRepo.delete({
       userId,
       type: USER_TOKEN_TYPES.passwordReset,
     })
 
     return true
+  }
+
+  async createTempUser() {
+    const username = randomUUID()
+    const expireDate = new Date(new Date().setDate(new Date().getDate() + 30))
+
+    const payload = new User()
+    payload.username = username
+    payload.email = username + "@" + username + ".com"
+    payload.password = username
+    payload.expiresAt = expireDate.toISOString()
+
+    const savedUser = await this.$saveUser.exec(payload)
+
+    // Signing in and returning  user's token
+    const ONE_MONTH_IN_SECONDS = 3600 * 24 * 30
+
+    const authUser = await new Promise<AuthUserGetDto>((res, rej) => {
+      sign(
+        { userId: savedUser.id },
+        myEnvs.JWT_SECRET,
+        { expiresIn: ONE_MONTH_IN_SECONDS },
+        (err, token) => {
+          if (err) return rej(err)
+          return res(new AuthUserGetDto(savedUser, token || null, expireDate))
+        }
+      )
+    })
+    return authUser
   }
 }

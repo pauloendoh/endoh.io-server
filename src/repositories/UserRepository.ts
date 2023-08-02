@@ -73,9 +73,14 @@ const UserRepository = dataSource.getRepository(User).extend({
       .where('"expiresAt" < NOW()')
       .execute()
   },
+
+  /**
+   *
+   * @deprecated use $Save instead
+   */
   async saveAndGetRelations(user: User) {
     const savedUser = await this.save(user)
-    return this.findOne({
+    return this.findOneOrFail({
       where: { id: savedUser.id },
       relations: ["preference"],
     })
