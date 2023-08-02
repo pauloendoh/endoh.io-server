@@ -10,7 +10,9 @@ export interface UserInfoDto {
 
   // return type of feedRepo.findResourcesByTagIds
   resources: Awaited<
-    ReturnType<(typeof FeedRepository)["prototype"]["findResourcesByTagIds"]>
+    ReturnType<
+      (typeof FeedRepository)["prototype"]["findCompletedResourcesByTagIds"]
+    >
   >
 
   publicLists: Tag[]
