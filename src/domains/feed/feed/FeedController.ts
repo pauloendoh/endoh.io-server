@@ -4,6 +4,7 @@ import {
   Get,
   JsonController,
   Put,
+  QueryParam,
 } from "routing-controllers"
 import { User } from "../../../entities/User"
 import { getFollowingTagRepo } from "../../../repositories/feed/FollowingTagRepository"
@@ -20,8 +21,11 @@ export class ResourceController {
   ) {}
 
   @Get("/v2/feed/resources")
-  async getFeedResources(@CurrentUser({ required: true }) user: User) {
-    return this.feedService.findFeedResources(user.id)
+  async getFeedResources(
+    @CurrentUser({ required: true }) user: User,
+    @QueryParam("type", { required: true }) type: "completed" | "bookmarked"
+  ) {
+    return this.feedService.findFeedResources(user.id, type)
   }
 
   @Get("/v2/feed/my-user-suggestions")

@@ -25,15 +25,35 @@ export class FeedRepository {
     })
   }
 
-  async findResourcesByTagIds(tagIds: number[]) {
+  async findCompletedResourcesByTagIds(tagIds: number[]) {
     const resources = await this.db.getRepository(Resource).find({
       where: {
         tagId: In(tagIds),
         url: Not(""),
+        completedAt: Not(""),
       },
       relations: ["tag", "user", "user.profile"],
       order: {
         completedAt: "DESC",
+      },
+    })
+
+    return resources.map((r) => ({
+      ...r,
+      user: clearUserFields(r.user),
+    }))
+  }
+
+  async findBookmarkedResourcesByTagIds(tagIds: number[]) {
+    const resources = await this.db.getRepository(Resource).find({
+      where: {
+        tagId: In(tagIds),
+        url: Not(""),
+        completedAt: "",
+      },
+      relations: ["tag", "user", "user.profile"],
+      order: {
+        createdAt: "DESC",
       },
     })
 

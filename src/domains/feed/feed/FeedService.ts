@@ -7,7 +7,7 @@ export class FeedService {
     private followRepo = new FollowRepository()
   ) {}
 
-  async findFeedResources(userId: number) {
+  async findFeedResources(userId: number, type: "completed" | "bookmarked") {
     const followees = await this.followRepo.findFolloweesByFollowerId(userId)
 
     const followeeIds = followees.map((followee) => followee.followedUserId)
@@ -18,7 +18,10 @@ export class FeedService {
 
     const tagIds = publicTags.map((tag) => tag.id)
 
-    const resources = await this.feedRepository.findResourcesByTagIds(tagIds)
+    const resources =
+      type === "completed"
+        ? await this.feedRepository.findCompletedResourcesByTagIds(tagIds)
+        : await this.feedRepository.findBookmarkedResourcesByTagIds(tagIds)
 
     return resources
   }
@@ -37,7 +40,7 @@ export class FeedService {
   async findNewResourcesCount(userId: number) {
     const [lastSeenResource, feedResources] = await Promise.all([
       this.feedRepository.getLastSeenResource(userId),
-      this.findFeedResources(userId),
+      this.findFeedResources(userId, "completed"),
     ])
 
     const lastSeenAt = lastSeenResource?.lastSeenAt

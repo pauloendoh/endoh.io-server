@@ -39,7 +39,9 @@ export class UserService {
 
     const tagIds = tags.map((tag) => tag.id)
 
-    userInfo.resources = await this.feedRepo.findResourcesByTagIds(tagIds)
+    userInfo.resources = await this.feedRepo.findCompletedResourcesByTagIds(
+      tagIds
+    )
 
     // profile
     userInfo.profile = await this.profileRepo.findOne({
