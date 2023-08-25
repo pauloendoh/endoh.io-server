@@ -4,6 +4,7 @@ import {
   Get,
   JsonController,
   Post,
+  QueryParam,
 } from "routing-controllers"
 import { UserAramChampion } from "../../../entities/LolRates/UserAramChampion"
 import { User } from "../../../entities/User"
@@ -14,8 +15,8 @@ export class AramChampionController {
   constructor(private aramService = new AramService()) {}
 
   @Get("/aram-champions-win-rates")
-  async findAramWinRates() {
-    const aramWinRates = await this.aramService.findAramWinRates()
+  async findAramWinRates(@QueryParam("lolgraphsUrl") lolgraphsUrl?: string) {
+    const aramWinRates = await this.aramService.findAramWinRates(lolgraphsUrl)
     return aramWinRates
   }
 

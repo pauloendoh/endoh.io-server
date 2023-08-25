@@ -1,6 +1,7 @@
 import { config } from "dotenv"
 import pup from "puppeteer"
 import { myConsoleError } from "../myConsoleError"
+import { myEnvs } from "../myEnvs"
 import { scrapeAram } from "./scrapeLolRates/scrapeAram"
 import { scrapeChampions } from "./scrapeLolRates/scrapeChampions"
 import { scrapeLolGraphs } from "./scrapeLolRates/scrapeLolGraphs"
@@ -10,7 +11,7 @@ config()
 
 export async function scrapeLolRates() {
   try {
-    if (process.env.IS_DOCKER) {
+    if (myEnvs.IS_DOCKER) {
       return
     }
     const browser = await pup.launch({

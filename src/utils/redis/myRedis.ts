@@ -1,6 +1,6 @@
 import { config } from "dotenv"
 import Redis from "ioredis"
-import { myEnvs } from "./myEnvs"
+import { myEnvs } from "../myEnvs"
 config()
 
 const myRedis = new Redis(myEnvs.REDIS_URL, {

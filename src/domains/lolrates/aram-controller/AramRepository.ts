@@ -4,11 +4,13 @@ import { UserAramChampion } from "../../../entities/LolRates/UserAramChampion"
 export class AramRepository {
   constructor(private db = dataSource) {}
 
-  async findAramWinRates(): Promise<{
-    championName: string
-    aramWin: number
-    iconUrl: string
-  }> {
+  async findAramWinRates(): Promise<
+    {
+      championName: string
+      aramWin: number
+      iconUrl: string
+    }[]
+  > {
     return this.db.query(`
     SELECT "championName", 
            "iconUrl", 

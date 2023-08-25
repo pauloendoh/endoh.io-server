@@ -9,7 +9,7 @@ import { IChampion } from "../../utils/lolrates/scrapeLolRates/scrapeChampions"
 import { IOpggResult as ScrapeResult } from "../../utils/lolrates/scrapeLolRates/scrapeOpgg"
 import { myConsoleError } from "../../utils/myConsoleError"
 import { myConsoleSuccess } from "../../utils/myConsoleSuccess"
-import myRedis from "../../utils/myRedis"
+import myRedis from "../../utils/redis/myRedis"
 
 const LolRateRepository = dataSource.getRepository(LolRate).extend({
   async findWinrates(): Promise<LolRateDto[]> {
