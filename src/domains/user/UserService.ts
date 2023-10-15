@@ -7,7 +7,9 @@ import FollowingTagRepository from "../../repositories/feed/FollowingTagReposito
 import ResourceRepository from "../../repositories/relearn/ResourceRepository"
 import TagRepository from "../../repositories/relearn/TagRepository"
 import SkillRepository from "../../repositories/skillbase/SkillRepository"
+import { userToSimpleUserDto } from "../../utils/domain/user/userToSimpleUserDto"
 import { FeedRepository } from "../feed/feed/FeedRepository"
+import { UserRepositoryV2 } from "./UserRepositoryV2"
 
 export class UserService {
   constructor(
@@ -17,7 +19,8 @@ export class UserService {
     private tagRepo = TagRepository,
     private followingTagRepo = FollowingTagRepository,
     private skillRepo = SkillRepository,
-    private feedRepo = new FeedRepository()
+    private feedRepo = new FeedRepository(),
+    private userRepoV2 = new UserRepositoryV2()
   ) {}
 
   async getUserInfo(username: string, requesterId: number) {
@@ -78,5 +81,10 @@ export class UserService {
     )
 
     return userInfo
+  }
+
+  async findNewUsers() {
+    const users = await this.userRepoV2.findNewUsers()
+    return users.map((user) => userToSimpleUserDto(user))
   }
 }

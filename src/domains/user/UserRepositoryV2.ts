@@ -11,4 +11,13 @@ export class UserRepositoryV2 {
       },
     })
   }
+
+  async findNewUsers() {
+    return this.db.getRepository(User).find({
+      order: {
+        createdAt: "DESC",
+      },
+      relations: ["profile"],
+    })
+  }
 }

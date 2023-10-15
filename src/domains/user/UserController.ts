@@ -174,4 +174,9 @@ export class UserController {
     const savedProfile = await profileRepo.save(profile)
     return savedProfile.pictureUrl
   }
+
+  @Get("/new-users")
+  async getNewUsers(@CurrentUser({ required: true }) requester: User) {
+    return this.userService.findNewUsers()
+  }
 }

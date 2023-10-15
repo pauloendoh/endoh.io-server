@@ -1,6 +1,6 @@
 import { dataSource } from "../../../dataSource"
 import { Follow } from "../../../entities/feed/Follow"
-import { clearUserFields } from "../../../utils/domain/user/clearUserFields"
+import { userToSimpleUserDto } from "../../../utils/domain/user/userToSimpleUserDto"
 
 export class FollowRepository {
   constructor(private db = dataSource) {}
@@ -38,7 +38,7 @@ export class FollowRepository {
 
     return follows.map((f) => ({
       ...f,
-      followedUser: clearUserFields(f.followedUser),
+      followedUser: userToSimpleUserDto(f.followedUser),
     }))
   }
 
@@ -55,7 +55,7 @@ export class FollowRepository {
 
     return follows.map((f) => ({
       ...f,
-      follower: clearUserFields(f.follower),
+      follower: userToSimpleUserDto(f.follower),
     }))
   }
 

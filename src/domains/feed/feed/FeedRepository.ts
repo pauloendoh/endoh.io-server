@@ -3,7 +3,7 @@ import { dataSource } from "../../../dataSource"
 import { LastSeenResource } from "../../../entities/feed/LastSeenResource"
 import { Resource } from "../../../entities/relearn/Resource"
 import { Tag } from "../../../entities/relearn/Tag"
-import { clearUserFields } from "../../../utils/domain/user/clearUserFields"
+import { userToSimpleUserDto } from "../../../utils/domain/user/userToSimpleUserDto"
 
 export class FeedRepository {
   constructor(private db = dataSource) {}
@@ -40,7 +40,7 @@ export class FeedRepository {
 
     return resources.map((r) => ({
       ...r,
-      user: clearUserFields(r.user),
+      user: userToSimpleUserDto(r.user),
     }))
   }
 
@@ -59,7 +59,7 @@ export class FeedRepository {
 
     return resources.map((r) => ({
       ...r,
-      user: clearUserFields(r.user),
+      user: userToSimpleUserDto(r.user),
     }))
   }
 
