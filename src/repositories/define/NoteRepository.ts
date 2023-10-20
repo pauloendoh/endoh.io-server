@@ -117,23 +117,25 @@ const NoteRepository = dataSource.getRepository(Note).extend({
   async searchNotes(text: string, userId: number) {
     const words = text.split(" ")
 
-    let query = NoteRepository.createQueryBuilder("note").where({ userId })
+    let query = NoteRepository.createQueryBuilder("note")
+      .leftJoinAndSelect("note.doc", "doc")
+      .where({ userId })
 
     // multi word search
     words.forEach((word, index) => {
       // https://github.com/typeorm/typeorm/issues/3119
       query = query.andWhere(
         `(unaccent(note.description) ilike unaccent(:text${index}) 
-                 or unaccent(note.question) ilike unaccent(:text${index}))`,
+                 or unaccent(note.question) ilike unaccent(:text${index})
+                 or unaccent(doc.title) ilike unaccent(:text${index})
+                 )`,
         {
           [`text${index}`]: `%${word}%`,
         }
       )
     })
 
-    query = query
-      .leftJoinAndSelect("note.doc", "doc")
-      .orderBy('note."updatedAt"', "DESC")
+    query = query.orderBy('note."updatedAt"', "DESC")
 
     return query.getMany()
   },
