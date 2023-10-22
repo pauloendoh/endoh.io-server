@@ -88,7 +88,7 @@ export class AuthController {
 
   @Post("/password-reset")
   async resetPassword(@Body() body: PasswordResetPostDto) {
-    this.authService.resetPassword(body)
+    return this.authService.resetPassword(body)
   }
 
   @Post("/authenticated-password-change")
