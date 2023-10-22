@@ -138,6 +138,7 @@ dataSource
       })
     )
     app.use(cookieParser())
+
     // initialize passport
     app.use(passport.initialize())
 

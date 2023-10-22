@@ -66,7 +66,11 @@ export class AuthController {
 
   // After successful authentication at google page...
   @Get("/google/callback")
-  @UseBefore(passport.authenticate("google"))
+  @UseBefore(
+    passport.authenticate("google", {
+      session: false,
+    })
+  )
   async googleCallback(@Req() req: MyAuthRequest, @Res() res: Response) {
     const redirectTo =
       await this.authService.saveGoogleTokenAndReturnRedirectURL(req.user)
