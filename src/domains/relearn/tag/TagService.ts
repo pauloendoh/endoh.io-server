@@ -1,4 +1,5 @@
 import { BadRequestError } from "routing-controllers"
+import { Not } from "typeorm"
 import { Tag } from "../../../entities/relearn/Tag"
 import TagRepository from "../../../repositories/relearn/TagRepository"
 
@@ -24,6 +25,7 @@ export class TagService {
       where: {
         name: data.name,
         userId: userId,
+        id: Not(data.id),
       },
     })
     if (nameExists) {
