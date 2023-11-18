@@ -5,6 +5,8 @@ export const myEnvs = {
   JWT_SECRET: envToStringOrThrow(process.env.JWT_SECRET),
   SENDGRID_API_KEY: envToStringOrThrow(process.env.SENDGRID_API_KEY),
   IS_DOCKER: envToBoolean("IS_DOCKER"),
+
+  RIOT_API_KEY: envToStringOrThrow(process.env.RIOT_API_KEY),
 }
 
 function envToStringOrThrow(env: string | undefined): string {

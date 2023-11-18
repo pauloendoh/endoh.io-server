@@ -43,6 +43,7 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
         `)
 
       await myRedis.set("winrates", JSON.stringify(winrates), "EX", 3600)
+
       return winrates
     } catch (e) {
       myConsoleError(e.message)
