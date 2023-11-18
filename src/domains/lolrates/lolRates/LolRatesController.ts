@@ -1,10 +1,4 @@
-import {
-  CurrentUser,
-  Get,
-  JsonController,
-  QueryParam,
-} from "routing-controllers"
-import { User } from "../../../entities/User"
+import { Get, JsonController, QueryParam } from "routing-controllers"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 import { LolRatesService } from "./LolRatesService"
 
@@ -37,7 +31,6 @@ export class LolRatesController {
 
   @Get("/playtime")
   async getPlaytime(
-    @CurrentUser({ required: true }) user: User,
     @QueryParam("offsetHours")
     offsetHours: number,
 
