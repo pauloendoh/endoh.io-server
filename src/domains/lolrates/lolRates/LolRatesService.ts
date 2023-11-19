@@ -16,8 +16,17 @@ export class LolRatesService {
       )
       .then((res) => res.data)
 
-    const lastMonday = new Date()
-    lastMonday.setDate(lastMonday.getDate() - lastMonday.getDay() + 1)
+    let lastMonday = new Date()
+
+    for (let i = 0; i < 7; i++) {
+      const day = new Date()
+      day.setDate(day.getDate() - i)
+
+      if (day.getDay() === 1) {
+        lastMonday = day
+        break
+      }
+    }
     lastMonday.setHours(0, 0, 0, 0)
     lastMonday.setHours(lastMonday.getHours() - offsetHours)
 
