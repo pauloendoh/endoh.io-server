@@ -21,8 +21,6 @@ export class LolRatesService {
     for (let i = 0; i < 7; i++) {
       const day = new Date()
       day.setDate(day.getDate() - i)
-      day.setHours(0, 0, 0, 0)
-      day.setHours(-offsetHours)
 
       if (day.getDay() === 1) {
         day.setHours(0, 0, 0, 0)
