@@ -21,14 +21,16 @@ export class LolRatesService {
     for (let i = 0; i < 7; i++) {
       const day = new Date()
       day.setDate(day.getDate() - i)
+      day.setHours(0, 0, 0, 0)
+      day.setHours(-offsetHours)
 
       if (day.getDay() === 1) {
+        day.setHours(0, 0, 0, 0)
+        day.setHours(offsetHours)
         lastMonday = day
         break
       }
     }
-    lastMonday.setHours(0, 0, 0, 0)
-    lastMonday.setHours(lastMonday.getHours() - offsetHours)
 
     const epochLastMonday = lastMonday.getTime() / 1000
 
@@ -38,10 +40,7 @@ export class LolRatesService {
       )
       .then((res) => res.data)
 
-    console.log(matchesIds)
-
     const matches = await this.#getMatchesDetails(matchesIds)
-    console.log({ matches })
 
     const totalPlaytimeInSeconds = matches.reduce(
       (acc, match) => acc + match.gameDuration,
