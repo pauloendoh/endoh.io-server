@@ -27,9 +27,10 @@ export async function scrapeLolRates() {
       )
       await page.setViewport({ width: 1000, height: 1000 })
 
+      await scrapeChampions(page)
+
       await scrapeAram(page)
 
-      await scrapeChampions(page)
       await scrapeOpgg(page)
       await scrapeLolGraphs(page)
       await scrapeUgg(page)

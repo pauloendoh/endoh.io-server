@@ -1,3 +1,4 @@
+import { Not } from "typeorm"
 import { dataSource } from "../../dataSource"
 import { LolRateDto } from "../../dtos/lolrates/LolRateDto"
 import { WinratesUpdatedAtDTO } from "../../dtos/lolrates/WinratesUpdatedAtDTO"
@@ -24,22 +25,22 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
       }
 
       const winrates = await this.query(`
-           select avgs.*,
-                   (avgs."avgPick" + avgs."avgWin")/2  as "avgAvg"
-	          from (select "championName",
-                           "role",
-                           "iconUrl",
-                           "opggPick",
-                           "opggWin",
-                           "lolgraphsPick",
-                           "lolgraphsWin",
-						               "uggPick",
-						               "uggWin",
-                           ("opggPick" + "lolgraphsPick" + "uggPick")/3 as "avgPick",
-                           ("opggWin" + "lolgraphsWin" + "uggWin")/3 as "avgWin"
-                      from "lol_rate") as avgs
-	          where  "avgWin" > 0
-         order by "avgAvg" desc 
+      select avgs.*,
+      (avgs."avgPick" + avgs."avgWin")/2  as "avgAvg"
+from (select "championName",
+              "role",
+              "iconUrl",
+              "opggPick",
+              "opggWin",
+              "lolgraphsPick",
+              "lolgraphsWin",
+              "uggPick",
+              "uggWin",
+              (COALESCE("opggPick", 0) + COALESCE("lolgraphsPick", 0) + COALESCE("uggPick", 0))/3 as "avgPick",
+              (COALESCE("opggWin", 0)   + COALESCE ("lolgraphsWin", 0)  + COALESCE("uggWin", 0))/3 as "avgWin"
+         from "lol_rate") as avgs
+where  "avgWin" > 0
+order by "avgAvg" desc 
         `)
 
       await myRedis.set("winrates", JSON.stringify(winrates), "EX", 3600)
@@ -75,14 +76,23 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
       for (const champion of champions) {
         const { name: championName, iconUrl } = champion
 
-        const exists = await this.findOne({
-          where: { championName, iconUrl },
-        })
+        const roles: RoleTypes[] = ["TOP", "JUNGLE", "MID", "BOT", "SUP"]
+        for (const role of roles) {
+          const exists = await this.findOne({
+            where: { championName, role },
+          })
 
-        if (!exists) {
-          const roles: RoleTypes[] = ["TOP", "JUNGLE", "MID", "BOT", "SUP"]
-          for (const role of roles) {
-            await this.save({ championName, iconUrl, role })
+          if (!exists) {
+            const id = await this.getNextId()
+            const lolRateRepo = dataSource.getRepository(LolRate)
+
+            await lolRateRepo.query(
+              `
+            INSERT INTO "lol_rate" ("id","championName", "iconUrl", "role") 
+              values($1,$2, $3, $4)
+            `,
+              [id, championName, iconUrl, role]
+            )
           }
         }
       }
@@ -95,7 +105,21 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
         })
 
         if (!exists) {
-          await championRepo.save({ name, iconUrl })
+          const [last] = await championRepo.find({
+            order: {
+              id: "DESC",
+            },
+          })
+
+          const nextId = last ? last.id + 1 : 1
+
+          await championRepo.query(
+            `
+          INSERT INTO "champion" ("id", "name", "iconUrl")
+            values($1, $2, $3)
+          `,
+            [nextId, name, iconUrl]
+          )
         }
       }
 
@@ -103,6 +127,20 @@ const LolRateRepository = dataSource.getRepository(LolRate).extend({
     } catch (err) {
       myConsoleError(err.message)
     }
+  },
+
+  async getNextId() {
+    const last = await this.findOne({
+      where: {
+        championName: Not(""),
+      },
+      order: { id: "DESC" },
+    })
+    if (!last) {
+      return 1
+    }
+
+    return last.id + 1
   },
 
   async saveOpgg(results: ScrapeResult[]) {
