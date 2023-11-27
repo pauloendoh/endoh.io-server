@@ -18,13 +18,16 @@ export class LolRatesService {
 
     let lastMonday = new Date()
 
+    const serverHoursOffset = new Date().getTimezoneOffset() / 60
+
     for (let i = 0; i < 7; i++) {
       const day = new Date()
       day.setDate(day.getDate() - i)
+      day.setHours(day.getHours() - offsetHours)
 
       if (day.getDay() === 1) {
         day.setHours(0, 0, 0, 0)
-        day.setHours(offsetHours)
+        day.setHours(offsetHours - serverHoursOffset)
         lastMonday = day
         break
       }
