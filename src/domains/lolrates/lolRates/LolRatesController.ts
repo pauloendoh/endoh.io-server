@@ -33,14 +33,16 @@ export class LolRatesController {
   async getPlaytime(
     @QueryParam("offsetHours")
     offsetHours: number,
-
     @QueryParam("summonerName")
-    summonerName: string
+    summonerName: string,
+    @QueryParam("startingWeekday")
+    startingWeekday: number = 1
   ) {
-    const data = await this.lolratesService.getPlaytime(
+    const data = await this.lolratesService.getPlaytime({
       offsetHours,
-      summonerName
-    )
+      summonerName,
+      startingWeekday,
+    })
 
     return {
       playedMinutes: data.playtimeInMinutes,

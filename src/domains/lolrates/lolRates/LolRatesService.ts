@@ -7,7 +7,13 @@ import { LeagueMatchDetails } from "./types/LeagueMatchDetails"
 export class LolRatesService {
   constructor(private axios = actualAxios.create(), private redis = myRedis) {}
 
-  async getPlaytime(offsetHours: number, summonerName: string) {
+  async getPlaytime(params: {
+    offsetHours: number
+    summonerName: string
+    startingWeekday: number
+  }) {
+    const { offsetHours, summonerName, startingWeekday } = params
+
     const apiKey = myEnvs.RIOT_API_KEY
 
     const data = await this.axios
@@ -25,7 +31,7 @@ export class LolRatesService {
       day.setDate(day.getDate() - i)
       day.setHours(day.getHours() - offsetHours)
 
-      if (day.getDay() === 1) {
+      if (day.getDay() === startingWeekday) {
         day.setHours(0, 0, 0, 0)
         day.setHours(offsetHours - serverHoursOffset)
         lastMonday = day
