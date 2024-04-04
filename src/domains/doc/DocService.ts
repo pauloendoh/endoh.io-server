@@ -25,7 +25,11 @@ export class DocService {
 
     const savedDoc = await this.docRepository.save(newDoc)
 
-    await this.flashnotesService.createManyNotes(savedDoc.id, 10, requesterId)
+    await this.flashnotesService.createManyQuestions(
+      savedDoc.id,
+      10,
+      requesterId
+    )
     return savedDoc
   }
 }

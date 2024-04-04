@@ -4,9 +4,9 @@ import {
   InsertEvent,
 } from "typeorm"
 import { EmailService } from "../domains/email/EmailService"
-import { Profile } from "../entities/feed/Profile"
 import { User } from "../entities/User"
 import { UserPreference } from "../entities/UserPreference"
+import { Profile } from "../entities/feed/Profile"
 import { myConsoleError } from "../utils/myConsoleError"
 
 @EventSubscriber()
@@ -54,8 +54,7 @@ export class UserSubscriber implements EntitySubscriberInterface<User> {
       // Create little prince doc
       // const doc = await DocRepository.createDocForNewUser(event.entity)
 
-      // Create little prince notes
-      // await NoteRepository.createNotesForNewUser(event.entity, doc)
+
     } catch (e) {
       myConsoleError(e.message)
     }

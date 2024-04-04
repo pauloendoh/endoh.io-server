@@ -6,42 +6,42 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { Folder } from "../playground/file-system/Folder";
-import { User } from "../User";
-import { Note } from "./Note";
+} from "typeorm"
+import { User } from "../User"
+import { Folder } from "../playground/file-system/Folder"
+import { Question } from "./Question"
 
 @Entity()
 export class Doc {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @ManyToOne((type) => User, (user) => user.docs, {
     onDelete: "CASCADE",
   })
-  user: User;
+  user: User
   @Column()
-  userId: number;
+  userId: number
 
   @ManyToOne(() => Folder, (folder) => folder.docs, { nullable: true })
-  folder: Folder | null;
+  folder: Folder | null
 
   @Column({ nullable: true })
-  folderId: number | null;
+  folderId: number | null
 
-  @OneToMany(() => Note, (note) => note.doc)
-  notes: Note[];
+  @OneToMany(() => Question, (question) => question.doc)
+  questions: Question[]
 
   // END OF RELATIONS
   @Column()
-  title: string;
+  title: string
 
   @CreateDateColumn()
-  createdAt: string;
+  createdAt: string
 
   @UpdateDateColumn()
-  updatedAt: string;
+  updatedAt: string
 
   @Column({ type: "timestamp without time zone", nullable: true })
-  lastOpenedAt: string;
+  lastOpenedAt: string
 }

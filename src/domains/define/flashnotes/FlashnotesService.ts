@@ -1,39 +1,41 @@
 import { NotFoundError } from "routing-controllers"
-import { Note } from "../../../entities/define/Note"
+import { Question } from "../../../entities/define/Question"
 import DocRepository from "../../../repositories/define/DocRepository"
-import NoteRepository from "../../../repositories/define/NoteRepository"
+import QuestionRepository from "../../../repositories/define/QuestionRepository"
 import { FlashnotesSearchType } from "./types/FlashnotesSearchType"
 
 export class FlashnotesService {
   constructor(
-    private noteRepository = NoteRepository,
+    private questionRepo = QuestionRepository,
     private docRepo = DocRepository
   ) {}
 
-  async createQuestion(sentNote: Note, requesterId: number) {
-    sentNote.userId = requesterId
+  async createQuestion(sentQuestion: Question, requesterId: number) {
+    sentQuestion.userId = requesterId
 
-    const noteWithHighestIndex =
-      await this.noteRepository.findNoteWithHighestIndex(sentNote.docId)
+    const questionWithHighestIndex =
+      await this.questionRepo.findQuestionWithHighestIndex(sentQuestion.docId)
 
-    sentNote.index = noteWithHighestIndex ? noteWithHighestIndex.index + 1 : 0
+    sentQuestion.index = questionWithHighestIndex
+      ? questionWithHighestIndex.index + 1
+      : 0
 
-    return this.noteRepository.save({
-      ...sentNote,
+    return this.questionRepo.save({
+      ...sentQuestion,
       doc: undefined,
     })
   }
 
-  async updateQuestion(sentNote: Note, requesterId: number) {
-    const found = await this.noteRepository.findOne({
-      where: { userId: requesterId, id: sentNote.id },
+  async updateQuestion(sentQuestion: Question, requesterId: number) {
+    const found = await this.questionRepo.findOne({
+      where: { userId: requesterId, id: sentQuestion.id },
     })
 
     if (!found)
-      throw new NotFoundError("Note doesn't exist or user is not owner")
+      throw new NotFoundError("Question doesn't exist or user is not owner")
 
-    return this.noteRepository.save({
-      ...sentNote,
+    return this.questionRepo.save({
+      ...sentQuestion,
       userId: requesterId,
       doc: undefined,
     })
@@ -49,25 +51,29 @@ export class FlashnotesService {
     if (type === "questions") {
       return {
         docs: [],
-        notes: await this.noteRepository.searchNotesByQuestionText(
+        questions: await this.questionRepo.searchQuestionsByQuestionText(
           query,
           requesterId
         ),
       }
     }
 
-    const [docs, notes] = await Promise.all([
+    const [docs, questions] = await Promise.all([
       this.docRepo.searchDocs(query, requesterId),
-      this.noteRepository.searchNotes(query, requesterId),
+      this.questionRepo.searchQuestions(query, requesterId),
     ])
 
     return {
       docs,
-      notes,
+      questions,
     }
   }
 
-  async createManyNotes(docId: number, quantity: number, requesterId: number) {
+  async createManyQuestions(
+    docId: number,
+    quantity: number,
+    requesterId: number
+  ) {
     const doc = await this.docRepo.findOne({
       where: {
         id: docId,
@@ -77,26 +83,25 @@ export class FlashnotesService {
 
     if (!doc) throw new NotFoundError("Doc not found or user is not owner")
 
-    const highestIndexNote = await this.noteRepository.findNoteWithHighestIndex(
-      docId
-    )
+    const highestIndexQuestion =
+      await this.questionRepo.findQuestionWithHighestIndex(docId)
 
-    return this.noteRepository.createEmptyNotes({
+    return this.questionRepo.createEmptyQuestions({
       docId,
       userId: requesterId,
-      initialIndex: highestIndexNote ? highestIndexNote.index + 1 : 0,
+      initialIndex: highestIndexQuestion ? highestIndexQuestion.index + 1 : 0,
       quantity: quantity,
     })
   }
 
   deleteQuestion = async (questionId: number, requesterId: number) => {
-    const found = await this.noteRepository.findOne({
+    const found = await this.questionRepo.findOne({
       where: { userId: requesterId, id: questionId },
     })
 
     if (!found)
-      throw new NotFoundError("Note doesn't exist or user is not owner")
+      throw new NotFoundError("Question doesn't exist or user is not owner")
 
-    return this.noteRepository.delete(questionId)
+    return this.questionRepo.delete(questionId)
   }
 }

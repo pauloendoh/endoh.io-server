@@ -9,8 +9,10 @@ import {
 import { User } from "../User"
 import { Doc } from "./Doc"
 
-@Entity()
-export class Note {
+@Entity({
+  name: "question",
+})
+export class Question {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -21,7 +23,7 @@ export class Note {
   @Column()
   userId: number
 
-  @ManyToOne(() => Doc, (doc) => doc.notes, {
+  @ManyToOne(() => Doc, (doc) => doc.questions, {
     onDelete: "CASCADE",
   })
   doc: Doc

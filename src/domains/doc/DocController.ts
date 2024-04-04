@@ -11,11 +11,11 @@ import {
   Req,
   UseBefore,
 } from "routing-controllers"
-import { Doc } from "../../entities/define/Doc"
 import { User } from "../../entities/User"
+import { Doc } from "../../entities/define/Doc"
 import { MyAuthMiddleware } from "../../middlewares/MyAuthMiddleware"
 import { getDocRepository } from "../../repositories/define/DocRepository"
-import { getNoteRepository } from "../../repositories/define/NoteRepository"
+import { getQuestionRepository } from "../../repositories/define/QuestionRepository"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
 import { DocService } from "./DocService"
 
@@ -24,7 +24,7 @@ export class DocController {
   constructor(
     private docService = new DocService(),
     private docRepository = getDocRepository(),
-    private noteRepo = getNoteRepository()
+    private questionRepo = getQuestionRepository()
   ) {}
 
   @Delete("/docs/:docId")
@@ -83,13 +83,13 @@ export class DocController {
     return saved
   }
 
-  @Delete("/define/doc/:id/clear-empty-notes")
-  async clearEmptyNotes(
+  @Delete("/define/doc/:id/clear-empty-questions")
+  async clearEmptyQuestions(
     @CurrentUser({ required: true }) user: User,
     @Param("id") docId: number
   ) {
-    await this.noteRepo.removeEmptyNotesFromDocId(docId, user.id)
+    await this.questionRepo.removeEmptyQuestionsFromDocId(docId, user.id)
 
-    return this.noteRepo.getAllNotesFromUserId(user.id)
+    return this.questionRepo.getAllQuestionsFromUserId(user.id)
   }
 }

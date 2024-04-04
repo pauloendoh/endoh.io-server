@@ -1,7 +1,7 @@
 import { IsNumber, Max } from "class-validator"
 
-export class CreateManyNotesDto {
+export class CreateManyQuestionsDto {
   @IsNumber()
   @Max(25)
-  notesQuantity: number
+  questionsQuantity: number
 }

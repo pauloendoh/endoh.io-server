@@ -19,7 +19,7 @@ import { Test } from "./Test"
 import { UserGotIt } from "./UserGotIt"
 import { UserPreference } from "./UserPreference"
 import { Doc } from "./define/Doc"
-import { Note } from "./define/Note"
+import { Question } from "./define/Question"
 import { Follow } from "./feed/Follow"
 import { FollowingTag } from "./feed/FollowingTag"
 import { LastSeenResource } from "./feed/LastSeenResource"
@@ -165,8 +165,8 @@ export class User {
   @OneToMany((_) => Doc, (doc) => doc.user)
   docs: Doc[]
 
-  @OneToMany((_) => Note, (note) => note.user)
-  notes: Note[]
+  @OneToMany((_) => Question, (question) => question.user)
+  questions: Question[]
 
   // BigDecisions
   @OneToMany((_) => Decision, (decision) => decision.user)

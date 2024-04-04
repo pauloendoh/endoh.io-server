@@ -10,11 +10,11 @@ import {
   Put,
   QueryParam,
 } from "routing-controllers"
-import { Note } from "../../../entities/define/Note"
 import { User } from "../../../entities/User"
-import { getNoteRepository } from "../../../repositories/define/NoteRepository"
+import { Question } from "../../../entities/define/Question"
+import { getQuestionRepository } from "../../../repositories/define/QuestionRepository"
 import { FlashnotesService } from "./FlashnotesService"
-import { CreateManyNotesDto } from "./types/CreateManyNotesDto"
+import { CreateManyQuestionsDto } from "./types/CreateManyNotesDto"
 import { FlashnotesSearchType } from "./types/FlashnotesSearchType"
 
 @JsonController()
@@ -22,7 +22,7 @@ export class FlashnotesController {
   constructor(
     private flashnotesService = new FlashnotesService(),
 
-    private noteRepo = getNoteRepository()
+    private questionRepo = getQuestionRepository()
   ) {}
 
   @Get("/flashnotes/search")
@@ -39,49 +39,53 @@ export class FlashnotesController {
     })
   }
 
-  @Get("/define/note")
-  async getAllNotes(
+  @Get("/define/question")
+  async getAllQuestions(
     @CurrentUser({ required: true })
     user: User
   ) {
-    return this.noteRepo.getAllNotesFromUserId(user.id)
+    return this.questionRepo.getAllQuestionsFromUserId(user.id)
   }
 
-  @Post("/define/note")
-  async saveNote(
+  @Post("/define/question")
+  async saveQuestion(
     @CurrentUser({ required: true })
     user: User,
-    @Body() sentNote: Note
+    @Body() sentQuestion: Question
   ) {
-    if (sentNote.id)
-      return this.flashnotesService.updateQuestion(sentNote, user.id)
+    if (sentQuestion.id)
+      return this.flashnotesService.updateQuestion(sentQuestion, user.id)
 
-    return this.flashnotesService.createQuestion(sentNote, user.id)
+    return this.flashnotesService.createQuestion(sentQuestion, user.id)
   }
 
-  @Put("/define/note/many")
-  async updateManyNotes(
+  @Put("/define/question/many")
+  async updateManyQuestions(
     @CurrentUser({ required: true })
     user: User,
-    @Body() sentNotes: Note[]
+    @Body() sentQuestions: Question[]
   ) {
-    const isOwner = await getNoteRepository().isOwner(sentNotes, user.id)
-    if (!isOwner) throw new ForbiddenError("User is not owner of all notes.")
+    const isOwner = await getQuestionRepository().isOwner(
+      sentQuestions,
+      user.id
+    )
+    if (!isOwner)
+      throw new ForbiddenError("User is not owner of all questions.")
 
-    await this.noteRepo.save(sentNotes)
-    return this.noteRepo.getAllNotesFromUserId(user.id)
+    await this.questionRepo.save(sentQuestions)
+    return this.questionRepo.getAllQuestionsFromUserId(user.id)
   }
 
-  @Post("/define/doc/:docId/notes/many")
-  async createManyNotes(
+  @Post("/define/doc/:docId/questions/many")
+  async createManyQuestions(
     @CurrentUser({ required: true })
     user: User,
-    @Body() body: CreateManyNotesDto,
+    @Body() body: CreateManyQuestionsDto,
     @Param("docId") docId: number
   ) {
-    return this.flashnotesService.createManyNotes(
+    return this.flashnotesService.createManyQuestions(
       docId,
-      body.notesQuantity,
+      body.questionsQuantity,
       user.id
     )
   }
