@@ -14,7 +14,6 @@ import {
 } from "routing-controllers"
 import { Stripe } from "stripe"
 import { buildSchema } from "type-graphql"
-import { pagination } from "typeorm-pagination"
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS"
 import { dataSource } from "./dataSource"
 import saveResponseTime from "./middlewares/saveResponseTime"
@@ -92,8 +91,6 @@ dataSource
         threshold: 100 * 1000, // 100kB
       })
     )
-
-    app.use(pagination)
 
     // For testing
     app.get("/", async (_: Request, res: Response) => {
