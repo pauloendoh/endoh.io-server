@@ -84,8 +84,11 @@ export class _CacheLolGraphAramStats {
 
       JSON.stringify({
         data,
-        expiresAt: Date.now() + 60 * 60 * 24,
-      })
+        expiresAt: Date.now() + 60 * 60 * 24, // ONE DAY
+      }),
+      "EX",
+
+      60 * 60 * 24 * 30 // ONE MONTH
     )
 
     return data
