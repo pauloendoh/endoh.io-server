@@ -16,9 +16,21 @@ export class _CacheLolGraphAramStats {
   async exec(lolgraphsUrl: string): Promise<MyLolGraphAramStats[]> {
     const cached = await this.redis.get(redisKeys.lolgraphsUrl(lolgraphsUrl))
     if (cached) {
-      return JSON.parse(cached)
+      const parsed = JSON.parse(cached) as {
+        data: MyLolGraphAramStats[]
+        expiresAt: number
+      }
+      if (parsed.expiresAt > Date.now()) {
+        this.#scrapeAndSaveData(lolgraphsUrl)
+      }
+
+      return parsed.data
     }
 
+    return this.#scrapeAndSaveData(lolgraphsUrl)
+  }
+
+  async #scrapeAndSaveData(lolgraphsUrl: string) {
     if (myEnvs.IS_DOCKER) {
       return []
     }
@@ -35,7 +47,7 @@ export class _CacheLolGraphAramStats {
 
     await page.goto(lolgraphsUrl, { waitUntil: "networkidle2" })
 
-    const x = await page.evaluate(() => {
+    const data = await page.evaluate(() => {
       const table = document.querySelector(".summoner_champions_details_table")
       const tbody = table?.querySelector("tbody")
       const trs = Array.from(tbody?.querySelectorAll("tr") || [])
@@ -69,42 +81,13 @@ export class _CacheLolGraphAramStats {
 
     await this.redis.set(
       redisKeys.lolgraphsUrl(lolgraphsUrl),
-      JSON.stringify(x),
-      "EX",
-      60 * 60 * 24 // 1 day
+
+      JSON.stringify({
+        data,
+        expiresAt: Date.now() + 60 * 60 * 24,
+      })
     )
 
-    return x
-
-    //   let html = ""
-    //   const cachedHtml = await this.redis.get(
-    //     redisKeys.lolgraphsUrl(lolgraphsUrl)
-    //   )
-    //   if (cachedHtml) {
-    //     html = cachedHtml
-    //   } else {
-    //     let data = await this.axios.get(lolgraphsUrl).catch((err) => {
-    //       console.log(err)
-    //       throw err
-    //     })
-    //     await this.redis.set(
-    //       redisKeys.lolgraphsUrl(lolgraphsUrl),
-    //       data.data,
-    //       "EX",
-    //       60 * 60 * 24 // 1 day
-    //     )
-    //   }
-    //   const dom = new JSDOM(html).window.document
-    //   const table = dom.querySelector(".summoner_champions_details_table")
-    //   const tbody = table?.querySelector("tbody")
-    //   const trs = Array.from(tbody?.querySelectorAll("tr") || [])
-    //   for (const tr of trs) {
-    //     const championName = tr.querySelector(".name")?.textContent
-    //     const progressBarTxts = tr.querySelectorAll(".progressBarTxt")
-    //     const played = progressBarTxts[0].textContent
-    //     const winRate = progressBarTxts[1].textContent
-    //     console.log(championName, played, winRate)
-    //   }
-    //   console.log(table)
+    return data
   }
 }
