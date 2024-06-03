@@ -23,7 +23,10 @@ export class PlayerController {
     @CurrentUser({ required: true }) user: User,
     @Body() sentPlayer: Player
   ) {
-    const saved = await this.playerRepo.save(sentPlayer)
+    const saved = await this.playerRepo.save({
+      ...sentPlayer,
+      userId: user.id,
+    })
     return this.playerRepo.findOneFull(saved.id)
   }
 }
