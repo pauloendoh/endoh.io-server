@@ -74,8 +74,6 @@ export class _CacheLolGraphAramStats {
       60 * 60 * 24 // 1 day
     )
 
-    await browser.close()
-
     return x
 
     //   let html = ""

@@ -14,7 +14,10 @@ export async function scrapeAram(page: Page) {
   try {
     let aramResults: AramChampionData[] = []
 
-    await page.goto(`https://www.op.gg/modes/aram`)
+    await page.goto(`https://www.op.gg/modes/aram`, {
+      waitUntil: "load",
+      timeout: 0,
+    })
 
     await page.waitForSelector("tbody")
     await sleep(500) // waiting for champions sort
@@ -29,7 +32,7 @@ export async function scrapeAram(page: Page) {
           const tds = tr.querySelectorAll("td")
           const championTd = tds[1]
           const championName =
-            championTd?.querySelector("strong")?.textContent || ""
+            championTd?.querySelector("strong")?.textContent ?? ""
           const winRate = tds[3].innerText
 
           roleResults.push({
