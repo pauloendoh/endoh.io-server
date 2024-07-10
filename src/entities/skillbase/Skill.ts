@@ -8,25 +8,25 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { Tag } from "../relearn/Tag";
-import { User } from "../User";
-import { Label } from "./Label";
-import { SkillExpectation } from "./SkillExpectation";
-import { SkillProgress } from "./SkillProgress";
+} from "typeorm"
+import { Tag } from "../relearn/Tag"
+import { User } from "../User"
+import { Label } from "./Label"
+import { SkillExpectation } from "./SkillExpectation"
+import { SkillProgress } from "./SkillProgress"
 
 @Entity()
 export class Skill {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @ManyToOne((type) => User, (user) => user.skills, { onDelete: "CASCADE" })
-  user: User;
+  user: User
   @Column()
-  userId: number;
+  userId: number
 
   @OneToMany((type) => SkillProgress, (progress) => progress.skill)
-  progresses: SkillProgress[];
+  progresses: SkillProgress[]
 
   @ManyToMany((type) => Skill, (skill) => skill.childDependencies)
   @JoinTable({
@@ -40,43 +40,46 @@ export class Skill {
       referencedColumnName: "id" as keyof Skill,
     },
   })
-  dependencies: Skill[];
+  dependencies: Skill[]
 
   @ManyToMany((type) => Skill, (skill) => skill.dependencies)
-  childDependencies: Skill[];
+  childDependencies: Skill[]
 
   @ManyToMany((type) => Label)
   @JoinTable()
-  labels: Label[];
+  labels: Label[]
 
   @ManyToOne((type) => Tag, (tag) => tag.skills, { onDelete: "SET NULL" })
-  tag: Tag;
+  tag: Tag
   @Column({ nullable: true })
-  tagId: number;
+  tagId: number
 
   @OneToMany((type) => SkillExpectation, (expectation) => expectation.skill)
-  expectations: SkillExpectation[];
+  expectations: SkillExpectation[]
 
   // END OF RELATIONS
 
   @Column({ default: false })
-  isPriority: boolean;
+  isPriority: boolean
 
   @Column({ default: "" })
-  name: string;
+  name: string
 
   @Column({ nullable: true })
-  currentLevel: number;
+  currentLevel: number
 
   @Column({ nullable: true })
-  goalLevel: number;
+  goalLevel: number
+
+  @Column({ nullable: true, type: "float" })
+  priority: number | null
 
   @Column({ default: false })
-  isPublic: boolean;
+  isPublic: boolean
 
   @CreateDateColumn()
-  createdAt: string;
+  createdAt: string
 
   @UpdateDateColumn()
-  updatedAt: string;
+  updatedAt: string
 }
