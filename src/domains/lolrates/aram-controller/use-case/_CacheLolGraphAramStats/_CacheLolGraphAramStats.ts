@@ -20,7 +20,7 @@ export class _CacheLolGraphAramStats {
         data: MyLolGraphAramStats[]
         expiresAt: number
       }
-      if (parsed.expiresAt > Date.now()) {
+      if (Date.now() > parsed.expiresAt) {
         this.#scrapeAndSaveData(lolgraphsUrl)
       }
 
