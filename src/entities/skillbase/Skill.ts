@@ -74,6 +74,9 @@ export class Skill {
   @Column({ nullable: true, type: "float" })
   priority: number | null
 
+  @Column({ nullable: true, type: "float" })
+  discomfortZone: number | null
+
   @Column({ default: false })
   isPublic: boolean
 
