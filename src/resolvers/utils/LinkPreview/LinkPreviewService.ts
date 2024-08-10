@@ -1,5 +1,4 @@
 import axios from "axios"
-import urlMetadata from "url-metadata"
 import { isValidUrl } from "../../../utils/isValidUrl"
 import { buildLinkPreviewDto, LinkPreviewDto } from "./types/LinkPreviewDto"
 
@@ -38,21 +37,14 @@ export default class LinkPreviewService {
       },
     })
 
-    if (!html) {
-      return buildLinkPreviewDto()
-    }
+    if (!html) return buildLinkPreviewDto()
 
-    const metadata = await urlMetadata(url, { userAgent: "curl/7.68.0" })
+    const { title, image, description } = await metascraper({ html, url })
 
     const response = buildLinkPreviewDto({
-      title:
-        metadata["og:title"] || metadata["title"] || metadata["twitter:title"],
-      image:
-        metadata["og:image"] || metadata["twitter:image"] || metadata["image"],
-      description:
-        metadata["og:description"] ||
-        metadata["description"] ||
-        metadata["twitter:description"],
+      title,
+      image,
+      description,
       url,
     })
 
@@ -63,9 +55,7 @@ export default class LinkPreviewService {
       },
     })
 
-    if (foundResource) {
-      response.alreadySavedResource = foundResource
-    }
+    if (foundResource) response.alreadySavedResource = foundResource
 
     if (
       !url.includes("/shorts") &&
