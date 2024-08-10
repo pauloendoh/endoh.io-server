@@ -42,12 +42,17 @@ export default class LinkPreviewService {
       return buildLinkPreviewDto()
     }
 
-    const metadata = await urlMetadata(url)
+    const metadata = await urlMetadata(url, { userAgent: "curl/7.68.0" })
 
     const response = buildLinkPreviewDto({
-      title: metadata["og:title"],
-      image: metadata["og:image"],
-      description: metadata["og:description"],
+      title:
+        metadata["og:title"] || metadata["title"] || metadata["twitter:title"],
+      image:
+        metadata["og:image"] || metadata["twitter:image"] || metadata["image"],
+      description:
+        metadata["og:description"] ||
+        metadata["description"] ||
+        metadata["twitter:description"],
       url,
     })
 

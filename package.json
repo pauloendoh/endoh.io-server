@@ -51,10 +51,10 @@
     "jsonwebtoken": "^9.0.1",
     "kafkajs": "^2.2.4",
     "luxon": "^3.3.0",
-    "metascraper": "^5.34.8",
-    "metascraper-description": "^5.34.7",
-    "metascraper-image": "^5.34.7",
-    "metascraper-title": "^5.34.7",
+    "metascraper": "^5.45.22",
+    "metascraper-description": "^5.45.22",
+    "metascraper-image": "^5.45.22",
+    "metascraper-title": "^5.45.22",
     "multer": "^1.4.2",
     "multer-s3": "^3.0.1",
     "node-fetch": "^3.3.1",
@@ -75,7 +75,7 @@
     "type-graphql": "^2.0.0-beta.2",
     "typeorm": "^0.3.20",
     "typescript": "^5.1.6",
-    "url-metadata": "^4.1.1",
+    "url-metadata": "^2.5.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
