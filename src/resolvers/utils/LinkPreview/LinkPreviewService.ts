@@ -65,20 +65,21 @@ export default class LinkPreviewService {
       response.youtubeVideoLength = videoInfo.duration
       response.viewCount = videoInfo.viewCount
       response.url = `https://www.youtube.com/watch?v=${videoInfo.videoId}`
+      response.title = videoInfo.title
+      response.image = videoInfo.thumbnail
     }
 
     return response
   }
 
-  // PE 1/3 - remove elses
+  // PE 1/3 - improve xd
   async #getYoutubeVideoInfo(url: string) {
     const videoId = this.$getYoutubeVideoId.exec(url)
-    let durationStr = "00:00h"
     let viewCount = 0
 
-    await axios
+    const metadata = await axios
       .get<YoutubeDataDto>(
-        `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails%2Cstatistics&id=${videoId}&key=${YOUTUBE_API_KEY}`
+        `https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,snippet&id=${videoId}&key=${YOUTUBE_API_KEY}`
       )
 
       .then((res) => {
@@ -87,7 +88,7 @@ export default class LinkPreviewService {
           res.data.items[0].contentDetails.duration
         ).toObject()
 
-        durationStr = ""
+        let durationStr = "00:00h"
         if (durationObj.hours) {
           if (durationObj.hours < 10) {
             durationStr += "0" + durationObj.hours
@@ -106,13 +107,19 @@ export default class LinkPreviewService {
         } else {
           durationStr += ":00h"
         }
-        return durationStr
+        return {
+          duration: durationStr,
+          title: res.data.items[0].snippet.title,
+          thumbnail: res.data.items[0].snippet.thumbnails.default.url,
+        }
       })
 
     return {
-      duration: durationStr,
+      duration: metadata.duration,
       viewCount,
       videoId,
+      title: metadata.title,
+      thumbnail: metadata.thumbnail,
     }
   }
 
