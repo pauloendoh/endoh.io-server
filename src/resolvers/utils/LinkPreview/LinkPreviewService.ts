@@ -88,7 +88,7 @@ export default class LinkPreviewService {
           res.data.items[0].contentDetails.duration
         ).toObject()
 
-        let durationStr = "00:00h"
+        let durationStr = ""
         if (durationObj.hours) {
           if (durationObj.hours < 10) {
             durationStr += "0" + durationObj.hours
