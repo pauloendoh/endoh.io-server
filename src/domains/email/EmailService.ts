@@ -23,7 +23,12 @@ export class EmailService {
         to: devsEmails,
         from: "endohpa@gmail.com",
         subject,
-        text: user.email,
+        html: `
+        <div>
+
+        <a href="https://relearn.to/user/${user.username}">View profile</a>
+        </div>
+        `,
       })
       .then(() => {
         console.log("Email sent!")
