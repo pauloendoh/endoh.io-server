@@ -23,7 +23,10 @@ export class FeedService {
         ? await this.feedRepository.findCompletedResourcesByTagIds(tagIds)
         : await this.feedRepository.findBookmarkedResourcesByTagIds(tagIds)
 
-    return resources
+    return resources.map((r) => ({
+      ...r,
+      privateNote: undefined,
+    }))
   }
 
   async updateLastSeenResource(userId: number, lastSeenAt: string) {

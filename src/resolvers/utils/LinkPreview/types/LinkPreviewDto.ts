@@ -18,9 +18,6 @@ export class LinkPreviewDto {
   @Field({ nullable: true })
   youtubeVideoLength: string
 
-  @Field({ nullable: true })
-  viewCount: number
-
   @Field(() => Resource, { nullable: true })
   alreadySavedResource: Resource | null
 }
@@ -33,7 +30,6 @@ export const buildLinkPreviewDto = (
   description: "",
   url: "",
   youtubeVideoLength: "00:00h",
-  viewCount: 0,
   alreadySavedResource: null,
   ...p,
 })

@@ -63,7 +63,6 @@ export default class LinkPreviewService {
     ) {
       const videoInfo = await this.#getYoutubeVideoInfo(url)
       response.youtubeVideoLength = videoInfo.duration
-      response.viewCount = videoInfo.viewCount
       response.url = `https://www.youtube.com/watch?v=${videoInfo.videoId}`
       response.title = videoInfo.title
       response.image = videoInfo.thumbnail
@@ -75,7 +74,6 @@ export default class LinkPreviewService {
   // PE 1/3 - improve xd
   async #getYoutubeVideoInfo(url: string) {
     const videoId = this.$getYoutubeVideoId.exec(url)
-    let viewCount = 0
 
     const metadata = await axios
       .get<YoutubeDataDto>(
@@ -83,7 +81,6 @@ export default class LinkPreviewService {
       )
 
       .then((res) => {
-        viewCount = Number(res.data.items[0].statistics?.viewCount || 0)
         const durationObj = Duration.fromISO(
           res.data.items[0].contentDetails.duration
         ).toObject()
@@ -116,7 +113,6 @@ export default class LinkPreviewService {
 
     return {
       duration: metadata.duration,
-      viewCount,
       videoId,
       title: metadata.title,
       thumbnail: metadata.thumbnail,

@@ -4,7 +4,6 @@ import { newUserInfo } from "../../dtos/UserInfoDto"
 import { Profile } from "../../entities/feed/Profile"
 import UserRepository from "../../repositories/UserRepository"
 import FollowingTagRepository from "../../repositories/feed/FollowingTagRepository"
-import ResourceRepository from "../../repositories/relearn/ResourceRepository"
 import TagRepository from "../../repositories/relearn/TagRepository"
 import SkillRepository from "../../repositories/skillbase/SkillRepository"
 import { userToSimpleUserDto } from "../../utils/domain/user/userToSimpleUserDto"
@@ -14,7 +13,6 @@ import { UserRepositoryV2 } from "./UserRepositoryV2"
 export class UserService {
   constructor(
     private userRepo = UserRepository,
-    private resourceRepo = ResourceRepository,
     private profileRepo = dataSource.getRepository(Profile),
     private tagRepo = TagRepository,
     private followingTagRepo = FollowingTagRepository,
