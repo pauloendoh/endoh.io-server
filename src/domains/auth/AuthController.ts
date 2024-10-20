@@ -24,7 +24,7 @@ import { PasswordResetPostDto } from "../../interfaces/dtos/auth/PasswordResetPo
 import { UserDeleteDto } from "../../interfaces/dtos/auth/UserDeleteDto"
 import { UserTokenPostDto } from "../../interfaces/dtos/auth/UserTokenPostDto"
 import { UsernamePutDto } from "../../interfaces/dtos/auth/UsernamePutDto"
-import UserRepository from "../../repositories/UserRepository"
+import { UserRepository } from "../../repositories/UserRepository"
 import { MyAuthRequest } from "../../utils/MyAuthRequest"
 import { $SaveUser } from "../user/use-cases/$SaveUser"
 import { AuthService } from "./AuthService"
@@ -33,10 +33,10 @@ import { RegisterDto } from "./types/RegisterDto"
 @JsonController("/auth")
 export class AuthController {
   constructor(
-    private userRepo = UserRepository,
-    private preferenceRepo = dataSource.getRepository(UserPreference),
-    private authService = new AuthService(),
-    private $saveUser = new $SaveUser()
+    private readonly userRepo = new UserRepository(),
+    private readonly preferenceRepo = dataSource.getRepository(UserPreference),
+    private readonly authService = new AuthService(),
+    private readonly $saveUser = new $SaveUser()
   ) {}
 
   @Post("/register")
@@ -122,7 +122,7 @@ export class AuthController {
 
     if (!passwordOk) throw new BadRequestError("Incorrect password.")
     if (passwordOk) {
-      await this.userRepo.delete({ id: requester.id })
+      await this.userRepo.rawRepo.delete({ id: requester.id })
 
       return true
     }
@@ -135,7 +135,7 @@ export class AuthController {
   ) {
     const { newUsername } = body
 
-    const usernameExists = await this.userRepo.findOne({
+    const usernameExists = await this.userRepo.rawRepo.findOne({
       where: {
         username: newUsername,
       },

@@ -13,7 +13,7 @@ import { User } from "../../entities/User"
 import { AuthUserGetDto } from "../../interfaces/dtos/auth/AuthUserGetDto"
 import { PasswordResetPostDto } from "../../interfaces/dtos/auth/PasswordResetPostDto"
 import { UserTokenPostDto } from "../../interfaces/dtos/auth/UserTokenPostDto"
-import UserRepository from "../../repositories/UserRepository"
+import { UserRepository } from "../../repositories/UserRepository"
 import { myEnvs } from "../../utils/myEnvs"
 import { addMinutes } from "../../utils/time/addMinutes"
 import validateUserFields from "../../utils/validateUser"
@@ -22,14 +22,14 @@ import { RegisterDto } from "./types/RegisterDto"
 
 export class AuthService {
   constructor(
-    private userRepo = UserRepository,
-    private tokenRepo = dataSource.getRepository(UserToken),
-    private $saveUser = new $SaveUser()
+    private readonly userRepo = new UserRepository(),
+    private readonly tokenRepo = dataSource.getRepository(UserToken),
+    private readonly $saveUser = new $SaveUser()
   ) {}
 
   async register(dto: RegisterDto) {
     // only creates an instance. Doesn't save on DB
-    const sentUser = this.userRepo.create(dto)
+    const sentUser = this.userRepo.rawRepo.create(dto)
     const userErrors = validateUserFields(sentUser)
     if (userErrors.length) {
       throw new BadRequestError(userErrors[0].message)
@@ -39,7 +39,7 @@ export class AuthService {
       throw new BadRequestError("Passwords are different!")
 
     // Checking if email exists
-    let userExists = await this.userRepo.findOne({
+    let userExists = await this.userRepo.rawRepo.findOne({
       where: {
         email: sentUser.email,
       },
@@ -50,7 +50,7 @@ export class AuthService {
     }
 
     // Checking if username exists
-    userExists = await this.userRepo.findOne({
+    userExists = await this.userRepo.rawRepo.findOne({
       where: {
         username: sentUser.username,
       },
@@ -102,7 +102,7 @@ export class AuthService {
     }
 
     // username or email exists ?
-    const user = await this.userRepo.findOne({
+    const user = await this.userRepo.rawRepo.findOne({
       where: [{ email: sentUser.email }, { username: sentUser.email }],
     })
     if (!user) {
@@ -137,13 +137,13 @@ export class AuthService {
   }
 
   async keepTempUser(dto: RegisterDto, userId: number) {
-    const previousTempUser = await this.userRepo.findOne({
+    const previousTempUser = await this.userRepo.rawRepo.findOne({
       where: { id: userId },
     })
     if (!previousTempUser) throw new BadRequestError("User not found")
 
     // only creates an instance. Doesn't save on DB
-    const sentUser = this.userRepo.create(dto)
+    const sentUser = this.userRepo.rawRepo.create(dto)
     const userErrors = validateUserFields(sentUser)
     if (userErrors.length) {
       throw new BadRequestError(userErrors[0].message)
@@ -153,7 +153,7 @@ export class AuthService {
       throw new BadRequestError("Passwords are different!")
 
     // Checking if email exists
-    let userExists = await this.userRepo.findOne({
+    let userExists = await this.userRepo.rawRepo.findOne({
       where: {
         email: sentUser.email,
       },
@@ -164,7 +164,7 @@ export class AuthService {
     }
 
     // Checking if username exists
-    userExists = await this.userRepo.findOne({
+    userExists = await this.userRepo.rawRepo.findOne({
       where: {
         username: sentUser.username,
       },
@@ -246,7 +246,7 @@ export class AuthService {
 
     // Same process as POST /auth/login
 
-    const user = await this.userRepo.findOne({
+    const user = await this.userRepo.rawRepo.findOne({
       where: {
         id: userId,
       },
@@ -295,7 +295,7 @@ export class AuthService {
     if (!tokenExists)
       throw new BadRequestError("Token does not exist or it is expired.")
 
-    const user = await this.userRepo.findOne({
+    const user = await this.userRepo.rawRepo.findOne({
       where: {
         id: userId,
       },

@@ -12,8 +12,9 @@ export class _SaveResource {
     returnAll?: boolean
   }) {
     const { sentResource, user, returnAll = true } = params
-    if (sentResource.tag === null)
+    if (sentResource.tag === null) {
       throw new BadRequestError("Resource must have a tag.")
+    }
 
     if (sentResource.thumbnail === null) sentResource.thumbnail = ""
 
@@ -38,22 +39,18 @@ export class _SaveResource {
       if (
         previousResource.rating !== sentResource.rating &&
         sentResource.rating > 0
-      )
+      ) {
         sentResource.completedAt = new Date().toISOString()
+      }
 
-      // PE 1/3 - Maybe it would be better to create a specific route for that...
-      // If adding a rating
       if (!previousResource.rating && sentResource.rating > 0) {
-        await this.resourceRepo.reducePosition(
-          sentResource.tag,
+        await this.resourceRepo.decrementResourcePositionsInTag({
+          tag: sentResource.tag,
           user,
-          sentResource.position + 1
-        )
+          startingPosition: sentResource.position + 1,
+        })
 
         sentResource.completedAt = new Date().toISOString()
-        // sentResource.position = null
-
-        // TODO: reduce by 1 the others' positions
       }
       // If removing a rating
       else if (previousResource.rating > 0 && sentResource.rating === null) {
@@ -70,11 +67,11 @@ export class _SaveResource {
           previousResource.tag?.id != sentResource.tag?.id) && // changing tag
         previousResource.position
       ) {
-        await this.resourceRepo.reducePosition(
-          previousResource.tag,
+        await this.resourceRepo.decrementResourcePositionsInTag({
+          tag: previousResource.tag,
           user,
-          previousResource.position + 1
-        )
+          startingPosition: previousResource.position + 1,
+        })
 
         sentResource.position = await this.resourceRepo.getLastPosition(
           sentResource.tag,

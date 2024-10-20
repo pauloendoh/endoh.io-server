@@ -2,13 +2,10 @@ import {
   Body,
   CurrentUser,
   Delete,
-  ForbiddenError,
   Get,
   JsonController,
   NotFoundError,
-  Param,
   Post,
-  Put,
   UseBefore,
 } from "routing-controllers"
 import { dataSource } from "../../../dataSource"
@@ -23,9 +20,13 @@ import SkillRepository from "../../../repositories/skillbase/SkillRepository"
 @JsonController()
 export class SkillController {
   constructor(
-    private skillRepo = SkillRepository,
-    private skillProgressRepo = dataSource.getRepository(SkillProgress),
-    private skillExpectationRepo = dataSource.getRepository(SkillExpectation)
+    private readonly skillRepo = SkillRepository,
+    private readonly skillProgressRepo = dataSource.getRepository(
+      SkillProgress
+    ),
+    private readonly skillExpectationRepo = dataSource.getRepository(
+      SkillExpectation
+    )
   ) {}
 
   @Get("/skillbase/skill")
@@ -86,31 +87,6 @@ export class SkillController {
     await this.skillExpectationRepo.save(expectations)
 
     return savedSkill
-  }
-
-  @Put("/skillbase/skill/:id")
-  async updateSkill(
-    @UseBefore(MyAuthMiddleware)
-    @CurrentUser({ required: true })
-    user: User,
-    @Body() sentSkill: Skill,
-    @Param("id") skillId: number
-  ) {
-    const isOwner = await this.skillRepo.findOne({
-      where: {
-        userId: user.id,
-        id: skillId,
-      },
-    })
-    if (!isOwner)
-      throw new ForbiddenError("User is not owner or skill doesn't exist")
-
-    if (isOwner) {
-      sentSkill.id = skillId // PE 1/3 - why do we need this?
-
-      const savedSkill = await this.skillRepo.save(sentSkill)
-      return savedSkill
-    }
   }
 
   @Delete("/skillbase/skill")

@@ -2,10 +2,8 @@ import {
   BadRequestError,
   Body,
   CurrentUser,
-  Delete,
   Get,
   JsonController,
-  Param,
   Post,
 } from "routing-controllers"
 import { User } from "../../../entities/User"
@@ -45,22 +43,6 @@ export class CategoryController {
 
   @Get("/")
   async getCategories(@CurrentUser({ required: true }) user: User) {
-    return this.categoryRepo.getCategoriesFromUser(user)
-  }
-
-  // PE 1/3 - not being used?
-  @Delete("/:id")
-  async deleteCategory(
-    @CurrentUser({ required: true }) user: User,
-    @Param("id") categoryId: number
-  ) {
-    const result = await this.categoryRepo.delete({
-      id: categoryId,
-      userId: user.id,
-    })
-    if (!result.affected)
-      throw new BadRequestError("Category id not found, or user is not owner.")
-
     return this.categoryRepo.getCategoriesFromUser(user)
   }
 }

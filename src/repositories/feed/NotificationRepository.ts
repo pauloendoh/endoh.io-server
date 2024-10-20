@@ -5,7 +5,6 @@ import { NotificationDto } from "../../dtos/utils/NotificationDto"
 import { User } from "../../entities/User"
 import { Notification } from "../../entities/feed/Notification"
 import { Profile } from "../../entities/feed/Profile"
-import UserRepository from "../UserRepository"
 import ResourceRepository from "../relearn/ResourceRepository"
 import TagRepository from "../relearn/TagRepository"
 
@@ -67,7 +66,7 @@ const NotificationRepository = dataSource.getRepository(Notification).extend({
   ): Promise<Notification> {
     try {
       const resourceRepo = ResourceRepository
-      const userRepo = UserRepository
+      const userRepo = dataSource.getRepository(User)
 
       const resource = await resourceRepo.findOne({
         where: { id: resourceId },

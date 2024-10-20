@@ -28,7 +28,6 @@ export class FollowRepository {
   }
 
   async findFolloweesByFollowerId(followerId: number) {
-    // PE 1/3 - todo: don't return all fields
     const follows = await this.db.getRepository(Follow).find({
       where: {
         followerId,

@@ -2,13 +2,12 @@ import { In, Not } from "typeorm"
 import { dataSource } from "../../dataSource"
 import { Profile } from "../../entities/feed/Profile"
 import { User } from "../../entities/User"
-import UserRepository from "../../repositories/UserRepository"
 import { myConsoleError } from "../myConsoleError"
 import { myConsoleSuccess } from "../myConsoleSuccess"
 
 export const createProfileForUsers = async () => {
   try {
-    const userRepo = UserRepository
+    const userRepo = dataSource.getRepository(User)
     const profile = dataSource.getRepository(Profile)
 
     const preferences = await profile.find({ relations: ["user"] })

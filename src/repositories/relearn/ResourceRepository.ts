@@ -72,12 +72,13 @@ const ResourceRepository = dataSource.getRepository(Resource).extend({
     return 0
   },
 
-  // reduce by 1
-  async reducePosition(
-    tag: Tag,
-    user: User,
-    startingPosition: Number
-  ): Promise<void> {
+  async decrementResourcePositionsInTag(params: {
+    tag: Tag
+    user: User
+    startingPosition: number
+  }): Promise<void> {
+    const { tag, user, startingPosition } = params
+
     if (tag) {
       await dataSource.query(
         `

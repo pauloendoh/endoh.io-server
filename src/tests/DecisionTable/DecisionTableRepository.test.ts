@@ -1,7 +1,7 @@
 import { dataSource } from "../../dataSource"
 import { DecisionTable } from "../../entities/BigDecisions/DecisionTable"
 import DecisionTableRepository from "../../repositories/BigDecisions/DecisionTableRepository"
-import UserRepository from "../../repositories/UserRepository"
+import { UserRepository } from "../../repositories/UserRepository"
 import createExampleDecision from "../../utils/domain/BigDecisions/createExampleDecision"
 import createOrmConn from "../../utils/typeOrm/createOrmConn"
 
@@ -11,7 +11,8 @@ beforeEach(async () => {
 })
 
 test("Normalize decision tables index", async () => {
-  const user = await UserRepository.createUserForUnitTests("test")
+  const userRepo = new UserRepository()
+  const user = await userRepo.createUserForUnitTests("test")
   const decision = await createExampleDecision(user, "decision")
 
   // automatically adds two tables on creation

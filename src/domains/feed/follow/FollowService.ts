@@ -1,12 +1,12 @@
-import UserRepository from "../../../repositories/UserRepository"
+import { UserRepository } from "../../../repositories/UserRepository"
 import { NotificationService } from "../../notification/NotificationService"
 import { FollowRepository } from "./FollowRepository"
 
 export class FollowService {
   constructor(
-    private followRepo = new FollowRepository(),
-    private userRepo = UserRepository, // private notificationService = new NotificationService()
-    private notificationService = new NotificationService()
+    private readonly followRepo = new FollowRepository(),
+    private readonly userRepo = new UserRepository(),
+    private readonly notificationService = new NotificationService()
   ) {}
 
   async toggleFollow(requesterId: number, followingUserId: number) {

@@ -1,7 +1,8 @@
 import { verify as validateJwt } from "jsonwebtoken"
 
 import { MiddlewareFn } from "type-graphql"
-import UserRepository from "../../repositories/UserRepository"
+import { dataSource } from "../../dataSource"
+import { User } from "../../entities/User"
 import { myEnvs } from "../../utils/myEnvs"
 import { MyContext } from "./MyContext"
 
@@ -22,7 +23,7 @@ export const isAuth: MiddlewareFn<MyContext> = async ({ context }, next) => {
           throw new Error("Token is not valid. Sign in and try again.")
         }
 
-        const user = await UserRepository.findOne({
+        const user = await dataSource.getRepository(User).findOne({
           where: {
             id: decodedObj["userId"],
           },

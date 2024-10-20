@@ -13,7 +13,7 @@ import { EmailPostDto } from "../../interfaces/dtos/auth/EmailPostDto"
 import NotificationRepository from "../../repositories/feed/NotificationRepository"
 import ResourceRepository from "../../repositories/relearn/ResourceRepository"
 import SkillRepository from "../../repositories/skillbase/SkillRepository"
-import UserRepository from "../../repositories/UserRepository"
+import { UserRepository } from "../../repositories/UserRepository"
 import LinkPreviewService from "../../resolvers/utils/LinkPreview/LinkPreviewService"
 import { isValidEmail } from "../../utils/email/isValidEmail"
 import { sendPasswordResetEmail } from "../../utils/email/sendPasswordResetEmail"
@@ -21,11 +21,11 @@ import { sendPasswordResetEmail } from "../../utils/email/sendPasswordResetEmail
 @JsonController()
 export class UtilsController {
   constructor(
-    private userRepo = UserRepository,
-    private notificationsRepo = NotificationRepository,
-    private skillRepo = SkillRepository,
-    private resourceRepo = ResourceRepository,
-    private linkPreviewService = new LinkPreviewService()
+    private readonly userRepo = new UserRepository(),
+    private readonly notificationsRepo = NotificationRepository,
+    private readonly skillRepo = SkillRepository,
+    private readonly resourceRepo = ResourceRepository,
+    private readonly linkPreviewService = new LinkPreviewService()
   ) {}
 
   @Post("/utils/passwordResetEmail")
@@ -33,7 +33,7 @@ export class UtilsController {
     const { email } = body
     if (!isValidEmail(email)) throw new BadRequestError("Invalid email.")
 
-    const registeredUser = await this.userRepo.findOne({
+    const registeredUser = await this.userRepo.rawRepo.findOne({
       where: {
         email,
       },

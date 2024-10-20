@@ -16,7 +16,7 @@ import { dataSource } from "../../dataSource"
 import { TagFollowPostDto } from "../../dtos/feed/TagFollowPostDto"
 import { User } from "../../entities/User"
 import { Profile } from "../../entities/feed/Profile"
-import UserRepository from "../../repositories/UserRepository"
+import { UserRepository } from "../../repositories/UserRepository"
 import FollowingTagRepository from "../../repositories/feed/FollowingTagRepository"
 import NotificationRepository from "../../repositories/feed/NotificationRepository"
 import ResourceRepository from "../../repositories/relearn/ResourceRepository"
@@ -25,12 +25,12 @@ import { UserService } from "./UserService"
 @JsonController("/user")
 export class UserController {
   constructor(
-    private userRepo = UserRepository,
-    private resourceRepo = ResourceRepository,
-    private profileRepo = dataSource.getRepository(Profile),
-    private followingTagRepo = FollowingTagRepository,
-    private notificationRepo = NotificationRepository,
-    private userService = new UserService()
+    private readonly userRepo = new UserRepository(),
+    private readonly resourceRepo = ResourceRepository,
+    private readonly profileRepo = dataSource.getRepository(Profile),
+    private readonly followingTagRepo = FollowingTagRepository,
+    private readonly notificationRepo = NotificationRepository,
+    private readonly userService = new UserService()
   ) {}
 
   @Get("/:username/all")
@@ -46,7 +46,7 @@ export class UserController {
     @CurrentUser({ required: true }) requester: User,
     @Param("username") username: string
   ) {
-    const user = await this.userRepo.findOne({
+    const user = await this.userRepo.rawRepo.findOne({
       where: {
         username,
       },
@@ -87,7 +87,7 @@ export class UserController {
     @Body() tagFollows: TagFollowPostDto[],
     @Param("username") username: string
   ) {
-    const foundOwner = await this.userRepo.findOne({
+    const foundOwner = await this.userRepo.rawRepo.findOne({
       where: {
         username,
       },
@@ -125,7 +125,7 @@ export class UserController {
     @CurrentUser({ required: true }) requester: User,
     @Param("username") username: string
   ) {
-    const user = await this.userRepo.findOne({ where: { username } })
+    const user = await this.userRepo.rawRepo.findOne({ where: { username } })
     if (!user) {
       throw new NotFoundError("User not found")
     }

@@ -2,13 +2,12 @@ import { In, Not } from "typeorm"
 import { dataSource } from "../../dataSource"
 import { User } from "../../entities/User"
 import { UserPreference } from "../../entities/UserPreference"
-import UserRepository from "../../repositories/UserRepository"
 import { myConsoleError } from "../myConsoleError"
 import { myConsoleSuccess } from "../myConsoleSuccess"
 
 export const createPreferencesForAll = async () => {
   try {
-    const userRepo = UserRepository
+    const userRepo = dataSource.getRepository(User)
     const preferenceRepo = dataSource.getRepository(UserPreference)
 
     const preferences = await preferenceRepo.find({ relations: ["user"] })

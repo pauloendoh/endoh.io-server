@@ -1,7 +1,7 @@
 // Why did I import this for?
 import axios from "axios"
 import "reflect-metadata"
-import UserRepository from "../repositories/UserRepository"
+import { UserRepository } from "../repositories/UserRepository"
 import { myConsoleLoading } from "../utils/console/myConsoleLoading"
 import { myConsoleError } from "../utils/myConsoleError"
 import { myConsoleSuccess } from "../utils/myConsoleSuccess"
@@ -45,7 +45,7 @@ const executeEvery15Min = async () => {
       .catch(() => myConsoleError("GET FAIL https://lolrates.vercel.app/"))
 
     try {
-      const userRepo = UserRepository
+      const userRepo = new UserRepository()
 
       const deleted = await userRepo.deleteExpiredTempUsers()
       myConsoleLoading("Deleting expired temp users")

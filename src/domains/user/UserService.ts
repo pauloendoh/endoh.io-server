@@ -2,30 +2,28 @@ import { NotFoundError } from "routing-controllers"
 import { dataSource } from "../../dataSource"
 import { newUserInfo } from "../../dtos/UserInfoDto"
 import { Profile } from "../../entities/feed/Profile"
-import UserRepository from "../../repositories/UserRepository"
 import FollowingTagRepository from "../../repositories/feed/FollowingTagRepository"
 import TagRepository from "../../repositories/relearn/TagRepository"
 import SkillRepository from "../../repositories/skillbase/SkillRepository"
+import { UserRepository } from "../../repositories/UserRepository"
 import { userToSimpleUserDto } from "../../utils/domain/user/userToSimpleUserDto"
 import { FeedRepository } from "../feed/feed/FeedRepository"
-import { UserRepositoryV2 } from "./UserRepositoryV2"
 
 export class UserService {
   constructor(
-    private userRepo = UserRepository,
-    private profileRepo = dataSource.getRepository(Profile),
-    private tagRepo = TagRepository,
-    private followingTagRepo = FollowingTagRepository,
-    private skillRepo = SkillRepository,
-    private feedRepo = new FeedRepository(),
-    private userRepoV2 = new UserRepositoryV2()
+    private readonly userRepo = new UserRepository(),
+    private readonly profileRepo = dataSource.getRepository(Profile),
+    private readonly tagRepo = TagRepository,
+    private readonly followingTagRepo = FollowingTagRepository,
+    private readonly skillRepo = SkillRepository,
+    private readonly feedRepo = new FeedRepository()
   ) {}
 
   async getUserInfo(username: string, requesterId: number) {
     const userInfo = newUserInfo()
 
     // username exists?
-    const foundUser = await this.userRepo.findOne({
+    const foundUser = await this.userRepo.rawRepo.findOne({
       where: {
         username,
       },
@@ -85,7 +83,7 @@ export class UserService {
   }
 
   async findNewUsers() {
-    const users = await this.userRepoV2.findNewUsers()
+    const users = await this.userRepo.findNewUsers()
     return users.map((user) => userToSimpleUserDto(user))
   }
 }

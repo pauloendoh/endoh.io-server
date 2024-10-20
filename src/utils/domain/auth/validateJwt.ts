@@ -1,11 +1,12 @@
 import { config } from "dotenv"
 import { verify } from "jsonwebtoken"
 import { UnauthorizedError } from "routing-controllers"
+import { dataSource } from "../../../dataSource"
 import { User } from "../../../entities/User"
-import UserRepository from "../../../repositories/UserRepository"
 config()
 
 export const validateJwt = (token: string) => {
+  const userRepo = dataSource.getRepository(User)
   return new Promise<User>((res, rej) => {
     verify(
       token,
@@ -15,7 +16,7 @@ export const validateJwt = (token: string) => {
           return rej(new UnauthorizedError("Token is not valid."))
         }
 
-        const user = await UserRepository.findOne({
+        const user = await userRepo.findOne({
           where: {
             id: decodedObj["userId"],
           },

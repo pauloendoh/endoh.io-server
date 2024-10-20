@@ -1,6 +1,8 @@
 import { genSalt, hash } from "bcryptjs"
 import { randomBytes } from "crypto"
-import UserRepository from "../repositories/UserRepository"
+import { dataSource } from "../dataSource"
+import { User } from "../entities/User"
+import { UserRepository } from "../repositories/UserRepository"
 
 const passport = require("passport")
 const GoogleStrategy = require("passport-google-oauth20").Strategy
@@ -39,8 +41,9 @@ passport.use(
     */
 
       // find current user
-      const userRepo = UserRepository
-      const currentUser = await userRepo.findOne({
+      const userRepoRaw = dataSource.getRepository(User)
+      const userRepo = new UserRepository()
+      const currentUser = await userRepoRaw.findOne({
         where: {
           googleId: profile.id,
         },
@@ -51,10 +54,10 @@ passport.use(
       // create new user if the database doesn't have this user
       if (!currentUser) {
         const email = profile.emails[0].value
-        const userWithEmail = await userRepo.findOne({ where: { email } })
+        const userWithEmail = await userRepoRaw.findOne({ where: { email } })
         if (userWithEmail) {
           userWithEmail.googleId = profile.id
-          await userRepo.save(userWithEmail)
+          await userRepoRaw.save(userWithEmail)
           return done(null, userWithEmail)
         }
 
@@ -62,14 +65,14 @@ passport.use(
         const salt = await genSalt(10)
         const randomString = randomBytes(64).toString("hex")
 
-        const newUser = await userRepo.save({
+        const newUser = await userRepoRaw.save({
           googleId: profile.id,
           username,
           email,
           password: await hash(randomString, salt),
         })
 
-        await userRepo.save(newUser)
+        await userRepoRaw.save(newUser)
 
         return done(null, newUser)
       }

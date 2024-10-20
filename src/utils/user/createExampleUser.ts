@@ -1,5 +1,5 @@
+import { dataSource } from "../../dataSource"
 import { User } from "../../entities/User"
-import UserRepository from "../../repositories/UserRepository"
 
 const createExampleUser = async (username: string) => {
   const newUser = new User()
@@ -7,7 +7,7 @@ const createExampleUser = async (username: string) => {
   newUser.email = `${username}@${username}.com`
   newUser.password = username
 
-  const repo = UserRepository
+  const repo = dataSource.getRepository(User)
   return await repo.save(newUser)
 }
 

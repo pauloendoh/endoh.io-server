@@ -1,12 +1,12 @@
 import { NotFoundError } from "routing-controllers"
 import { Follow } from "../../entities/feed/Follow"
-import { UserRepositoryV2 } from "../user/UserRepositoryV2"
+import { UserRepository } from "../../repositories/UserRepository"
 import { NotificationRepositoryV2 } from "./NotificationRepositoryV2"
 
 export class NotificationService {
   constructor(
-    private userRepo = new UserRepositoryV2(),
-    private notificationRepo = new NotificationRepositoryV2()
+    private readonly userRepo = new UserRepository(),
+    private readonly notificationRepo = new NotificationRepositoryV2()
   ) {}
 
   async createFollowNotification(follow: Follow) {
