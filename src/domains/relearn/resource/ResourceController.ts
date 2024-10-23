@@ -8,7 +8,6 @@ import {
   Param,
   Post,
   Put,
-  QueryParam,
 } from "routing-controllers"
 import { In } from "typeorm"
 import { IdsDto } from "../../../dtos/IdsDto"
@@ -21,22 +20,20 @@ import { _SaveResource } from "./use-cases/_SaveResource/_SaveResource"
 @JsonController()
 export class ResourceController {
   constructor(
-    private resourceRepo = ResourceRepository,
-    private service = new ResourceService(),
-    private _saveResource = new _SaveResource()
+    private readonly resourceRepo = ResourceRepository,
+    private readonly service = new ResourceService(),
+    private readonly _saveResource = new _SaveResource()
   ) {}
 
   @Post("/relearn/resource")
   async saveResource(
     @CurrentUser({ required: true })
     user: User,
-    @Body() sentResource: Resource,
-    @QueryParam("returnAll") returnAll?: boolean
+    @Body() sentResource: Resource
   ) {
     return this._saveResource.exec({
       sentResource,
       user,
-      returnAll,
     })
   }
 

@@ -4,14 +4,10 @@ import { Resource } from "../../../../../entities/relearn/Resource"
 import ResourceRepository from "../../../../../repositories/relearn/ResourceRepository"
 
 export class _SaveResource {
-  constructor(private resourceRepo = ResourceRepository) {}
+  constructor(private readonly resourceRepo = ResourceRepository) {}
 
-  async exec(params: {
-    sentResource: Resource
-    user: User
-    returnAll?: boolean
-  }) {
-    const { sentResource, user, returnAll = true } = params
+  async exec(params: { sentResource: Resource; user: User }) {
+    const { sentResource, user } = params
     if (sentResource.tag === null) {
       throw new BadRequestError("Resource must have a tag.")
     }
@@ -88,9 +84,6 @@ export class _SaveResource {
     }
 
     const saved = await this.resourceRepo.save({ ...sentResource })
-    if (returnAll) {
-      return this.resourceRepo.findAllResourcesFromUser(user)
-    }
 
     return saved
   }
