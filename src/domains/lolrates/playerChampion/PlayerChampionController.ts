@@ -10,11 +10,15 @@ import {
 import { dataSource } from "../../../dataSource"
 import { PlayerChampion } from "../../../entities/LolRates/PlayerChampion"
 import { User } from "../../../entities/User"
+import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 
 @JsonController("/lolrates/playerChampion")
 export class PlayerChampionController {
   constructor(
-    private playerChampionRepo = dataSource.getRepository(PlayerChampion)
+    private readonly playerChampionRepo = dataSource.getRepository(
+      PlayerChampion
+    ),
+    private readonly lolRateRepository = LolRateRepository
   ) {}
 
   @Post("/")
@@ -47,9 +51,23 @@ export class PlayerChampionController {
 
   @Get("/")
   async getPlayerChampions(@CurrentUser({ required: true }) user: User) {
-    return this.playerChampionRepo.find({
+    const playerchampions = await this.playerChampionRepo.find({
       where: { userId: user.id },
+      relations: ["champion"],
     })
+
+    const championNames = playerchampions.map((pc) => pc.champion.name)
+
+    const winRates = await this.lolRateRepository.findWinrates({
+      championNames,
+    })
+
+    return playerchampions.map((pc) => ({
+      ...pc,
+      rate: winRates.find(
+        (wr) => wr.championName === pc.champion.name && wr.role === pc.role
+      ),
+    }))
   }
 
   @Delete("/:id")

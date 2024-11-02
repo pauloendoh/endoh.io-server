@@ -13,7 +13,9 @@ import { myConsoleSuccess } from "../../utils/myConsoleSuccess"
 import myRedis from "../../utils/redis/myRedis"
 
 const LolRateRepository = dataSource.getRepository(LolRate).extend({
-  async findWinrates(): Promise<LolRateDto[]> {
+  async findWinrates(options?: {
+    championNames: string[]
+  }): Promise<LolRateDto[]> {
     try {
       const cached = await myRedis
         .get("winrates")
@@ -40,6 +42,11 @@ from (select "championName",
               (COALESCE("opggWin", 0)   + COALESCE ("lolgraphsWin", 0)  + COALESCE("uggWin", 0))/3 as "avgWin"
          from "lol_rate") as avgs
 where  "avgWin" > 0
+      ${
+        options?.championNames && options.championNames.length > 0
+          ? `and "championName" in ('${options.championNames.join("','")}')`
+          : ""
+      }
 order by "avgAvg" desc 
         `)
 

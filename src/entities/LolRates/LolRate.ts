@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
 } from "typeorm"
 
+// PE 1/3 - rename to ChampionRateEntity
 @Entity()
 export class LolRate {
   @PrimaryGeneratedColumn()

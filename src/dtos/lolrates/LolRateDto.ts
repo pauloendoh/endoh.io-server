@@ -1,3 +1,4 @@
+// PE 1/3 - rename to ChampionRateDto
 export interface LolRateDto {
   avgAvg: number
   championName: string
