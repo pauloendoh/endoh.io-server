@@ -220,13 +220,19 @@ export class AuthService {
       expiresAt: addMinutes(new Date(), 15).toISOString(),
     })
 
-    return (
+    const encoded = encodeURI(
       process.env.CLIENT_BASE_URL +
-      "?oauthToken=" +
-      oauthToken.token +
-      "&userId=" +
-      oauthToken.userId
+        "?oauthToken=" +
+        oauthToken.token +
+        "&userId=" +
+        oauthToken.userId
     )
+
+    console.log({
+      encoded,
+    })
+
+    return encoded
   }
 
   async loginWithUserIdAndGoogleToken(body: UserTokenPostDto) {

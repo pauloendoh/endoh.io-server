@@ -5,8 +5,8 @@ import { LolRatesService } from "./LolRatesService"
 @JsonController()
 export class LolRatesController {
   constructor(
-    private lolRateRepo = LolRateRepository,
-    private lolratesService = new LolRatesService()
+    private readonly lolRateRepo = LolRateRepository,
+    private readonly lolratesService = new LolRatesService()
   ) {}
 
   @Get("/lolRates")
