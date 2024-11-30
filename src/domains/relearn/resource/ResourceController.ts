@@ -15,6 +15,7 @@ import { User } from "../../../entities/User"
 import { Resource } from "../../../entities/relearn/Resource"
 import ResourceRepository from "../../../repositories/relearn/ResourceRepository"
 import { ResourceService } from "./ResourceService"
+import { $MoveResourceToPosition } from "./use-cases/$MoveResourceToPosition/$MoveResourceToPosition"
 import { _SaveResource } from "./use-cases/_SaveResource/_SaveResource"
 
 @JsonController()
@@ -22,7 +23,8 @@ export class ResourceController {
   constructor(
     private readonly resourceRepo = ResourceRepository,
     private readonly service = new ResourceService(),
-    private readonly _saveResource = new _SaveResource()
+    private readonly _saveResource = new _SaveResource(),
+    private readonly $moveResourceToPosition = new $MoveResourceToPosition()
   ) {}
 
   @Post("/relearn/resource")
@@ -78,6 +80,23 @@ export class ResourceController {
 
     await this.resourceRepo.save(sentResources)
     return "Saved"
+  }
+
+  @Post("/relearn/move-resource-to-position")
+  async moveResourceToPosition(
+    @CurrentUser({ required: true })
+    user: User,
+    @Body()
+    body: {
+      resourceId: number
+      newPosition: number
+    }
+  ) {
+    return this.$moveResourceToPosition.exec({
+      requesterId: user.id,
+      newPosition: body.newPosition,
+      resourceId: body.resourceId,
+    })
   }
 
   @Post("/relearn/resource/duplicate/:id")

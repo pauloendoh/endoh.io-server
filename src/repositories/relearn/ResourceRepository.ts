@@ -6,6 +6,19 @@ import { Tag } from "../../entities/relearn/Tag"
 import { myConsoleSuccess } from "../../utils/myConsoleSuccess"
 
 const ResourceRepository = dataSource.getRepository(Resource).extend({
+  async userOwnsResource(input: {
+    userId: number
+    resourceId: number
+  }): Promise<Resource | null> {
+    const { userId, resourceId } = input
+    return this.findOne({
+      where: {
+        id: resourceId,
+        userId: userId,
+      },
+    })
+  },
+
   async findAllResourcesFromUser(user: User): Promise<Resource[]> {
     return this.createQueryBuilder("resource")
       .where({ user })
@@ -13,8 +26,25 @@ const ResourceRepository = dataSource.getRepository(Resource).extend({
       .orderBy("resource.position", "ASC")
       .getMany()
   },
+  async findResourcesByTag(tagId: number) {
+    return this.find({ where: { tagId }, order: { position: "ASC" } })
+  },
   async findOneRelationsId(where: FindOptionsWhere<Resource>) {
     return this.findOne({ where, relations: { tag: true } })
+  },
+  async updateResourcePositions(
+    resources: {
+      id: number
+      position: number
+    }[]
+  ) {
+    return this.manager.transaction(async (manager) => {
+      for (const resource of resources) {
+        await manager.update(Resource, resource.id, {
+          position: resource.position,
+        })
+      }
+    })
   },
 
   // PE 2/3
