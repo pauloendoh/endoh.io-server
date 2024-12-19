@@ -10,7 +10,7 @@ export class LolRatesController {
   ) {}
 
   @Get("/lolRates")
-  async getDocs() {
+  async getLolRates() {
     const allWinrates = (await this.lolRateRepo.findWinrates()).map((item) => {
       let count = 0
       if (item.uggWin) count++
