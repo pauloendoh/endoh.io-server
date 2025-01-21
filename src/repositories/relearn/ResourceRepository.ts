@@ -26,13 +26,17 @@ const ResourceRepository = dataSource.getRepository(Resource).extend({
       .orderBy("resource.position", "ASC")
       .getMany()
   },
-  async findResourcesByTag(tagId: number) {
-    return this.find({ where: { tagId }, order: { position: "ASC" } })
+  async findBookmarkedResourcesByTag(input: { tagId: number }) {
+    const { tagId } = input
+    return this.find({
+      where: { tagId, completedAt: "" },
+      order: { position: "ASC" },
+    })
   },
   async findOneRelationsId(where: FindOptionsWhere<Resource>) {
     return this.findOne({ where, relations: { tag: true } })
   },
-  async updateResourcePositions(
+  async updateResourcesPositions(
     resources: {
       id: number
       position: number

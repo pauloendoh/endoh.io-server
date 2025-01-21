@@ -18,9 +18,9 @@ export class $MoveResourceToPosition {
       throw new NotFoundError("Resource not found or user is not the owner.")
     }
 
-    const resources = await this.resourceRepo.findResourcesByTag(
-      foundResource.tagId
-    )
+    const resources = await this.resourceRepo.findBookmarkedResourcesByTag({
+      tagId: foundResource.tagId,
+    })
 
     const oldIndex = [...resources]
       .map((resource, index) => ({
@@ -35,16 +35,17 @@ export class $MoveResourceToPosition {
 
     const newIndex = input.newPosition - 1
 
+    const resourceToMove = resources[oldIndex]
     resources.splice(oldIndex, 1)
+    resources.splice(newIndex, 0, resourceToMove)
 
-    resources.splice(newIndex, 0, foundResource)
-
-    const newResourcePositions = [...resources].map((resource, index) => ({
+    const newResourcesPositions = [...resources].map((resource, index) => ({
       id: resource.id,
+      title: resource.title,
       position: index,
     }))
 
-    await this.resourceRepo.updateResourcePositions(newResourcePositions)
+    await this.resourceRepo.updateResourcesPositions(newResourcesPositions)
 
     return "OK" as const
   }
