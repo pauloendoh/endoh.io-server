@@ -10,12 +10,10 @@ export class WeatherController {
   ) {}
 
   @Get("/weather-forecast")
-  async getWeatherForecast(
-    @QueryParams() params: { lat: number; lon: number; cachedObject: object }
-  ) {
+  async getWeatherForecast(@QueryParams() query: { lat: number; lon: number }) {
     const html = await axios
       .get<string>(
-        `https://weather.com/weather/today/l/${params.lat},${params.lon}`,
+        `https://weather.com/weather/today/l/${query.lat},${query.lon}`,
         {
           headers: {
             "twc-unit": "m",
@@ -23,6 +21,9 @@ export class WeatherController {
         }
       )
       .then((res) => res.data)
+      .catch((err) => {
+        throw err
+      })
 
     const dom = new JSDOM(html)
 

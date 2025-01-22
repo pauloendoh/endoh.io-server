@@ -28,15 +28,12 @@ export class $ScrapeWeatherForecast {
 
       const svgEl = div.querySelector("svg")
 
-      const svg = svgEl?.outerHTML
-
       // svg sibling
       const description = svgEl?.nextElementSibling?.textContent
 
       return {
         time,
         temperature,
-        svg,
         description,
       }
     })
@@ -54,7 +51,6 @@ export class $ScrapeWeatherForecast {
       return {
         time: data.time ?? undefined,
         temperature: data.temperature ? parseInt(data.temperature) : undefined,
-        svg: data.svg ?? undefined,
         description: data.description ?? undefined,
       }
     })
