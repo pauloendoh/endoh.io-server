@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config()
 
 // isso serve apenas para executar as migrations em produção!
 // Roda durante o typeorm migration:run
@@ -27,7 +27,7 @@ let ormconfig = {
   },
 
   logging: ["error"],
-};
+}
 
 if (process.env.NODE_ENV === "production") {
   ormconfig = {
@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === "production") {
       migrationsDir: __dirname + "build/src/migrations",
       subscribersDir: __dirname + "build/src/subscriber",
     },
-  };
+  }
 }
 
 if (process.env.NODE_ENV === "test") {
@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === "test") {
     database: "endoh.io-test",
     synchronize: true,
     dropSchema: true,
-  };
+  }
 }
 
-module.exports = ormconfig;
+module.exports = ormconfig
