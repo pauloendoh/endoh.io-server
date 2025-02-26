@@ -41,6 +41,11 @@ if (process.env.NODE_ENV === "production") {
       migrationsDir: __dirname + "build/src/migrations",
       subscribersDir: __dirname + "build/src/subscriber",
     },
+    extra: {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
   }
 }
 

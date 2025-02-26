@@ -56,8 +56,17 @@ export async function scrapeOpgg(page: Page) {
             const championTd = tds[1]
             const championName =
               championTd?.querySelector("strong")?.textContent ?? ""
-            const winRate = tds[4].innerText
-            const pickRate = tds[5].innerText
+            const winRate = tds[4]?.innerText
+            const pickRate = tds[5]?.innerText
+
+            if (!winRate || !pickRate) {
+              console.log("Error: winRate or pickRate is not defined", {
+                championName,
+                winRate,
+                pickRate,
+              })
+              break
+            }
 
             roleResults.push({
               role: getRole(),
