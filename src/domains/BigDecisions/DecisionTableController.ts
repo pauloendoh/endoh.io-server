@@ -39,7 +39,6 @@ export class DecisionTableController {
       await repo.remove(table)
       return "OK"
     } catch (err) {
-      myConsoleError(err.message)
       throw new NotFoundError(err.message)
     }
   }

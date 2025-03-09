@@ -38,13 +38,6 @@ async function scrapeTinder() {
       pageUrl = page.url()
     }
 
-    page.on("console", async (msg) => {
-      const msgArgs = msg.args()
-      for (let i = 0; i < msgArgs.length; ++i) {
-        console.log(await msgArgs[i].jsonValue())
-      }
-    })
-
     while (true) {
       await sleep(1000)
       const like = await page.evaluate(async () => {

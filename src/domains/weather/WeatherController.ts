@@ -6,7 +6,6 @@ import {
   JsonController,
   QueryParams,
 } from "routing-controllers"
-import { myConsoleError } from "../../utils/myConsoleError"
 import myRedis from "../../utils/redis/myRedis"
 import { redisKeys } from "../../utils/redis/redisKeys"
 import { $ScrapeWeatherForecast } from "./use-cases/$ScrapeWeatherForecast"
@@ -40,8 +39,6 @@ export class WeatherController {
       )
       .then((res) => res.data)
       .catch((err) => {
-        myConsoleError(err.message)
-        myConsoleError(JSON.stringify(query))
         throw err
       })
 

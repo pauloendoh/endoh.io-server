@@ -228,10 +228,6 @@ export class AuthService {
         oauthToken.userId
     )
 
-    console.log({
-      encoded,
-    })
-
     return encoded
   }
 

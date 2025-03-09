@@ -82,7 +82,6 @@ export default class LearningService {
     topPercentDays: string[]
   ) {
     if (hour === 23) {
-      console.log()
     }
 
     const filteredLearnings = allLearnings.filter((l) => {

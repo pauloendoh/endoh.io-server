@@ -75,7 +75,6 @@ export class _CacheLolGraphAramStats {
           winRate,
         })
       }
-      console.log(table)
       return champions
     })
 
