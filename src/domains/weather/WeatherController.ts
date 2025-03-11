@@ -62,7 +62,7 @@ export class WeatherController {
       redisKeys.weatherForecast(query),
       JSON.stringify(result),
       "EX",
-      60 * 15 // 15 min
+      60 * 5 // 5 min
     )
 
     return result
