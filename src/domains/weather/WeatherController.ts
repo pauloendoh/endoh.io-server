@@ -39,10 +39,17 @@ export class WeatherController {
       )
       .then((res) => res.data)
       .catch((err) => {
+        console.log("Error fetching weather forecast")
         throw err
       })
+    let dom: JSDOM
 
-    const dom = new JSDOM(html)
+    try {
+      dom = new JSDOM(html)
+    } catch (err) {
+      console.log("Error parsing html")
+      throw new Error("Error parsing html")
+    }
 
     const forecastHref = dom.window.document
       .querySelector('[data-testid="TodayWeatherModule"]')
