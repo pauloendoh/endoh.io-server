@@ -1,5 +1,5 @@
 import axios from "axios"
-import { JSDOM } from "jsdom"
+import { myJSDOMDocument } from "../../../utils/runMyJSDOM"
 
 export class $ScrapeWeatherForecast {
   async exec(
@@ -13,7 +13,10 @@ export class $ScrapeWeatherForecast {
       })
       .then((res) => res.data)
 
-    const { document } = new JSDOM(html).window
+    const document = myJSDOMDocument(html)
+    if (!document) {
+      throw new Error("Error parsing html")
+    }
 
     const summaryDivs = document.querySelectorAll(
       '[data-testid="DetailsSummary"]'

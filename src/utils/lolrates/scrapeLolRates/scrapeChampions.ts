@@ -1,8 +1,8 @@
 import axios from "axios"
-import { JSDOM } from "jsdom"
 import { Page } from "puppeteer"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
 import { myConsoleError } from "../../myConsoleError"
+import { myJSDOMDocument } from "../../runMyJSDOM"
 
 export interface IChampion {
   name: string
@@ -16,8 +16,10 @@ export async function scrapeChampions(page: Page) {
       .get<string>("https://u.gg/lol/champions")
       .then((res) => res.data)
 
-    const dom = new JSDOM(html)
-    const document = dom.window.document
+    const document = myJSDOMDocument(html)
+    if (!document) {
+      throw new Error("Error parsing html")
+    }
 
     const champions: IChampion[] = []
 

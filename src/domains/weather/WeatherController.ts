@@ -1,5 +1,4 @@
 import axios from "axios"
-import { JSDOM } from "jsdom"
 import {
   BadRequestError,
   Get,
@@ -8,6 +7,7 @@ import {
 } from "routing-controllers"
 import myRedis from "../../utils/redis/myRedis"
 import { redisKeys } from "../../utils/redis/redisKeys"
+import { myJSDOMDocument } from "../../utils/runMyJSDOM"
 import { $ScrapeWeatherForecast } from "./use-cases/$ScrapeWeatherForecast"
 
 @JsonController()
@@ -42,16 +42,13 @@ export class WeatherController {
         console.log("Error fetching weather forecast")
         throw err
       })
-    let dom: JSDOM
 
-    try {
-      dom = new JSDOM(html)
-    } catch (err) {
-      console.log("Error parsing html")
+    const document = myJSDOMDocument(html)
+    if (!document) {
       throw new Error("Error parsing html")
     }
 
-    const forecastHref = dom.window.document
+    const forecastHref = document
       .querySelector('[data-testid="TodayWeatherModule"]')
       ?.querySelector('[data-testid="CardFooter"]')
       ?.querySelector("a")
