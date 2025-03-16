@@ -1,3 +1,9 @@
+import * as swaggerUi from "swagger-ui-express"
+
+import { generateOpenApi } from "@ts-rest/open-api"
+
+import { createExpressEndpoints, initServer } from "@ts-rest/express"
+
 import express, { Request, Response } from "express"
 import { createServer } from "http"
 import { memoryUsage } from "process"
@@ -12,10 +18,10 @@ import {
   createExpressServer,
   RoutingControllersOptions,
 } from "routing-controllers"
-import { Stripe } from "stripe"
 import { buildSchema } from "type-graphql"
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS"
 import { dataSource } from "./dataSource"
+import { contract, contractServerRouter } from "./domains/contract"
 import saveResponseTime from "./middlewares/saveResponseTime"
 import { LearningResolver } from "./resolvers/learning-diary/LearningResolver"
 import { ResourceResolver } from "./resolvers/ResourceResolver"
@@ -35,14 +41,13 @@ import { createProfileForUsers } from "./utils/user/createProfileForAll"
 import cookieSession = require("cookie-session")
 import cookieParser = require("cookie-parser") // parse cookie header
 import passport = require("passport")
-import bodyParser = require("body-parser")
-import responseTime = require("response-time")
+
 import path = require("path")
 import compression = require("compression")
+import bodyParser = require("body-parser")
 const partialResponse = require("express-partial-response")
 require("./utils/passport-setup")
 require(`dotenv`).config()
-const stripe: Stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
 
 dataSource
   .initialize()
@@ -59,6 +64,15 @@ dataSource
     }
 
     const app = createExpressServer(routingControllersOptions)
+
+    app.use(bodyParser.urlencoded({ extended: false }))
+    app.use(bodyParser.json())
+
+    const s = initServer()
+
+    const router = s.router(contract, contractServerRouter)
+
+    createExpressEndpoints(contract, router, app)
 
     try {
       const apolloServer = new ApolloServer({
@@ -80,8 +94,6 @@ dataSource
     } catch (e: any) {
       myConsoleError(e.message)
     }
-
-    // app.use(cors());
 
     app.use(partialResponse())
     app.use(saveResponseTime())
@@ -143,6 +155,14 @@ dataSource
     app.use(passport.session())
 
     app.use(express.static("public"))
+
+    const openApiDocument = generateOpenApi(contract, {
+      info: {
+        title: "API",
+        version: "1.0.0",
+      },
+    })
+    app.use("/swagger", swaggerUi.serve, swaggerUi.setup(openApiDocument))
 
     // Automatically connect with /routes folder and subfolders
     myConsoleInfo("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB")
