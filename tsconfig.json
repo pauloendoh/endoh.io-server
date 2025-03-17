@@ -17,6 +17,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
 
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["node", "jest", "./src/types/types.d.ts"]
   }
 }

@@ -39,14 +39,6 @@ export class FlashnotesController {
     })
   }
 
-  @Get("/define/question")
-  async getAllQuestions(
-    @CurrentUser({ required: true })
-    user: User
-  ) {
-    return this.questionRepo.getAllQuestionsFromUserId(user.id)
-  }
-
   @Post("/define/question")
   async saveQuestion(
     @CurrentUser({ required: true })

@@ -1,4 +1,4 @@
-import * as swaggerUi from "swagger-ui-express"
+import swaggerUi from "swagger-ui-express"
 
 import { generateOpenApi } from "@ts-rest/open-api"
 
@@ -13,6 +13,7 @@ import { ApolloServer } from "apollo-server-express"
 import "reflect-metadata"
 import { Server } from "socket.io"
 
+import bodyParser from "body-parser"
 import {
   Action,
   createExpressServer,
@@ -44,7 +45,6 @@ import passport = require("passport")
 
 import path = require("path")
 import compression = require("compression")
-import bodyParser = require("body-parser")
 const partialResponse = require("express-partial-response")
 require("./utils/passport-setup")
 require(`dotenv`).config()
@@ -156,19 +156,20 @@ dataSource
 
     app.use(express.static("public"))
 
-    const openApiDocument = generateOpenApi(contract, {
+    const swaggerDocument = generateOpenApi(contract, {
       info: {
         title: "API",
         version: "1.0.0",
       },
     })
-    app.use("/swagger", swaggerUi.serve, swaggerUi.setup(openApiDocument))
+
+    app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
     // Automatically connect with /routes folder and subfolders
     myConsoleInfo("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB")
     myConsoleLoading("Setting up routes")
 
-    const port = process.env.PORT || 3000
+    const port = process.env.PORT ?? 3000
     myConsoleLoading("Trying to access port " + port)
 
     app.listen(port, async () => {

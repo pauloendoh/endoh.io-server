@@ -2,10 +2,11 @@
 
 import { initContract } from "@ts-rest/core"
 import { z } from "zod"
+import { questionSchema } from "../../entities/define/Question"
 
 const c = initContract()
 
-const PostSchema = z.object({
+const postSchema = z.object({
   id: z.string(),
   title: z.string(),
   body: z.string(),
@@ -16,7 +17,7 @@ export const questionC = c.router({
     method: "POST",
     path: "/posts",
     responses: {
-      201: PostSchema,
+      201: postSchema,
     },
     body: z.object({
       title: z.string(),
@@ -28,8 +29,18 @@ export const questionC = c.router({
     method: "GET",
     path: `/posts/:id`,
     responses: {
-      200: PostSchema.nullable(),
+      200: postSchema.nullable(),
     },
     summary: "Get a post by id",
+  },
+  getAllMyQuestions: {
+    method: "GET",
+    path: "/define/question",
+    headers: z.object({
+      "x-auth-token": z.string(),
+    }),
+    responses: {
+      200: z.array(questionSchema),
+    },
   },
 })

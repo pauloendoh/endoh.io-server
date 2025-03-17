@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
+import { z } from "zod"
 import { User } from "../User"
 import { Doc } from "./Doc"
 
@@ -64,3 +65,17 @@ export class Question {
   @UpdateDateColumn()
   updatedAt: string
 }
+
+export const questionSchema = z.object({
+  id: z.number(),
+  userId: z.number(),
+  docId: z.number(),
+  index: z.number(),
+  description: z.string(),
+  question: z.string(),
+  weight: z.number(),
+  testedTimes: z.number(),
+  toRefine: z.boolean(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})

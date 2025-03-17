@@ -1,14 +1,12 @@
-import { NextFunction, Response } from "express"
-import { verify as validateJwt } from "jsonwebtoken"
+import { NextFunction, Request, Response } from "express"
+import { verify } from "jsonwebtoken"
 import { dataSource } from "../dataSource"
 import { User } from "../entities/User"
 import { MyErrorsResponse } from "../utils/ErrorMessage"
-import { MyAuthRequest } from "../utils/MyAuthRequest"
 import { myEnvs } from "../utils/myEnvs"
 
-// PE 2/3
-export default function authMiddleware(
-  req: MyAuthRequest,
+export function authMiddleware(
+  req: Request,
   res: Response,
   next: NextFunction
 ) {
@@ -25,7 +23,7 @@ export default function authMiddleware(
 
   // Verify token
   try {
-    validateJwt(authToken, myEnvs.JWT_SECRET, async (error, decodedObj) => {
+    verify(authToken, myEnvs.JWT_SECRET, async (error, decodedObj) => {
       //if userId is string, it means it is getting the token from another cookie..
       if (error || !decodedObj || typeof decodedObj["userId"] === "string") {
         return res

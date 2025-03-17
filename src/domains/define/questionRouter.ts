@@ -1,4 +1,6 @@
 import { RouterImplementation } from "@ts-rest/express/src/lib/types"
+import { authMiddleware } from "../../middlewares/authMiddleware"
+import { getQuestionRepository } from "../../repositories/define/QuestionRepository"
 import { contract } from "../contract"
 
 const posts: { id: string; title: string; body: string }[] = []
@@ -23,5 +25,19 @@ export const questionRouter: RouterImplementation<
       status: 201,
       body: post,
     }
+  },
+  getAllMyQuestions: {
+    middleware: [authMiddleware],
+    handler: async ({ req }) => {
+      const questionRepo = getQuestionRepository()
+      const questions = await questionRepo.getAllQuestionsFromUserId(
+        req.user!.id
+      )
+
+      return {
+        status: 200,
+        body: questions,
+      }
+    },
   },
 }
