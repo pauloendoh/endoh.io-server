@@ -1,5 +1,5 @@
-import { DateTimeResolver } from "graphql-scalars";
-import { Field } from "type-graphql";
+import { DateTimeResolver } from "graphql-scalars"
+import { Field } from "type-graphql"
 import {
   Column,
   CreateDateColumn,
@@ -8,61 +8,72 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { FollowingTag } from "../feed/FollowingTag";
-import { Skill } from "../skillbase/Skill";
-import { User } from "../User";
-import { Resource } from "./Resource";
+} from "typeorm"
+import { FollowingTag } from "../feed/FollowingTag"
+import { Skill } from "../skillbase/Skill"
+import { User } from "../User"
+import { Resource } from "./Resource"
+
+enum SortingBy {
+  default = "default",
+  priority = "priority",
+}
 
 @Entity()
 export class Tag {
   @PrimaryGeneratedColumn()
   @Field()
-  id: number;
+  id: number
 
   @ManyToOne((type) => User, (user) => user.tags, { onDelete: "CASCADE" })
-  user: User;
+  user: User
 
   @Column()
   @Field()
-  userId: number;
+  userId: number
 
   @OneToMany((type) => Resource, (resource) => resource.tag)
-  resources: Resource[];
+  resources: Resource[]
 
   @OneToMany((type) => Skill, (skill) => skill.tag)
-  skills: Skill[];
+  skills: Skill[]
 
   @OneToMany((type) => FollowingTag, (tagFollower) => tagFollower.tag)
-  tagFollowers: FollowingTag[];
-
-  // --- end of relations
+  tagFollowers: FollowingTag[]
 
   @Column()
   @Field()
-  name: string;
+  name: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  position: number;
+  position: number
 
   @Column({ default: "#ffffff" })
   @Field()
-  color: string;
+  color: string
 
   @Column({ default: false })
   @Field()
-  isPrivate: boolean;
+  isPrivate: boolean
+
+  @Column({
+    type: "enum",
+    enum: SortingBy,
+    default: SortingBy.default,
+  })
+  @Field()
+  sortingBy: SortingBy
 
   @CreateDateColumn()
   @Field(() => DateTimeResolver)
-  createdAt: string;
+  createdAt: string
 
   @UpdateDateColumn()
   @Field(() => DateTimeResolver)
-  updatedAt: string;
+  updatedAt: string
 
   @Column({ type: "timestamp without time zone", nullable: true })
   @Field(() => DateTimeResolver, { nullable: true })
-  lastOpenedAt: string;
+  lastOpenedAt: string
 }

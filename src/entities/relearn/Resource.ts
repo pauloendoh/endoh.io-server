@@ -1,5 +1,5 @@
-import { DateTimeResolver } from "graphql-scalars";
-import { Field, ObjectType } from "type-graphql";
+import { DateTimeResolver } from "graphql-scalars"
+import { Field, ObjectType } from "type-graphql"
 import {
   Column,
   CreateDateColumn,
@@ -8,80 +8,87 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { User } from "../User";
-import { Tag } from "./Tag";
+} from "typeorm"
+import { User } from "../User"
+import { Tag } from "./Tag"
 
 @Entity()
 @ObjectType()
 export class Resource {
   @PrimaryGeneratedColumn()
   @Field()
-  id: number;
+  id: number
 
   @ManyToOne((type) => User, (user) => user.expenses, { onDelete: "CASCADE" })
-  user: User;
+  user: User
 
   @Column()
   @Field()
-  userId: number;
+  userId: number
 
   @Column({ default: "" })
   @Field()
-  title: string;
+  title: string
 
   @Column({ default: "" })
   @Field()
-  url: string;
+  url: string
 
   @Column({ default: "" })
   @Field()
-  thumbnail: string;
+  thumbnail: string
 
   @Column({ default: "00:00h" })
   @Field()
-  estimatedTime: string;
+  estimatedTime: string
 
   @Column({ default: "" })
   @Field()
-  dueDate: string;
+  dueDate: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  rating: number;
+  rating: number
+
+  @Column({
+    type: "decimal",
+    nullable: true,
+  })
+  @Field({ nullable: true })
+  priority: number
 
   @Column({ default: "" })
   @Field()
-  completedAt: string;
+  completedAt: string
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  position: number;
+  position: number
 
   @Column({ default: "" })
   @Field()
-  publicReview: string;
+  publicReview: string
 
   @Column({ default: "" })
   @Field()
-  privateNote: string;
+  privateNote: string
 
   @CreateDateColumn()
   @Field(() => DateTimeResolver)
-  createdAt: string;
+  createdAt: string
 
   @UpdateDateColumn()
   @Field(() => DateTimeResolver)
-  updatedAt: string;
+  updatedAt: string
 
   @ManyToOne((type) => Tag, (tag) => tag.resources, { onDelete: "CASCADE" })
-  tag: Tag;
+  tag: Tag
 
   @Column({ nullable: true })
   @Field({ nullable: true })
-  tagId: number;
+  tagId: number
 
   @Column("tsvector", { select: false, nullable: true })
   @Index("document_weights_idx")
-  document_with_weights: any;
+  document_with_weights: any
 }
