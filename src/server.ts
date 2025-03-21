@@ -22,7 +22,7 @@ import {
 import { buildSchema } from "type-graphql"
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS"
 import { dataSource } from "./dataSource"
-import { contract, contractServerRouter } from "./domains/contract"
+import { contractServerRouter, mainContract } from "./domains/mainContract"
 import saveResponseTime from "./middlewares/saveResponseTime"
 import { LearningResolver } from "./resolvers/learning-diary/LearningResolver"
 import { ResourceResolver } from "./resolvers/ResourceResolver"
@@ -70,9 +70,9 @@ dataSource
 
     const s = initServer()
 
-    const router = s.router(contract, contractServerRouter)
+    const router = s.router(mainContract, contractServerRouter)
 
-    createExpressEndpoints(contract, router, app)
+    createExpressEndpoints(mainContract, router, app)
 
     try {
       const apolloServer = new ApolloServer({
@@ -156,7 +156,7 @@ dataSource
 
     app.use(express.static("public"))
 
-    const swaggerDocument = generateOpenApi(contract, {
+    const swaggerDocument = generateOpenApi(mainContract, {
       info: {
         title: "API",
         version: "1.0.0",

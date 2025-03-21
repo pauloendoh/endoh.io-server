@@ -7,6 +7,8 @@ export const myEnvs = {
   IS_DOCKER: envToBoolean("IS_DOCKER"),
 
   RIOT_API_KEY: envToStringOrThrow(process.env.RIOT_API_KEY),
+
+  OPEN_AI_KEY: envToStringOrThrow(process.env.OPEN_AI_KEY),
 }
 
 function envToStringOrThrow(env: string | undefined): string {

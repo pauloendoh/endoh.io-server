@@ -63,6 +63,7 @@
     "node-fetch": "^3.3.2",
     "node-notifier": "^10.0.1",
     "nodemailer": "^6.9.16",
+    "openai": "^4.89.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.13.1",
