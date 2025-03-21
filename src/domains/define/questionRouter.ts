@@ -42,10 +42,10 @@ export const questionRouter: RouterImplementation<typeof questionContract> = {
       const completion = await openAi.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
-          // {
-          //   role: "system",
-          //   content: "You are a helpful assistant.",
-          // },
+          {
+            role: "system",
+            content: "Be concise. No answers longer than 6 sentences.",
+          },
           {
             role: "user",
             content: question,
