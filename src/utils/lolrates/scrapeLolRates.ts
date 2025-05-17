@@ -10,6 +10,9 @@ import { scrapeUgg } from "./scrapeLolRates/scrapeUgg"
 config()
 
 export async function scrapeLolRates() {
+  if (!myEnvs.enableScrapeLolRates) {
+    return
+  }
   try {
     if (myEnvs.IS_DOCKER) {
       return

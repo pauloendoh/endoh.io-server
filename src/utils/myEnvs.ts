@@ -9,6 +9,8 @@ export const myEnvs = {
   RIOT_API_KEY: envToStringOrThrow(process.env.RIOT_API_KEY),
 
   OPEN_AI_KEY: envToStringOrThrow(process.env.OPEN_AI_KEY),
+
+  enableScrapeLolRates: envToBoolean("ENABLE_SCRAPE_LOL_RATES"),
 }
 
 function envToStringOrThrow(env: string | undefined): string {
