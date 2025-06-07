@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-ECHO "[HUSKY] npx tsc"
+echo "[HUSKY] npx tsc"
 npx tsc --noEmit
