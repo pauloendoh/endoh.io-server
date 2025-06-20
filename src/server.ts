@@ -1,3 +1,5 @@
+import yaml from "yaml"
+
 import swaggerUi from "swagger-ui-express"
 
 import { generateOpenApi } from "@ts-rest/open-api"
@@ -63,7 +65,9 @@ dataSource
       },
     }
 
-    const app = createExpressServer(routingControllersOptions)
+    const app = createExpressServer(
+      routingControllersOptions
+    ) as express.Application
 
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())
@@ -89,7 +93,7 @@ dataSource
       })
 
       await apolloServer.start()
-      apolloServer.applyMiddleware({ app, path: "/graphql" })
+      apolloServer.applyMiddleware({ app: app as any, path: "/graphql" })
       myConsoleSuccess("Apollo server started")
     } catch (e: any) {
       myConsoleError(e.message)
@@ -164,6 +168,11 @@ dataSource
     })
 
     app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+    app.get("/swagger.yaml", (req, res) => {
+      res.setHeader("Content-Type", "text/yaml")
+      res.send(yaml.stringify(swaggerDocument))
+    })
 
     // Automatically connect with /routes folder and subfolders
     myConsoleInfo("Memory usage: " + memoryUsage().rss / 1024 / 1024 + "MB")
