@@ -5,4 +5,6 @@ export const redisKeys = {
 
   weatherForecast: (params: { lat: number; lon: number }) =>
     `/weatherForecast/${params.lat},${params.lon}`,
+
+  scrapedLolRates: "/scrapedLolRates",
 } as const

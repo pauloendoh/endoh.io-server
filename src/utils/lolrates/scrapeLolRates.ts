@@ -2,6 +2,8 @@ import { config } from "dotenv"
 import pup from "puppeteer"
 import { myConsoleError } from "../myConsoleError"
 import { myEnvs } from "../myEnvs"
+import myRedis from "../redis/myRedis"
+import { redisKeys } from "../redis/redisKeys"
 import { scrapeAram } from "./scrapeLolRates/scrapeAram"
 import { scrapeChampions } from "./scrapeLolRates/scrapeChampions"
 import { scrapeLolGraphs } from "./scrapeLolRates/scrapeLolGraphs"
@@ -10,9 +12,15 @@ import { scrapeUgg } from "./scrapeLolRates/scrapeUgg"
 config()
 
 export async function scrapeLolRates() {
-  if (!myEnvs.enableScrapeLolRates) {
+  const alreadyScrapedToday = await myRedis.get(redisKeys.scrapedLolRates)
+  if (alreadyScrapedToday) {
+    myConsoleError("Already scraped lol rates today, skipping...")
     return
   }
+  // if (!myEnvs.enableScrapeLolRates) {
+  //   return
+  // }
+
   try {
     if (myEnvs.IS_DOCKER) {
       return
@@ -37,6 +45,8 @@ export async function scrapeLolRates() {
       await scrapeOpgg(page)
       await scrapeLolGraphs(page)
       await scrapeUgg(page)
+
+      await myRedis.set(redisKeys.scrapedLolRates, "true", "EX", 60 * 60 * 24) // 24 hours
     } catch (err) {
       myConsoleError(err.message)
     }
