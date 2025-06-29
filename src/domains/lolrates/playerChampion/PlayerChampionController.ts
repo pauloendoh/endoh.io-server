@@ -41,6 +41,7 @@ export class PlayerChampionController {
       const saved = await this.playerChampionRepo.save({
         ...found,
         skillLevel: sentPlayerChampion.skillLevel,
+        notes: sentPlayerChampion.notes,
       })
       return saved
     }

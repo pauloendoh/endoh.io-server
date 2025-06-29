@@ -4,50 +4,55 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
-import { RoleTypes } from "../../types/domain/lolates/RoleTypes";
-import { SkillLevelTypes } from "../../types/domain/lolates/SkillLevelTypes";
-import { User } from "../User";
-import { Champion } from "./Champion";
-import { Player } from "./Player";
+  UpdateDateColumn,
+} from "typeorm"
+import { RoleTypes } from "../../types/domain/lolates/RoleTypes"
+import { SkillLevelTypes } from "../../types/domain/lolates/SkillLevelTypes"
+import { User } from "../User"
+import { Champion } from "./Champion"
+import { Player } from "./Player"
 
 @Entity()
 export class PlayerChampion {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @ManyToOne((type) => User, (user) => user.players, { onDelete: "CASCADE" })
-  user: User;
+  user: User
 
   @Column()
-  userId: number;
+  userId: number
 
   @ManyToOne((type) => Player, (player) => player.champions, {
     onDelete: "CASCADE",
   })
-  player: Player;
+  player: Player
 
   @Column()
-  playerId: number;
+  playerId: number
 
   @ManyToOne((type) => Champion, (champion) => champion.playerChampions, {
     onDelete: "CASCADE",
   })
-  champion: Champion;
+  champion: Champion
 
   @Column()
-  championId: number;
+  championId: number
 
   @Column()
-  role: RoleTypes;
+  role: RoleTypes
 
   @Column()
-  skillLevel: SkillLevelTypes;
+  skillLevel: SkillLevelTypes
+
+  @Column({
+    default: "",
+  })
+  notes: string
 
   @CreateDateColumn()
-  createdAt: string;
+  createdAt: string
 
   @UpdateDateColumn()
-  updatedAt: string;
+  updatedAt: string
 }
