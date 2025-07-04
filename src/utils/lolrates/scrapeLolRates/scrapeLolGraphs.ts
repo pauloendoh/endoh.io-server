@@ -11,64 +11,81 @@ export async function scrapeLolGraphs(page: Page) {
 
     await page.goto("http://www.leagueofgraphs.com/champions/builds/by-winrate")
 
-    await page.waitForSelector(".data_table.with_sortable_column tbody")
+    await page.waitForSelector("td.tier")
 
     const results = await page.evaluate(async () => {
-      function delay(time) {
+      function sleep(millis: number) {
         return new Promise(function (resolve) {
-          setTimeout(resolve, time)
+          setTimeout(resolve, millis)
         })
       }
 
-      const roles: { dataFilterFixed: string; role: RoleTypes }[] = [
+      const roles: { href: string; role: RoleTypes }[] = [
         {
-          dataFilterFixed: "roles=top",
+          href: "/champions/tier-list/top ",
           role: "TOP",
         },
         {
-          dataFilterFixed: "roles=jungle",
+          href: "/champions/tier-list/jungle ",
           role: "JUNGLE",
         },
         {
-          dataFilterFixed: "roles=middle",
+          href: "/champions/tier-list/middle ",
           role: "MID",
         },
         {
-          dataFilterFixed: "roles=adc",
+          href: "/champions/tier-list/adc ",
           role: "BOT",
         },
         {
-          dataFilterFixed: "roles=support",
+          href: "/champions/tier-list/support ",
           role: "SUP",
         },
       ]
 
       const results: IOpggResult[] = []
 
-      for (const { dataFilterFixed, role } of roles) {
-        const roleButton = document.querySelector(
-          `[data-filters-fixed="${dataFilterFixed}"]`
-        ) as HTMLElement
+      for (const { href, role } of roles) {
+        const defaultAnchor = document.querySelector(
+          'a[href="/champions/tier-list "]'
+        ) as HTMLAnchorElement | null
 
-        roleButton.click()
-        await delay(2000)
+        if (!defaultAnchor) {
+          continue
+        }
+        defaultAnchor.click()
+        await sleep(1000)
 
-        const trs = Array.from(
-          document.querySelectorAll(".data_table.with_sortable_column tbody tr")
-        )
+        const roleAnchor = document.querySelector(
+          `a[href="${href}"]`
+        ) as HTMLAnchorElement | null
+        if (!roleAnchor) {
+          continue
+        }
+
+        roleAnchor.click()
+        await sleep(1000)
+
+        const trs = Array.from(document.querySelectorAll("td .tier"))
+          .map((td) => td.closest("tr"))
+          .filter((tr) => !!tr)
+
         for (const tr of trs) {
-          if (tr.textContent?.includes("KDA") || !tr.querySelector(".name"))
-            continue
-
-          const tds = tr.querySelectorAll("td")
           const championName =
-            tds[1]?.querySelector(".name")?.textContent?.trim() || ""
-          const pickRate =
-            tds[2].querySelector(".progressBarTxt")?.textContent || ""
-          const winRate =
-            tds[3].querySelector(".progressBarTxt")?.textContent || ""
+            tr?.querySelector("span.name")?.textContent?.trim() || ""
 
-          results.push({ role, championName, pickRate, winRate })
+          const progressBarTexts = Array.from(
+            tr?.querySelectorAll("td .progressBarTxt") || []
+          ) // eg: ["12.5%", "50.3%"]
+
+          // index 0 is pick rate, index 1 is win rate
+          const pickRate = progressBarTexts[0]?.textContent?.trim()
+
+          const winRate = progressBarTexts[1]?.textContent?.trim()
+
+          if (championName && pickRate && winRate) {
+            results.push({ role, championName, pickRate, winRate })
+          }
         }
       }
 
