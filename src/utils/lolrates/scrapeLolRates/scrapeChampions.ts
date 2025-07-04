@@ -24,11 +24,11 @@ export async function scrapeChampions(page: Page) {
     const champions: IChampion[] = []
 
     const championsLinks = Array.from(
-      document.querySelectorAll(".champion-link")
+      document.querySelectorAll("a.group.w-full.mx-auto")
     )
 
     for (const championLink of championsLinks) {
-      const name = championLink.querySelector(".champion-name")?.textContent
+      const name = championLink.querySelector("img")?.getAttribute("alt")
       const iconUrl = championLink.querySelector("img")?.getAttribute("src")
 
       if (name && iconUrl) {
