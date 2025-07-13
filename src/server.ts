@@ -160,12 +160,39 @@ dataSource
 
     app.use(express.static("public"))
 
-    const swaggerDocument = generateOpenApi(mainContract, {
-      info: {
-        title: "API",
-        version: "1.0.0",
+    const swaggerDocument = generateOpenApi(
+      mainContract,
+      {
+        info: {
+          title: "My API",
+          version: "1.0.0",
+        },
+        components: {
+          securitySchemes: {
+            bearerAuth: {
+              type: "http",
+              scheme: "bearer",
+            },
+          },
+        },
       },
-    })
+      {
+        setOperationId: true,
+        operationMapper: (operation, appRoute) => ({
+          ...operation,
+          // ...(hasCustomTags(appRoute.metadata)
+          //   ? {
+          //       tags: appRoute.metadata.openApiTags,
+          //     }
+          //   : {}),
+          // ...(hasSecurity(appRoute.metadata)
+          //   ? {
+          //       security: appRoute.metadata.openApiSecurity,
+          //     }
+          //   : {}),
+        }),
+      }
+    )
 
     app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 

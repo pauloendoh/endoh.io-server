@@ -17,6 +17,7 @@ export const questionContract = c.router({
       200: z.array(questionSchema),
     },
   },
+
   askGpt: {
     method: "GET",
     path: "/ask-gpt",

@@ -21,6 +21,7 @@ export const questionRouter: RouterImplementation<typeof questionContract> = {
       }
     },
   },
+
   askGpt: {
     middleware: [userRequiredMiddleware],
     handler: async ({ req }) => {
