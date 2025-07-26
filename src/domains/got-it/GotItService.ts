@@ -1,8 +1,8 @@
 import { UserGotIt } from "../../entities/UserGotIt"
-import { gotItRepository2 } from "./gotItRepository2"
+import { gotItRepository } from "./gotItRepository"
 
 export class GotItService {
-  constructor(private gotItRepo = gotItRepository2) {}
+  constructor(private gotItRepo = gotItRepository) {}
 
   async findOrCreateUserGotIt(userId: number) {
     const gotIt = await this.gotItRepo.findOne({

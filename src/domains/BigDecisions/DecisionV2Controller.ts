@@ -8,16 +8,10 @@ import {
   Param,
   Post,
 } from "routing-controllers"
-import { dataSource } from "../../dataSource"
 import { Decision } from "../../entities/BigDecisions/Decision"
-import { DecisionTableItem } from "../../entities/BigDecisions/DecisionTableItem"
 import { User } from "../../entities/User"
 import DecisionRepository from "../../repositories/BigDecisions/DecisionRepository"
-import DecisionTableRepository from "../../repositories/BigDecisions/DecisionTableRepository"
 import { myConsoleError } from "../../utils/myConsoleError"
-
-const repo = DecisionTableRepository
-const itemRepo = dataSource.getRepository(DecisionTableItem)
 
 const decisionRepo = DecisionRepository
 

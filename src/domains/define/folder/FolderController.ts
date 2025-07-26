@@ -20,8 +20,7 @@ import { FolderService } from "./FolderService"
 export class FolderController {
   constructor(
     private folderRepo = dataSource.getRepository(Folder),
-    private folderTreeRepo = dataSource.getTreeRepository(Folder),
-    private folderService = new FolderService()
+    private folderTreeRepo = dataSource.getTreeRepository(Folder)
   ) {}
 
   @Post("/playground/folders")
