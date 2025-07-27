@@ -1,10 +1,10 @@
-import { questionContract } from "./define/questionContract"
-import { DocController } from "./doc/DocController"
 import { DocService } from "./doc/DocService"
+import { gotItContract } from "./got-it/got-it.contract"
+import { gotItController } from "./got-it/got-it.controller"
 import { RecurrentLearningRepository } from "./learning-diary/recurrent-learning/RecurrentLearningRepository"
 
 const repo = RecurrentLearningRepository
 const service = new DocService()
-const controller = new DocController()
 
-const contract = questionContract
+const contract = gotItContract
+const controller = gotItController

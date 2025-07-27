@@ -1,4 +1,3 @@
-import { UserGotIt } from "../../entities/UserGotIt"
 import { gotItRepository } from "./gotItRepository"
 
 export class GotItService {
@@ -20,9 +19,17 @@ export class GotItService {
     return this.gotItRepo.save({ userId })
   }
 
-  async updateUserGotIt(dto: UserGotIt, userId: number) {
-    dto.userId = userId
+  async updateUserGotIt(
+    userId: number,
+    updateData: {
+      createTag?: boolean
+    }
+  ) {
+    const found = await this.findOrCreateUserGotIt(userId)
 
-    return this.gotItRepo.save(dto)
+    return this.gotItRepo.save({
+      id: found.id,
+      createTag: updateData.createTag,
+    })
   }
 }

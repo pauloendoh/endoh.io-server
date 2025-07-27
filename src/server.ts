@@ -24,7 +24,7 @@ import {
 import { buildSchema } from "type-graphql"
 import { PASSPORT_KEYS } from "./consts/PASSPORT_KEYS"
 import { dataSource } from "./dataSource"
-import { contractServerRouter, mainContract } from "./domains/mainContract"
+import { controllers, mainContract } from "./domains/mainContract"
 import saveResponseTime from "./middlewares/saveResponseTime"
 import { LearningResolver } from "./resolvers/learning-diary/LearningResolver"
 import { ResourceResolver } from "./resolvers/ResourceResolver"
@@ -74,7 +74,7 @@ dataSource
 
     const s = initServer()
 
-    const router = s.router(mainContract, contractServerRouter)
+    const router = s.router(mainContract, controllers)
 
     createExpressEndpoints(mainContract, router, app)
 
