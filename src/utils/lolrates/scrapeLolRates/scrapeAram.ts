@@ -33,7 +33,7 @@ export async function scrapeAram(page: Page) {
           const championTd = tds[1]
           const championName =
             championTd?.querySelector("strong")?.textContent ?? ""
-          const winRate = tds[3].innerText
+          const winRate = tds[3]?.innerText || ""
 
           roleResults.push({
             championName,
