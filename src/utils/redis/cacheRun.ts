@@ -7,6 +7,7 @@ export async function cacheRun<T>(
 ): Promise<T> {
   const cachedValue = await myRedis.get(key)
   if (cachedValue) {
+    console.log(`Cache hit for key: ${key}`)
     return JSON.parse(cachedValue) as T
   }
 
