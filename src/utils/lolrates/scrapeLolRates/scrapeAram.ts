@@ -10,7 +10,7 @@ export type AramChampionData = {
 }
 
 export async function scrapeAram(page: Page) {
-  myConsoleSuccess("Starting scrapeAram")
+  myConsoleSuccess("[START] scrapeAram")
   try {
     let aramResults: AramChampionData[] = []
 
@@ -46,10 +46,10 @@ export async function scrapeAram(page: Page) {
     )
 
     const saved = await LolRateRepository.saveAramScrapedChampion(aramResults)
-    myConsoleSuccess(`OP GG OK: ${aramResults.length} results`)
+    myConsoleSuccess(`[END] scrapeAram: ${aramResults.length} results`)
 
     return
   } catch (err) {
-    myConsoleError(err.message)
+    myConsoleError(`[ERROR] scrapeAram: ${err.message}`)
   }
 }

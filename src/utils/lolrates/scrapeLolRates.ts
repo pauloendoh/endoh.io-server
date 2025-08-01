@@ -2,6 +2,7 @@ import { config } from "dotenv"
 import pup from "puppeteer"
 import { myConsoleError } from "../myConsoleError"
 import { myEnvs } from "../myEnvs"
+import { cacheRun } from "../redis/cacheRun"
 import myRedis from "../redis/myRedis"
 import { redisKeys } from "../redis/redisKeys"
 import { scrapeAram } from "./scrapeLolRates/scrapeAram"
@@ -17,9 +18,6 @@ export async function scrapeLolRates() {
     myConsoleError("Already scraped lol rates today, skipping...")
     return
   }
-  // if (!myEnvs.enableScrapeLolRates) {
-  //   return
-  // }
 
   try {
     if (myEnvs.IS_DOCKER) {
@@ -38,15 +36,52 @@ export async function scrapeLolRates() {
       )
       await page.setViewport({ width: 1000, height: 1000 })
 
-      await scrapeChampions(page)
+      await cacheRun(
+        redisKeys.scrapedChampionsAt,
+        async () => {
+          await scrapeChampions(page)
+          return new Date().toISOString()
+        },
+        60 * 60 * 24
+      )
 
-      await scrapeAram(page)
+      await cacheRun(
+        redisKeys.scrapedAramAt,
+        async () => {
+          await scrapeAram(page)
+          return new Date().toISOString()
+        },
+        60 * 60 * 24
+      )
 
-      await scrapeOpgg(page)
-      await scrapeLolGraphs(page)
-      await scrapeUgg(page)
+      await cacheRun(
+        redisKeys.scrapedOpggAt,
+        async () => {
+          await scrapeOpgg(page)
+          return new Date().toISOString()
+        },
+        60 * 60 * 24
+      )
 
-      await myRedis.set(redisKeys.scrapedLolRates, "true", "EX", 60 * 60 * 24) // 24 hours
+      await cacheRun(
+        redisKeys.scrapedLolGraphsAt,
+        async () => {
+          await scrapeLolGraphs(page)
+          return new Date().toISOString()
+        },
+        60 * 60 * 24
+      )
+
+      await cacheRun(
+        redisKeys.scrapedUggAt,
+        async () => {
+          await scrapeUgg(page)
+          return new Date().toISOString()
+        },
+        60 * 60 * 24
+      )
+
+      await myRedis.set(redisKeys.scrapedLolRates, "true", "EX", 60 * 60 * 24)
     } catch (err) {
       myConsoleError(err.message)
     }

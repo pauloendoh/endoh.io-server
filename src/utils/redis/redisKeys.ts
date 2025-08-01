@@ -7,4 +7,9 @@ export const redisKeys = {
     `/weatherForecast/${params.lat},${params.lon}`,
 
   scrapedLolRates: "/scrapedLolRates",
+  scrapedChampionsAt: "/scrapedChampionsAt",
+  scrapedAramAt: "/scrapedAramAt",
+  scrapedOpggAt: "/scrapedOpggAt",
+  scrapedLolGraphsAt: "/scrapedLolGraphsAt",
+  scrapedUggAt: "/scrapedUggAt",
 } as const
