@@ -20,7 +20,7 @@ export async function scrapeAram(page: Page) {
     })
 
     await page.waitForSelector("tbody")
-    await sleep(500) // waiting for champions sort
+    await sleep(5000) // waiting for champions sort
 
     aramResults = aramResults.concat(
       await page.evaluate(() => {
