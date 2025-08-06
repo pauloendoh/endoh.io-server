@@ -1,4 +1,6 @@
-export function myConsoleSuccess(text: any) {
+type ConsoleLogParams = Parameters<typeof console.log>
+
+export function myConsoleSuccess(...params: ConsoleLogParams) {
   // get hh:mm:ss with applied timezone
   const timeOffset = new Date().getTimezoneOffset() * 60 * 1000
 
@@ -8,10 +10,7 @@ export function myConsoleSuccess(text: any) {
 
   const pre = `✅ [${date}] `
 
-  if (typeof text === "string") {
-    console.log(pre + text)
-  } else {
-    console.log(pre + JSON.stringify(text))
-  }
+  console.log(pre, ...params)
+
   return
 }

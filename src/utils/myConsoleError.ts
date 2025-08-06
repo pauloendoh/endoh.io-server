@@ -1,8 +1,14 @@
-export function myConsoleError(text: any) {
-  if (typeof text === "string") {
-    console.log("❌", text)
-  } else {
-    console.log("❌", JSON.stringify(text))
-  }
+export function myConsoleError(...params: Parameters<typeof console.log>) {
+  console.log("❌", params)
+
+  return
+}
+
+export function myConsoleErrorV2(
+  namedObject: { name: string },
+  ...params: Parameters<typeof console.log>
+) {
+  console.log(`❌ [${namedObject.name}] `, params)
+
   return
 }

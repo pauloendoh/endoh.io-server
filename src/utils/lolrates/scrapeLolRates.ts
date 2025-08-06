@@ -88,6 +88,6 @@ export async function scrapeLolRates() {
 
     await browser.close()
   } catch (err) {
-    myConsoleError(err.message)
+    myConsoleError(`[${scrapeLolRates.name}] ERROR - ${err.message}`)
   }
 }

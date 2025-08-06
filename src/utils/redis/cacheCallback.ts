@@ -2,7 +2,7 @@ import myRedis from "./myRedis"
 
 export async function cacheCallback<T>(
   cacheKey: string,
-  run: () => Promise<T>,
+  callback: () => Promise<T>,
   ttlInSeconds = 60 * 60
 ): Promise<T> {
   const cachedValue = await myRedis.get(cacheKey)
@@ -11,7 +11,7 @@ export async function cacheCallback<T>(
     return JSON.parse(cachedValue) as T
   }
 
-  const result = await run()
+  const result = await callback()
 
   await myRedis.set(cacheKey, JSON.stringify(result), "EX", ttlInSeconds)
 

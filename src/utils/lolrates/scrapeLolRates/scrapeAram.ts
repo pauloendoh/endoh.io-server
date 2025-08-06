@@ -1,6 +1,6 @@
 import { Page } from "puppeteer"
 import LolRateRepository from "../../../repositories/lolrates/LolRateRepository"
-import { myConsoleError } from "../../myConsoleError"
+import { myConsoleErrorV2 } from "../../myConsoleError"
 import { myConsoleSuccess } from "../../myConsoleSuccess"
 import { sleep } from "../../sleep"
 
@@ -46,10 +46,17 @@ export async function scrapeAram(page: Page) {
     )
 
     await LolRateRepository.saveAramScrapedChampion(aramResults)
-    myConsoleSuccess(`[END] scrapeAram: ${aramResults.length} results`)
+    myConsoleSuccess(
+      `[${scrapeAram.name}] END - ${aramResults.length} results; `,
+      aramResults
+    )
+    myConsoleSuccess(
+      `[${scrapeAram.name}] JSON.stringify`,
+      JSON.stringify(aramResults, null, 2)
+    )
 
     return
   } catch (err) {
-    myConsoleError(`[ERROR] scrapeAram: ${err.message}`)
+    myConsoleErrorV2(scrapeAram, `[ERROR] ${err.message}`)
   }
 }
