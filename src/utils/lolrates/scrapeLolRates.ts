@@ -2,7 +2,7 @@ import { config } from "dotenv"
 import pup from "puppeteer"
 import { myConsoleError } from "../myConsoleError"
 import { myEnvs } from "../myEnvs"
-import { cacheRun } from "../redis/cacheRun"
+import { cacheCallback } from "../redis/cacheCallback"
 import myRedis from "../redis/myRedis"
 import { redisKeys } from "../redis/redisKeys"
 import { scrapeAram } from "./scrapeLolRates/scrapeAram"
@@ -36,7 +36,7 @@ export async function scrapeLolRates() {
       )
       await page.setViewport({ width: 1000, height: 1000 })
 
-      await cacheRun(
+      await cacheCallback(
         redisKeys.scrapedChampionsAt,
         async () => {
           await scrapeChampions(page)
@@ -45,7 +45,7 @@ export async function scrapeLolRates() {
         60 * 60 * 24
       )
 
-      await cacheRun(
+      await cacheCallback(
         redisKeys.scrapedAramAt,
         async () => {
           await scrapeAram(page)
@@ -54,7 +54,7 @@ export async function scrapeLolRates() {
         60 * 60 * 24
       )
 
-      await cacheRun(
+      await cacheCallback(
         redisKeys.scrapedOpggAt,
         async () => {
           await scrapeOpgg(page)
@@ -63,7 +63,7 @@ export async function scrapeLolRates() {
         60 * 60 * 24
       )
 
-      await cacheRun(
+      await cacheCallback(
         redisKeys.scrapedLolGraphsAt,
         async () => {
           await scrapeLolGraphs(page)
@@ -72,7 +72,7 @@ export async function scrapeLolRates() {
         60 * 60 * 24
       )
 
-      await cacheRun(
+      await cacheCallback(
         redisKeys.scrapedUggAt,
         async () => {
           await scrapeUgg(page)

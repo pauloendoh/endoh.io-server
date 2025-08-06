@@ -45,7 +45,7 @@ export async function scrapeAram(page: Page) {
       })
     )
 
-    const saved = await LolRateRepository.saveAramScrapedChampion(aramResults)
+    await LolRateRepository.saveAramScrapedChampion(aramResults)
     myConsoleSuccess(`[END] scrapeAram: ${aramResults.length} results`)
 
     return

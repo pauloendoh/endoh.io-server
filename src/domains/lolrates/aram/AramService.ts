@@ -1,19 +1,20 @@
 import { UserAramChampion } from "../../../entities/LolRates/UserAramChampion"
 import { AramRepository } from "./AramRepository"
-import { _CacheLolGraphAramStats } from "./use-case/_CacheLolGraphAramStats/_CacheLolGraphAramStats"
+import { $ScrapePlayerAramStats } from "./use-case/$ScrapePlayerAramStats/$ScrapePlayerAramStats"
 
 export class AramService {
   constructor(
     private aramRepository = new AramRepository(),
-    private _cacheLolGraphAramStats = new _CacheLolGraphAramStats()
+    private $scrapePlayerAramStats = new $ScrapePlayerAramStats()
   ) {}
 
-  async findAramWinRates(lolgraphsUrl?: string) {
+  // PE 1/3 - these methods names are not very explicit
+  async findAramWinRates(playerLolGraphsUrl?: string) {
     let generalAramWinRates = await this.aramRepository.findAramWinRates()
 
-    if (lolgraphsUrl) {
-      const lolGraphsData = await this._cacheLolGraphAramStats.exec(
-        lolgraphsUrl
+    if (playerLolGraphsUrl) {
+      const lolGraphsData = await this.$scrapePlayerAramStats.exec(
+        playerLolGraphsUrl
       )
       generalAramWinRates = generalAramWinRates.map((general) => {
         const myAramChampion = lolGraphsData.find(

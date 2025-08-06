@@ -1,4 +1,3 @@
-import actualAxios from "axios"
 import { myEnvs } from "../../../../../utils/myEnvs"
 import pup from "../../../../../utils/puppeteer/pup"
 import myRedis from "../../../../../utils/redis/myRedis"
@@ -10,24 +9,26 @@ type MyLolGraphAramStats = {
   winRate: number
 }
 
-export class _CacheLolGraphAramStats {
-  constructor(private redis = myRedis, private axios = actualAxios.create()) {}
+export class $ScrapePlayerAramStats {
+  constructor(private redis = myRedis) {}
 
-  async exec(lolgraphsUrl: string): Promise<MyLolGraphAramStats[]> {
-    const cached = await this.redis.get(redisKeys.lolgraphsUrl(lolgraphsUrl))
+  async exec(playerLolGraphsAramUrl: string): Promise<MyLolGraphAramStats[]> {
+    const cached = await this.redis.get(
+      redisKeys.lolgraphsUrl(playerLolGraphsAramUrl)
+    )
     if (cached) {
       const parsed = JSON.parse(cached) as {
         data: MyLolGraphAramStats[]
         expiresAt: number
       }
       if (Date.now() > parsed.expiresAt) {
-        this.#scrapeAndSaveData(lolgraphsUrl)
+        this.#scrapeAndSaveData(playerLolGraphsAramUrl)
       }
 
       return parsed.data
     }
 
-    return this.#scrapeAndSaveData(lolgraphsUrl)
+    return this.#scrapeAndSaveData(playerLolGraphsAramUrl)
   }
 
   async #scrapeAndSaveData(lolgraphsUrl: string) {
@@ -86,8 +87,7 @@ export class _CacheLolGraphAramStats {
         expiresAt: Date.now() + 60 * 60 * 24, // ONE DAY
       }),
       "EX",
-
-      60 * 60 * 24 * 30 // ONE MONTH
+      60 * 60 * 24 // ONE DAY
     )
 
     return data
