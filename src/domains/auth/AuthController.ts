@@ -1,6 +1,6 @@
 import { compare, genSalt, hash } from "bcryptjs"
 
-import { Response } from "express"
+import type { Response } from "express"
 import passport from "passport"
 import {
   BadRequestError,

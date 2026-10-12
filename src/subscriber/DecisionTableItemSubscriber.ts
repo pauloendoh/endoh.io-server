@@ -1,8 +1,8 @@
 import { NotFoundError } from "routing-controllers"
 import {
-  EntitySubscriberInterface,
+  type EntitySubscriberInterface,
   EventSubscriber,
-  InsertEvent,
+  type InsertEvent,
 } from "typeorm"
 import { DecisionTable } from "../entities/BigDecisions/DecisionTable"
 import { DecisionTableItem } from "../entities/BigDecisions/DecisionTableItem"
