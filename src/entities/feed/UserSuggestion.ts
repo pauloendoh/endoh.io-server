@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, type Relation } from 'typeorm';
 import { User } from '../User';
 
 
@@ -10,14 +10,14 @@ export class UserSuggestion {
 
     @ManyToOne(type => User, user => user.userSuggestions, { onDelete: "CASCADE" })
     @JoinColumn()
-    user: User
+    user: Relation<User>
 
     @Column()
     userId: number
 
     @ManyToOne(type => User, user => user.suggestedBy, { onDelete: "CASCADE" })
     @JoinColumn()
-    suggestedUser: User
+    suggestedUser: Relation<User>
 
     @Column()
     suggestedUserId: number

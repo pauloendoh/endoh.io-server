@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm";
 import { User } from "../User";
 import Category from "./Category";
@@ -16,7 +17,7 @@ export class Expense {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.expenses, { onDelete: "CASCADE" })
-  user: User;
+  user: Relation<User>;
 
   @Column()
   userId: number;
@@ -43,7 +44,7 @@ export class Expense {
     nullable: true,
     onDelete: "SET NULL",
   })
-  place: Place;
+  place: Relation<Place>;
 
   @Column({ nullable: true })
   placeId: number;
@@ -52,7 +53,7 @@ export class Expense {
     nullable: true,
     onDelete: "SET NULL",
   })
-  category: Category;
+  category: Relation<Category>;
 
   @Column({ nullable: true })
   categoryId: number;

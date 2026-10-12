@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from "typeorm"
+import { Column, Entity, OneToOne, type Relation } from "typeorm"
 import { CreatedEntity } from "../../types/CreatedEntity"
 import { User } from "../User"
 
@@ -7,7 +7,7 @@ export class MalUser extends CreatedEntity {
   @OneToOne((type) => User, (user) => user.malUser, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: Relation<User>
 
   @Column({ default: "" })
   username: string

@@ -8,6 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { FollowingTag } from "../feed/FollowingTag"
 import { Skill } from "../skillbase/Skill"
@@ -26,7 +27,7 @@ export class Tag {
   id: number
 
   @ManyToOne((type) => User, (user) => user.tags, { onDelete: "CASCADE" })
-  user: User
+  user: Relation<User>
 
   @Column()
   @Field()

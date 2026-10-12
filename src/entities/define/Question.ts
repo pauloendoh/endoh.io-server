@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { z } from "zod"
 import { User } from "../User"
@@ -20,14 +21,14 @@ export class Question {
   @ManyToOne((type) => User, (user) => user.docs, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: Relation<User>
   @Column()
   userId: number
 
   @ManyToOne(() => Doc, (doc) => doc.questions, {
     onDelete: "CASCADE",
   })
-  doc: Doc
+  doc: Relation<Doc>
   @Column()
   docId: number
 

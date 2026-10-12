@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "../User"
 
@@ -16,14 +17,14 @@ export class Follow {
 
   @ManyToOne((_) => User, (user) => user.follows, { onDelete: "CASCADE" })
   @JoinColumn()
-  follower: User
+  follower: Relation<User>
 
   @Column()
   followerId: number
 
   @ManyToOne((_) => User, (user) => user.followedBy, { onDelete: "CASCADE" })
   @JoinColumn()
-  followedUser: User
+  followedUser: Relation<User>
 
   @Column()
   followedUserId: number

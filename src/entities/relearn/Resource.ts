@@ -8,6 +8,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "../User"
 import { Tag } from "./Tag"
@@ -20,7 +21,7 @@ export class Resource {
   id: number
 
   @ManyToOne((type) => User, (user) => user.expenses, { onDelete: "CASCADE" })
-  user: User
+  user: Relation<User>
 
   @Column()
   @Field()
@@ -82,7 +83,7 @@ export class Resource {
   updatedAt: string
 
   @ManyToOne((type) => Tag, (tag) => tag.resources, { onDelete: "CASCADE" })
-  tag: Tag
+  tag: Relation<Tag>
 
   @Column({ nullable: true })
   @Field({ nullable: true })

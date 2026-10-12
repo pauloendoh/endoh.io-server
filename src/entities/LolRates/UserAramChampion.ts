@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "../User"
 import { Champion } from "./Champion"
@@ -17,7 +18,7 @@ export class UserAramChampion {
   @ManyToOne((type) => User, (user) => user.aramChampions, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: Relation<User>
 
   @Column()
   userId: number
@@ -25,7 +26,7 @@ export class UserAramChampion {
   @ManyToOne((type) => Champion, (champion) => champion.playerChampions, {
     onDelete: "CASCADE",
   })
-  champion: Champion
+  champion: Relation<Champion>
 
   @Column()
   championId: number

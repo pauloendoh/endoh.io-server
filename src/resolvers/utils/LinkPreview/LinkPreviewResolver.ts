@@ -1,6 +1,6 @@
 import { Arg, Ctx, Query, Resolver, UseMiddleware } from "type-graphql"
 import { isAuth } from "../../../middlewares/typegraphql/isAuth"
-import { MyContext } from "../../../middlewares/typegraphql/MyContext"
+import { type MyContext } from "../../../middlewares/typegraphql/MyContext"
 import LinkPreviewService from "./LinkPreviewService"
 import { LinkPreviewDto } from "./types/LinkPreviewDto"
 

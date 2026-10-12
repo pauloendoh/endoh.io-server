@@ -6,6 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "./User"
 
@@ -16,7 +17,7 @@ export class UserPreference {
 
   @OneToOne((type) => User, (user) => user.preference, { onDelete: "CASCADE" })
   @JoinColumn()
-  user: User
+  user: Relation<User>
 
   @Column({ default: true })
   relearnAutofillURL: boolean

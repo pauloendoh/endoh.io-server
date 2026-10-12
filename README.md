@@ -8,10 +8,10 @@ Endoh.io contains tools for autodidacts
 
 ## Installation:
 
-- Install dependencies: `npm i`
+- Install dependencies: `pnpm install` (requires pnpm + bun)
 - Run docker compose: `docker compose up`
 
 - Ask for .env file
-- Run migrations: `npm run migrate`
+- Run migrations: `pnpm migrate`
 
 - Restart docker compose

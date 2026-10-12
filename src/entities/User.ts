@@ -6,6 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { Decision } from "./BigDecisions/Decision"
 import { DecisionTable } from "./BigDecisions/DecisionTable"
@@ -76,13 +77,13 @@ export class User {
   @OneToOne((_) => UserPreference, (preference) => preference.user, {
     eager: true,
   })
-  preference: UserPreference
+  preference: Relation<UserPreference>
 
   @OneToOne((_) => UserGotIt, (userGotIt) => userGotIt.user)
-  gotIt: UserGotIt
+  gotIt: Relation<UserGotIt>
 
   @OneToOne((_) => Profile, (profile) => profile.user)
-  profile: Profile
+  profile: Relation<Profile>
 
   @OneToMany((_) => Expense, (expense) => expense.user)
   expenses: Expense[]
@@ -159,7 +160,7 @@ export class User {
     (_) => LastSeenResource,
     (lastSeenResource) => lastSeenResource.user
   )
-  lastSeenResource: LastSeenResource
+  lastSeenResource: Relation<LastSeenResource>
 
   // Define
   @OneToMany((_) => Doc, (doc) => doc.user)
@@ -207,5 +208,5 @@ export class User {
   aramChampions: UserAramChampion[]
 
   @OneToOne((_) => MalUser, (malUser) => malUser.user, { nullable: true })
-  malUser: MalUser | null
+  malUser: Relation<MalUser> | null
 }

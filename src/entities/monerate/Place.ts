@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, type Relation } from "typeorm";
 import { User } from '../User';
 import { Expense } from './Expense';
 
@@ -9,7 +9,7 @@ export default class Place {
     id: number;
 
     @ManyToOne(type => User, user => user.places, {onDelete: "CASCADE"})
-    user: User;
+    user: Relation<User>;
 
     @Column()
     userId: number

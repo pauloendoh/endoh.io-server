@@ -10,7 +10,7 @@ import {
   Put,
 } from "routing-controllers"
 import { In } from "typeorm"
-import { IdsDto } from "../../../dtos/IdsDto"
+import { type IdsDto } from "../../../dtos/IdsDto"
 import { User } from "../../../entities/User"
 import { Resource } from "../../../entities/relearn/Resource"
 import ResourceRepository from "../../../repositories/relearn/ResourceRepository"

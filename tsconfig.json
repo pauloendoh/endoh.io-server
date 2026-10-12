@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es2020", // what is this
-    "module": "commonjs", // what is this
-    "moduleResolution": "node", // what is thisss
+    "target": "es2022",
+    // keep legacy class field semantics, typeorm entities rely on it
+    "useDefineForClassFields": false,
+    "module": "commonjs",
+    "moduleResolution": "bundler",
+    "rootDir": "./src",
     "outDir": "./build",
     "declaration": false, // don't generate d.ts files
 
@@ -11,13 +14,15 @@
     "noImplicitAny": false,
     "strictPropertyInitialization": false,
 
+    // required by typeorm, routing-controllers and type-graphql (bun reads these too)
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true, // do i still need this?
+    "experimentalDecorators": true,
     "sourceMap": false, // don't generate js.map files
     "esModuleInterop": true,
     "skipLibCheck": true,
 
     "jsx": "react-jsx",
-    "types": ["node", "jest", "./src/types/types.d.ts"]
-  }
+    "types": ["node", "bun", "jest", "./src/types/types.d.ts"]
+  },
+  "include": ["src"]
 }

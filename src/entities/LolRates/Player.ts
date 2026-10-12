@@ -5,7 +5,8 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  type Relation,
 } from "typeorm";
 import { User } from "../User";
 import { PlayerChampion } from "./PlayerChampion";
@@ -16,7 +17,7 @@ export class Player {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.players, { onDelete: "CASCADE" })
-  user: User;
+  user: Relation<User>;
 
   @Column()
   userId: number;

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, type Relation } from 'typeorm';
 import { User } from './User';
 
 
@@ -9,7 +9,7 @@ export class UserToken {
     id: number;
 
     @ManyToOne(type => User, user => user.tokens, { onDelete: "CASCADE" })
-    user: User;
+    user: Relation<User>;
 
     @Column()
     userId: number

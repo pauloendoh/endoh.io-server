@@ -3,7 +3,8 @@ import {
   CreateDateColumn,
   Entity, ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "../User"
 import { DecisionTable } from "./DecisionTable"
@@ -16,14 +17,14 @@ export class DecisionTableItem {
   @ManyToOne((type) => User, (user) => user.decisionTables, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: Relation<User>
   @Column()
   userId: number
 
   @ManyToOne((type) => DecisionTable, (table) => table.items, {
     onDelete: "CASCADE",
   })
-  decisionTable: DecisionTable
+  decisionTable: Relation<DecisionTable>
   @Column()
   decisionTableId: number
 

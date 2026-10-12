@@ -9,7 +9,7 @@ import {
 } from "routing-controllers"
 import { SearchResultsDto } from "../../dtos/utils/SearchResultsDto"
 import { User } from "../../entities/User"
-import { EmailPostDto } from "../../interfaces/dtos/auth/EmailPostDto"
+import { type EmailPostDto } from "../../interfaces/dtos/auth/EmailPostDto"
 import NotificationRepository from "../../repositories/feed/NotificationRepository"
 import ResourceRepository from "../../repositories/relearn/ResourceRepository"
 import SkillRepository from "../../repositories/skillbase/SkillRepository"

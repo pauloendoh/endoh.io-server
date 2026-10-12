@@ -8,7 +8,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { isAuth } from "../../../middlewares/typegraphql/isAuth";
-import { MyContext } from "../../../middlewares/typegraphql/MyContext";
+import { type MyContext } from "../../../middlewares/typegraphql/MyContext";
 import SkillHistoryService from "../../../services/SkillHistoryService";
 import SkillProgressDto from "../../../types/domain/skillbase/skill-progress/SkillProgressDto";
 

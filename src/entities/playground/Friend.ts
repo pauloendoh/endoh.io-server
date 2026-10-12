@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, type Relation } from "typeorm";
 import { CreatedEntity } from "../../types/CreatedEntity";
 import { User } from "../User";
 
@@ -7,7 +7,7 @@ export class Friend extends CreatedEntity {
   @ManyToOne((type) => User, (user) => user.friends, {
     onDelete: "CASCADE",
   })
-  user: User;
+  user: Relation<User>;
 
   @Column({ default: "" })
   name: string;

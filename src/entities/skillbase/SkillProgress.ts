@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, type Relation } from "typeorm";
 import { User } from '../User';
 import { Skill } from './Skill';
 
@@ -10,12 +10,12 @@ export class SkillProgress {
     id: number;
 
     @ManyToOne(type => User, user => user.skillProgresses, { onDelete: "CASCADE" })
-    user: User;
+    user: Relation<User>;
     @Column()
     userId: number
 
     @ManyToOne(type => Skill, skill => skill.progresses, { onDelete: "CASCADE" })
-    skill: Skill;
+    skill: Relation<Skill>;
     @Column()
     skillId: number
 

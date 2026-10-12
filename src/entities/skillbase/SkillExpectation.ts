@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm";
 import { User } from "../User";
 import { Skill } from "./Skill";
@@ -17,14 +18,14 @@ export class SkillExpectation {
   @ManyToOne((type) => User, (user) => user.skillExpectations, {
     onDelete: "CASCADE",
   })
-  user: User;
+  user: Relation<User>;
   @Column()
   userId: number;
 
   @ManyToOne((type) => Skill, (skill) => skill.expectations, {
     onDelete: "CASCADE",
   })
-  skill: Skill;
+  skill: Relation<Skill>;
   @Column({ nullable: true })
   skillId: number;
 

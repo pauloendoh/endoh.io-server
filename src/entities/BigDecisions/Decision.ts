@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "../User"
 import { DecisionTable } from "./DecisionTable"
@@ -18,7 +19,7 @@ export class Decision {
   @ManyToOne((type) => User, (user) => user.decisions, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: Relation<User>
   @Column()
   userId: number
 

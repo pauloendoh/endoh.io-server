@@ -4,6 +4,7 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "../User"
 
@@ -14,7 +15,7 @@ export class LastSeenResource {
 
   @OneToOne((_) => User, { onDelete: "CASCADE" })
   @JoinColumn()
-  user: User
+  user: Relation<User>
 
   @Column()
   userId: number

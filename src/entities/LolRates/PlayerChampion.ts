@@ -5,9 +5,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
-import { RoleTypes } from "../../types/domain/lolates/RoleTypes"
-import { SkillLevelTypes } from "../../types/domain/lolates/SkillLevelTypes"
+import type { RoleTypes } from "../../types/domain/lolates/RoleTypes"
+import type { SkillLevelTypes } from "../../types/domain/lolates/SkillLevelTypes"
 import { User } from "../User"
 import { Champion } from "./Champion"
 import { Player } from "./Player"
@@ -18,7 +19,7 @@ export class PlayerChampion {
   id: number
 
   @ManyToOne((type) => User, (user) => user.players, { onDelete: "CASCADE" })
-  user: User
+  user: Relation<User>
 
   @Column()
   userId: number
@@ -26,7 +27,7 @@ export class PlayerChampion {
   @ManyToOne((type) => Player, (player) => player.champions, {
     onDelete: "CASCADE",
   })
-  player: Player
+  player: Relation<Player>
 
   @Column()
   playerId: number
@@ -34,15 +35,16 @@ export class PlayerChampion {
   @ManyToOne((type) => Champion, (champion) => champion.playerChampions, {
     onDelete: "CASCADE",
   })
-  champion: Champion
+  champion: Relation<Champion>
 
   @Column()
   championId: number
 
-  @Column()
+  // explicit type: string-union aliases have no runtime metadata under bun
+  @Column({ type: "varchar" })
   role: RoleTypes
 
-  @Column()
+  @Column({ type: "varchar" })
   skillLevel: SkillLevelTypes
 
   @Column({

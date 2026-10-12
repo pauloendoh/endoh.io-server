@@ -9,7 +9,7 @@ import {
   UseBefore,
 } from "routing-controllers"
 import { dataSource } from "../../../dataSource"
-import { IdsDto } from "../../../dtos/IdsDto"
+import { type IdsDto } from "../../../dtos/IdsDto"
 import { Skill } from "../../../entities/skillbase/Skill"
 import { SkillExpectation } from "../../../entities/skillbase/SkillExpectation"
 import { SkillProgress } from "../../../entities/skillbase/SkillProgress"

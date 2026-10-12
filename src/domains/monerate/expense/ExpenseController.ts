@@ -15,7 +15,7 @@ import {
 import { User } from "../../../entities/User"
 import { Expense } from "../../../entities/monerate/Expense"
 import { MyAuthMiddleware } from "../../../middlewares/MyAuthMiddleware"
-import { MyAuthRequest } from "../../../utils/MyAuthRequest"
+import { type MyAuthRequest } from "../../../utils/MyAuthRequest"
 import ExpenseRepository from "./ExpenseRepository"
 import { ExpenseService } from "./ExpenseService"
 

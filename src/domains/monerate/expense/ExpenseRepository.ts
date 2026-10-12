@@ -26,7 +26,7 @@ const ExpenseRepository = dataSource.getRepository(Expense).extend({
       `
       select e.* from 
         (select  e.id as id, abs($1 - e.value) as diff 
-          from expense e where e.\"userId\" = $2 and e.value is not null order by diff limit 10)  closest
+          from expense e where e."userId" = $2 and e.value is not null order by diff limit 10)  closest
       inner join expense e on e.id = closest.id
       order by e.rating desc nulls last
       `,
