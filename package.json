@@ -3,7 +3,7 @@
   "version": "16.15.0",
   "description": "endoh.io - server",
   "scripts": {
-    "start": "cross-env NODE_OPTIONS=--max-old-space-size=512 pnpm run migrate:prod && node -r newrelic build/server.js",
+    "start": "node --max-old-space-size=512 -r newrelic build/server.js",
     "dev": "bun --watch src/server.ts",
     "watch": "bun --inspect=9229 --watch src/server.ts",
     "build": "tsc",
@@ -13,13 +13,13 @@
     "makeMigrations": "pnpm run typeorm migration:generate ./src/migrations/Migration",
     "makeEmptyMigration": "typeorm migration:create ./src/migrations/Migration",
     "migrate": "pnpm run typeorm migration:run",
-    "migrate:prod": "typeorm migration:run -d ./build/dataSource.js",
+    "migrate:prod": "node ./node_modules/typeorm/cli.js migration:run -d ./build/dataSource.js",
     "revertMigration": "pnpm run typeorm migration:revert",
     "test-server": "cross-env NODE_ENV=test bun --watch src/server.ts",
     "test": "cross-env NODE_ENV=test bun test",
     "test:watch": "cross-env NODE_ENV=test bun test --watch",
     "typeorm": "bun ./node_modules/typeorm/cli.js -d ./src/dataSource.ts",
-    "prepare": "husky install"
+    "prepare": "husky install || true"
   },
   "dependencies": {
     "@anatine/zod-openapi": "^2.2.7",
@@ -120,7 +120,6 @@
   },
   "packageManager": "pnpm@12.11.2",
   "engines": {
-    "node": ">=24",
-    "bun": ">=1.4"
+    "node": "24.x"
   }
 }
