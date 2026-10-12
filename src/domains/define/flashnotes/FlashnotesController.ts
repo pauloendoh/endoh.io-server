@@ -15,7 +15,7 @@ import { Question } from "../../../entities/define/Question"
 import { getQuestionRepository } from "../../../repositories/define/QuestionRepository"
 import { FlashnotesService } from "./FlashnotesService"
 import { CreateManyQuestionsDto } from "./types/CreateManyNotesDto"
-import { FlashnotesSearchType } from "./types/FlashnotesSearchType"
+import { type FlashnotesSearchType } from "./types/FlashnotesSearchType"
 
 @JsonController()
 export class FlashnotesController {

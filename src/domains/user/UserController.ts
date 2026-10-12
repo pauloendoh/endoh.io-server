@@ -13,7 +13,7 @@ import {
 } from "routing-controllers"
 import { multerConfig } from "../../config/multer"
 import { dataSource } from "../../dataSource"
-import { TagFollowPostDto } from "../../dtos/feed/TagFollowPostDto"
+import { type TagFollowPostDto } from "../../dtos/feed/TagFollowPostDto"
 import { User } from "../../entities/User"
 import { Profile } from "../../entities/feed/Profile"
 import { UserRepository } from "../../repositories/UserRepository"

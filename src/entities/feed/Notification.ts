@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, type Relation } from 'typeorm';
 import { User } from '../User';
 
 
@@ -10,7 +10,7 @@ export class Notification {
 
     @OneToMany(type => User, user => user.notifications, { onDelete: "CASCADE" })
     @JoinColumn()
-    user: User
+    user: Relation<User>
 
     @Column()
     userId: number
@@ -26,7 +26,7 @@ export class Notification {
 
     @OneToMany(type => User, user => user.followingNotifications, { onDelete: "CASCADE" })
     @JoinColumn()
-    follower: User
+    follower: Relation<User>
 
     @Column()
     followerId: number

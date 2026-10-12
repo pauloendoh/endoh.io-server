@@ -8,7 +8,7 @@ import {
 } from "type-graphql";
 import { Learning } from "../../entities/learning-diary/Learning";
 import { isAuth } from "../../middlewares/typegraphql/isAuth";
-import { MyContext } from "../../middlewares/typegraphql/MyContext";
+import { type MyContext } from "../../middlewares/typegraphql/MyContext";
 import LearningService from "./LearningService";
 import LearningInput from "./types/LearningInput";
 

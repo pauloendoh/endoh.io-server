@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, type Relation } from "typeorm";
 import { CreatedEntity } from "../../../types/CreatedEntity";
 import { User } from "../../User";
 import { Folder } from "./Folder";
@@ -9,7 +9,7 @@ export class File extends CreatedEntity {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.files, { onDelete: "CASCADE" })
-  user: User;
+  user: Relation<User>;
 
   @Column()
   name: string;
@@ -17,7 +17,7 @@ export class File extends CreatedEntity {
   @ManyToOne((type) => Folder, (folder) => folder.files, {
     onDelete: "CASCADE",
   })
-  parentFolder: Folder;
+  parentFolder: Relation<Folder>;
 
   @Column()
   parentFolderId: number;

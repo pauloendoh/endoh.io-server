@@ -1,9 +1,9 @@
-import { MailService } from "@sendgrid/mail"
+import sendgrid from "@sendgrid/mail"
 import { User } from "../../entities/User"
 import { myEnvs } from "../../utils/myEnvs"
 
 export class EmailService {
-  constructor(private sendgridService = new MailService()) {
+  constructor(private sendgridService = sendgrid) {
     this.sendgridService.setApiKey(myEnvs.SENDGRID_API_KEY)
   }
 

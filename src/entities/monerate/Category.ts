@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm";
 import { User } from "../User";
 import { Expense } from "./Expense";
@@ -16,7 +17,7 @@ export default class Category {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.categories, { onDelete: "CASCADE" })
-  user: User;
+  user: Relation<User>;
 
   @Column()
   userId: number;

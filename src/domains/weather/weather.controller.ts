@@ -1,4 +1,4 @@
-import { RouterImplementation } from "@ts-rest/express/src/lib/types"
+import type { RouterImplementation } from "../../types/RouterImplementation"
 import axios from "axios"
 import { BadRequestError } from "routing-controllers"
 import myRedis from "../../utils/redis/myRedis"

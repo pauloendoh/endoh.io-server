@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "[HUSKY] npx tsc"
-npx tsc --noEmit
+echo "[HUSKY] tsc --noEmit (TypeScript 7)"
+pnpm typecheck
+
+echo "[HUSKY] oxlint"
+pnpm lint

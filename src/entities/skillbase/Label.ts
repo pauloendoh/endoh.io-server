@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm";
 import { User } from "../User";
 
@@ -14,7 +15,7 @@ export class Label {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.labels, { onDelete: "CASCADE" })
-  user: User;
+  user: Relation<User>;
 
   @Column()
   userId: number;

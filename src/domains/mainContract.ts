@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core"
-import { RouterImplementation } from "@ts-rest/express/src/lib/types"
+import type { RouterImplementation } from "../types/RouterImplementation"
 import { questionContract } from "./define/questionContract"
 import { questionRouter } from "./define/questionRouter"
 import { gotItContract } from "./got-it/got-it.contract"

@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "../User"
 
@@ -18,7 +19,7 @@ export class RecurrentLearning {
   @ManyToOne((_) => User, (user) => user.recurrentLearnings, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: Relation<User>
 
   @Column()
   userId: number

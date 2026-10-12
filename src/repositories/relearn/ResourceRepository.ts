@@ -139,7 +139,7 @@ const ResourceRepository = dataSource.getRepository(Resource).extend({
   async increasePositionByOne(
     tagId: number,
     user: User,
-    startingPosition: Number
+    startingPosition: number
   ): Promise<void> {
     if (tagId) {
       await dataSource.query(

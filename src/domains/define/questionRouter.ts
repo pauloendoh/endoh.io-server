@@ -1,6 +1,6 @@
 import OpenAI from "openai"
 
-import { RouterImplementation } from "@ts-rest/express/src/lib/types"
+import type { RouterImplementation } from "../../types/RouterImplementation"
 import { userRequiredMiddleware } from "../../middlewares/userRequiredMiddleware"
 import { getQuestionRepository } from "../../repositories/define/QuestionRepository"
 import { myEnvs } from "../../utils/myEnvs"

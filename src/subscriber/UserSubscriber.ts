@@ -1,7 +1,7 @@
 import {
-  EntitySubscriberInterface,
+  type EntitySubscriberInterface,
   EventSubscriber,
-  InsertEvent,
+  type InsertEvent,
 } from "typeorm"
 import { EmailService } from "../domains/email/EmailService"
 import { User } from "../entities/User"

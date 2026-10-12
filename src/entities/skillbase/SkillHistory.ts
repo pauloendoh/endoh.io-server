@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  type Relation,
 } from "typeorm";
 import { User } from "../User";
 
@@ -13,7 +14,7 @@ export class SkillHistory {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.skills, { onDelete: "CASCADE" })
-  user: User;
+  user: Relation<User>;
   @Column()
   userId: number;
 

@@ -16,7 +16,7 @@ import { Doc } from "../../entities/define/Doc"
 import { MyAuthMiddleware } from "../../middlewares/MyAuthMiddleware"
 import { getDocRepository } from "../../repositories/define/DocRepository"
 import { getQuestionRepository } from "../../repositories/define/QuestionRepository"
-import { MyAuthRequest } from "../../utils/MyAuthRequest"
+import { type MyAuthRequest } from "../../utils/MyAuthRequest"
 import { DocService } from "./DocService"
 
 @JsonController()

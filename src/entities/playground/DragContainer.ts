@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, type Relation } from "typeorm";
 import { CreatedEntity } from "../../types/CreatedEntity";
 import { User } from "../User";
 import { DragItem } from "./DragItem";
@@ -8,7 +8,7 @@ export class DragContainer extends CreatedEntity {
   @ManyToOne((type) => User, (user) => user.dragContainers, {
     onDelete: "CASCADE",
   })
-  user: User;
+  user: Relation<User>;
 
   @OneToMany((type) => DragItem, (dragItem) => dragItem.container)
   dragItems: DragItem[];

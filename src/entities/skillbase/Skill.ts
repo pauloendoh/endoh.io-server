@@ -8,6 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { Tag } from "../relearn/Tag"
 import { User } from "../User"
@@ -21,7 +22,7 @@ export class Skill {
   id: number
 
   @ManyToOne((type) => User, (user) => user.skills, { onDelete: "CASCADE" })
-  user: User
+  user: Relation<User>
   @Column()
   userId: number
 
@@ -50,7 +51,7 @@ export class Skill {
   labels: Label[]
 
   @ManyToOne((type) => Tag, (tag) => tag.skills, { onDelete: "SET NULL" })
-  tag: Tag
+  tag: Relation<Tag>
   @Column({ nullable: true })
   tagId: number
 

@@ -1,6 +1,6 @@
 import {
-  EntitySubscriberInterface,
-  EventSubscriber, InsertEvent
+  type EntitySubscriberInterface,
+  EventSubscriber, type InsertEvent
 } from "typeorm"
 import { Decision } from "../entities/BigDecisions/Decision"
 import { DecisionTable } from "../entities/BigDecisions/DecisionTable"

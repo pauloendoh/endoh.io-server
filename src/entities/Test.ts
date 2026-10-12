@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm"
+import { Column, Entity, ManyToOne, type Relation } from "typeorm"
 import { CreatedEntity } from "../types/CreatedEntity"
 import { User } from "./User"
 
@@ -8,7 +8,7 @@ export class Test extends CreatedEntity {
   name: string
 
   @ManyToOne((type) => User, (user) => user.tests)
-  user: User
+  user: Relation<User>
 
   @Column({ default: "" })
   color: string

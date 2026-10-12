@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  type Relation,
 } from "typeorm"
 import { User } from "../User"
 import { Folder } from "../playground/file-system/Folder"
@@ -19,12 +20,12 @@ export class Doc {
   @ManyToOne((type) => User, (user) => user.docs, {
     onDelete: "CASCADE",
   })
-  user: User
+  user: Relation<User>
   @Column()
   userId: number
 
   @ManyToOne(() => Folder, (folder) => folder.docs, { nullable: true })
-  folder: Folder | null
+  folder: Relation<Folder> | null
 
   @Column({ nullable: true })
   folderId: number | null

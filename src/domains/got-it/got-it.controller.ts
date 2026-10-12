@@ -1,4 +1,4 @@
-import { RouterImplementation } from "@ts-rest/express/src/lib/types"
+import type { RouterImplementation } from "../../types/RouterImplementation"
 import { userRequiredMiddleware } from "../../middlewares/userRequiredMiddleware"
 import { gotItContract } from "./got-it.contract"
 import { GotItService } from "./GotItService"

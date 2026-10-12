@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, type Relation } from 'typeorm';
 import { Tag } from '../relearn/Tag';
 import { User } from '../User';
 
@@ -11,21 +11,21 @@ export class FollowingTag {
 
     @ManyToOne(type => User, user => user.followingTags, { onDelete: "CASCADE" })
     @JoinColumn()
-    follower: User
+    follower: Relation<User>
 
     @Column()
     followerId: number
 
     @ManyToOne(type => User, user => user.followingTags, { onDelete: "CASCADE" })
     @JoinColumn()
-    followingUser: User
+    followingUser: Relation<User>
 
     @Column()
     followingUserId: number
 
     @ManyToOne(type => Tag, tag => tag.tagFollowers, { onDelete: "CASCADE" })
     @JoinColumn()
-    tag: Tag
+    tag: Relation<Tag>
 
     @Column()
     tagId: number

@@ -4,7 +4,8 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  type Relation,
 } from "typeorm";
 import { User } from "../User";
 import { Champion } from "./Champion";
@@ -17,7 +18,7 @@ export class ChampionRadar {
   @ManyToOne((type) => User, (user) => user.championRadars, {
     onDelete: "CASCADE",
   })
-  user: User;
+  user: Relation<User>;
 
   @Column()
   userId: number;
@@ -25,7 +26,7 @@ export class ChampionRadar {
   @ManyToOne((type) => Champion, (champion) => champion.playerChampions, {
     onDelete: "CASCADE",
   })
-  champion: Champion;
+  champion: Relation<Champion>;
 
   @Column()
   championId: number;

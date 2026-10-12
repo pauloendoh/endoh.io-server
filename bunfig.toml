@@ -1,0 +1,3 @@
+[test]
+# only run TS sources, never compiled tests in ./build
+root = "./src"

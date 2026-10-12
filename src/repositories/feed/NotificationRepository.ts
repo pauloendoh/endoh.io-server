@@ -64,42 +64,38 @@ const NotificationRepository = dataSource.getRepository(Notification).extend({
     saverId: number,
     resourceId: number
   ): Promise<Notification> {
-    try {
-      const resourceRepo = ResourceRepository
-      const userRepo = dataSource.getRepository(User)
+    const resourceRepo = ResourceRepository
+    const userRepo = dataSource.getRepository(User)
 
-      const resource = await resourceRepo.findOne({
-        where: { id: resourceId },
-      })
+    const resource = await resourceRepo.findOne({
+      where: { id: resourceId },
+    })
 
-      if (!resource) {
-        throw new NotFoundError("Resource not found")
-      }
-
-      const owner = await userRepo.findOne({ where: { id: resource.userId } })
-      if (!owner) {
-        throw new NotFoundError("Owner not found")
-      }
-
-      const saver = await userRepo.findOne({
-        where: {
-          id: saverId,
-        },
-      })
-
-      if (!saver) {
-        throw new NotFoundError("Saver not found")
-      }
-
-      return this.save({
-        type: "userSavedYourResource",
-        userId: owner.id,
-        message: `${saver.username} saved your resource: ${resource.title}`,
-        followerId: saverId,
-      })
-    } catch (err) {
-      throw err
+    if (!resource) {
+      throw new NotFoundError("Resource not found")
     }
+
+    const owner = await userRepo.findOne({ where: { id: resource.userId } })
+    if (!owner) {
+      throw new NotFoundError("Owner not found")
+    }
+
+    const saver = await userRepo.findOne({
+      where: {
+        id: saverId,
+      },
+    })
+
+    if (!saver) {
+      throw new NotFoundError("Saver not found")
+    }
+
+    return this.save({
+      type: "userSavedYourResource",
+      userId: owner.id,
+      message: `${saver.username} saved your resource: ${resource.title}`,
+      followerId: saverId,
+    })
   },
 
   async getNotifications(userId: number): Promise<NotificationDto[]> {

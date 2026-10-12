@@ -6,7 +6,8 @@ import {
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
-  TreeParent
+  TreeParent,
+  type Relation,
 } from "typeorm";
 import { CreatedEntity } from "../../../types/CreatedEntity";
 import { Doc } from "../../define/Doc";
@@ -20,7 +21,7 @@ export class Folder extends CreatedEntity {
   id: number;
 
   @ManyToOne((type) => User, (user) => user.folders, { onDelete: "CASCADE" })
-  user: User;
+  user: Relation<User>;
 
   @Column()
   name: string;
@@ -29,7 +30,7 @@ export class Folder extends CreatedEntity {
   subfolders: Folder[];
 
   @TreeParent({ onDelete: "CASCADE" })
-  parentFolder: Folder;
+  parentFolder: Relation<Folder>;
 
   @Column({ nullable: true })
   parentFolderId: number;
